@@ -84,7 +84,10 @@ When adding features, categorize them as:
 
 **Training Variables:**
 - Sets per muscle group per week
-- Reps per set (typically 5-30 for hypertrophy)
+- Reps per set (typically 5-30 for hypertrophy, with different ranges for different goals):
+  - 5-8 reps: Strength-focused hypertrophy
+  - 8-15 reps: Optimal hypertrophy range for most exercises
+  - 15-30 reps: Metabolic stress and pump-focused training
 - RIR (Reps In Reserve) or proximity to failure
 - Training frequency (2-6x per week per muscle)
 - Exercise selection and variation

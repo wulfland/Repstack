@@ -110,10 +110,10 @@ This means:
 
 ## 🔮 Project Roadmap
 
-1. **Q1 2026**: Requirements definition and architecture design
-2. **Q2 2026**: Core training engine MVP
-3. **Q3 2026**: PWA features and offline capability
-4. **Q4 2026**: Public beta release
+1. **Phase 1 (3 months)**: Requirements definition and architecture design
+2. **Phase 2 (3-4 months)**: Core training engine MVP
+3. **Phase 3 (2-3 months)**: PWA features and offline capability
+4. **Phase 4**: Public beta release
 
 ## 💬 Community & Support
 

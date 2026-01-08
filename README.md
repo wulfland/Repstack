@@ -22,13 +22,13 @@ Repstack is an open source alternative to commercial hypertrophy training applic
 - [ ] Progressive overload tracking
 - [ ] Mesocycle management (4-6 week training blocks)
 - [ ] Deload week scheduling
-- [ ] Exercise library with video demonstrations
+- [ ] Exercise library with user-created exercises and categories (machine, barbell, dumbbell)
 
 ### Phase 2: Enhanced Experience
 - [ ] Workout logging and history
 - [ ] Progress tracking and analytics
 - [ ] Custom exercise creation
-- [ ] Template library (45+ pre-built programs)
+- [ ] Template library (1-2 programs for different splits: upper/lower, push/pull/legs, full body)
 - [ ] Exercise substitution recommendations
 - [ ] Volume landmarks and recovery indicators
 

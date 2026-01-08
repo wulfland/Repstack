@@ -58,11 +58,12 @@ When adding features, categorize them as:
 - Training program generation
 - Workout logging
 - Auto-regulation and feedback
-- Exercise library
+- Exercise library (user-created exercises with categories: machine, barbell, dumbbell)
 - Progress tracking
 - Mesocycle management
 - Basic analytics
 - Data export/import
+- Simple program templates (1-2 templates for different splits: upper/lower, push/pull/legs, full body)
 
 **SaaS (Optional, Paid - Future):**
 - Cloud sync
@@ -161,7 +162,7 @@ When adding features, document:
 
 Key entities to consider:
 - **User Profile**: Training experience, preferences, goals
-- **Exercise**: Name, category, muscle groups, equipment
+- **Exercise**: User-created name, category (machine, barbell, dumbbell), muscle groups, equipment
 - **Workout**: Exercises, sets, reps, weight, feedback
 - **Mesocycle**: Training block with progression plan
 - **Training Session**: Individual workout with auto-regulation
@@ -207,8 +208,6 @@ Keep these future needs in mind when making architectural decisions:
 - Cloud sync architecture (when SaaS layer is added)
 - Integration with fitness wearables
 - Social/community features
-- Video content delivery
-- Custom exercise video uploads
 
 ## Questions for Copilot Users
 

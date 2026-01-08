@@ -51,20 +51,149 @@ Repstack is an open source alternative to commercial hypertrophy training applic
 
 ## 🛠️ Technology Stack
 
-*To be determined during requirements phase with GitHub Copilot*
+**Framework & Build:**
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Fast dev server and build tool
 
-Considerations:
-- Progressive Web App framework (React/Vue/Svelte + PWA plugins)
-- Offline-first architecture (Service Workers, IndexedDB)
-- Cross-platform compatibility
-- Modern, responsive UI/UX
-- Local-first data storage
+**PWA Capabilities:**
+- **vite-plugin-pwa** - PWA configuration and service worker generation
+- **Workbox** - Service worker management
+- **IndexedDB** - Local data storage via Dexie.js
+
+**Code Quality:**
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **TypeScript strict mode** - Type checking
+
+## 💻 Development Setup
+
+### Prerequisites
+
+- **Node.js** 18.x or higher
+- **npm** 9.x or higher (comes with Node.js)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/wulfland/Repstack.git
+   cd Repstack
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+   
+   The app will be available at `http://localhost:5173/`
+
+### Available Scripts
+
+- `npm run dev` - Start development server with hot reload
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build locally
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix ESLint errors automatically
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
+- `npm run type-check` - Run TypeScript type checking
+
+### PWA Features
+
+The app includes full Progressive Web App capabilities:
+
+- ✅ **Offline Support** - Service Workers cache assets for offline use
+- ✅ **Installable** - Can be installed on any device (iOS, Android, Desktop)
+- ✅ **Local Storage** - IndexedDB stores user data locally
+- ✅ **Responsive** - Mobile-first design that works on all screen sizes
+- ✅ **Fast** - Optimized build with code splitting
+
+### Testing PWA Features
+
+**Local Development:**
+- PWA features are enabled in development mode
+- Service Worker registers automatically
+- Test offline mode by stopping the dev server after initial load
+
+**Production Build:**
+```bash
+npm run build
+npm run preview
+```
+Then open in your browser and test:
+1. Install the app (look for install prompt)
+2. Go offline (DevTools → Network → Offline)
+3. App should still work
+
+### Project Structure
+
+```
+Repstack/
+├── public/              # Static assets
+│   ├── pwa-192x192.png  # PWA icon (192x192)
+│   ├── pwa-512x512.png  # PWA icon (512x512)
+│   ├── apple-touch-icon.png  # iOS home screen icon
+│   └── robots.txt       # SEO robots file
+├── src/
+│   ├── components/      # Reusable UI components
+│   ├── layouts/         # Layout components
+│   ├── features/        # Feature-specific components
+│   ├── pages/           # Page components
+│   ├── hooks/           # Custom React hooks
+│   ├── db/              # IndexedDB database setup (Dexie)
+│   ├── lib/             # Utility functions
+│   ├── styles/          # Global styles
+│   ├── App.tsx          # Main app component
+│   ├── main.tsx         # App entry point
+│   └── index.css        # Global CSS
+├── index.html           # HTML template
+├── vite.config.ts       # Vite configuration
+├── tsconfig.json        # TypeScript configuration
+├── eslint.config.js     # ESLint configuration
+└── .prettierrc          # Prettier configuration
+```
+
+### Database Schema
+
+The app uses IndexedDB (via Dexie.js) with the following tables:
+
+- **users** - User profiles and preferences
+- **exercises** - Exercise library (user-created)
+- **workouts** - Workout logs with sets, reps, and feedback
+- **mesocycles** - Training blocks (4-6 week programs)
+
+See `src/db/index.ts` for the complete schema.
+
+### Performance Targets
+
+- ⚡ Initial load: < 3 seconds on 3G
+- ⚡ Time to interactive: < 5 seconds
+- 📦 Bundle size: Optimized for mobile
+- 🚀 Lighthouse score: 90+ across all metrics
 
 ## 📋 Project Status
 
-**Current Phase:** 🔨 Requirements & Planning
+**Current Phase:** ✅ Foundation Complete → 🚀 Building Core Features
 
-We're currently in the initial planning phase, working with GitHub Copilot to define detailed requirements and technical architecture.
+The project foundation is now set up with:
+- ✅ React + TypeScript + Vite
+- ✅ PWA capabilities (offline, installable)
+- ✅ IndexedDB for local storage
+- ✅ Responsive mobile-first layout
+- ✅ Code quality tools (ESLint, Prettier)
+- ✅ Production build pipeline
+
+**Next Steps:**
+- Build core training engine
+- Implement workout logging
+- Create exercise library
+- Add mesocycle management
 
 ## 🤝 Contributing
 

@@ -1,13 +1,8 @@
 import { useEffect, useState } from 'react';
 import Layout from './layouts/Layout';
 import { useExercises, addExercise } from './hooks/useDatabase';
+import type { BeforeInstallPromptEvent } from './types/global';
 import './App.css';
-
-// Type for the beforeinstallprompt event
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-}
 
 function App() {
   const exercises = useExercises();

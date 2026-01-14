@@ -190,8 +190,8 @@ export function useTrainingSessionsByExercise(exerciseId: string | undefined) {
     return db.trainingSessions
       .where('exerciseId')
       .equals(exerciseId)
-      .reverse()
-      .sortBy('date');
+      .sortBy('date')
+      .reverse();
   }, [exerciseId]);
 }
 

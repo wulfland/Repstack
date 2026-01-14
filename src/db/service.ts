@@ -502,7 +502,7 @@ export async function exportData(): Promise<string> {
 
 export async function importData(jsonData: string): Promise<void> {
   // Parse JSON safely and revive ISO date strings back to Date objects
-  let data: any;
+  let data: unknown;
   try {
     const isoDateRegex =
       /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
@@ -516,7 +516,7 @@ export async function importData(jsonData: string): Promise<void> {
       }
       return value;
     });
-  } catch (_err) {
+  } catch {
     // Do not clear existing data if the JSON is invalid
     throw new Error('Failed to parse import data: invalid JSON.');
   }

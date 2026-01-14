@@ -88,13 +88,14 @@ class RepstackDatabase extends Dexie {
               return tx.table('userProfiles').add(profile);
             })
           );
-        } catch (error: any) {
+        } catch (error: unknown) {
           // If the legacy "users" table doesn't exist (e.g., fresh v2 install),
           // Dexie may throw an error when accessing it. In that case we can
           // safely skip the migration. Re-throw for any other unexpected errors.
-          const message = typeof error?.message === 'string' ? error.message : '';
+          const err = error as { name?: string; message?: string };
+          const message = typeof err?.message === 'string' ? err.message : '';
           if (
-            error?.name === 'NotFoundError' ||
+            err?.name === 'NotFoundError' ||
             /NoSuchTable|MissingTable|does not exist/i.test(message)
           ) {
             return;

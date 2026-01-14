@@ -58,29 +58,49 @@ class RepstackDatabase extends Dexie {
         mesocycles:
           'id, startDate, endDate, weekNumber, status, createdAt, updatedAt',
       })
-      .upgrade((tx) => {
-        // Migrate old users to userProfiles if they exist
-        return tx
-          .table('users')
-          .toArray()
-          .then((users) => {
-            return Promise.all(
-              users.map((user: { id?: number; name?: string; trainingExperience?: string; createdAt?: Date; updatedAt?: Date }) => {
-                const profile: UserProfile = {
-                  id: user.id?.toString() || crypto.randomUUID(),
-                  name: user.name || 'User',
-                  experienceLevel: user.trainingExperience as 'beginner' | 'intermediate' | 'advanced' || 'beginner',
-                  preferences: {
-                    units: 'metric',
-                    theme: 'system',
-                  },
-                  createdAt: user.createdAt || new Date(),
-                  updatedAt: user.updatedAt || new Date(),
-                };
-                return tx.table('userProfiles').add(profile);
-              })
-            );
-          });
+      .upgrade(async (tx) => {
+        // Migrate old users to userProfiles if they exist.
+        // On fresh v2 installs, the legacy "users" table may not exist at all,
+        // so we defensively handle that case and simply skip the migration.
+        try {
+          const users = await tx.table('users').toArray();
+
+          if (!users || users.length === 0) {
+            // Nothing to migrate.
+            return;
+          }
+
+          await Promise.all(
+            users.map((user: { id?: number; name?: string; trainingExperience?: string; createdAt?: Date; updatedAt?: Date }) => {
+              const profile: UserProfile = {
+                id: user.id?.toString() || crypto.randomUUID(),
+                name: user.name || 'User',
+                experienceLevel:
+                  (user.trainingExperience as 'beginner' | 'intermediate' | 'advanced') ||
+                  'beginner',
+                preferences: {
+                  units: 'metric',
+                  theme: 'system',
+                },
+                createdAt: user.createdAt || new Date(),
+                updatedAt: user.updatedAt || new Date(),
+              };
+              return tx.table('userProfiles').add(profile);
+            })
+          );
+        } catch (error: any) {
+          // If the legacy "users" table doesn't exist (e.g., fresh v2 install),
+          // Dexie may throw an error when accessing it. In that case we can
+          // safely skip the migration. Re-throw for any other unexpected errors.
+          const message = typeof error?.message === 'string' ? error.message : '';
+          if (
+            error?.name === 'NotFoundError' ||
+            /NoSuchTable|MissingTable|does not exist/i.test(message)
+          ) {
+            return;
+          }
+          throw error;
+        }
       });
   }
 }

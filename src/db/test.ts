@@ -13,7 +13,7 @@ import {
   getAllExercises,
   getAllWorkouts,
   exportData,
-} from './db/service';
+} from '../db/service';
 
 export async function runDatabaseTests() {
   console.log('🧪 Starting database tests...\n');

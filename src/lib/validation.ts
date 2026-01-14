@@ -165,8 +165,13 @@ export function validateWorkout(
     errors.push('Workout date is required');
   }
 
-  if (workout.date && workout.date > new Date()) {
-    errors.push('Workout date cannot be in the future');
+  if (workout.date) {
+    const now = new Date();
+    // Allow a small tolerance to avoid flagging "just now" workouts as future
+    const FUTURE_TOLERANCE_MS = 60 * 1000; // 1 minute
+    if (workout.date.getTime() - now.getTime() > FUTURE_TOLERANCE_MS) {
+      errors.push('Workout date cannot be in the future');
+    }
   }
 
   if (!workout.exercises || workout.exercises.length === 0) {

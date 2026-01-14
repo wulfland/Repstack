@@ -160,6 +160,17 @@ export async function updateExercise(
 }
 
 export async function deleteExercise(id: string): Promise<void> {
+  // Prevent deleting exercises that are referenced by workout sets or training sessions
+  const referencingWorkoutSetsCount =
+    await db.workoutSets.where('exerciseId').equals(id).count();
+  const referencingTrainingSessionsCount =
+    await db.trainingSessions.where('exerciseId').equals(id).count();
+
+  if (referencingWorkoutSetsCount > 0 || referencingTrainingSessionsCount > 0) {
+    throw new Error(
+      'Cannot delete exercise that is used in existing workouts or training sessions'
+    );
+  }
   await db.exercises.delete(id);
 }
 

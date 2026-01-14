@@ -113,7 +113,7 @@ export function useExercisesByCategory(category: Exercise['category']) {
  */
 export function useCustomExercises() {
   return useLiveQuery(() =>
-    db.exercises.filter(exercise => exercise.isCustom === true).toArray()
+    db.exercises.filter((exercise) => exercise.isCustom === true).toArray()
   );
 }
 
@@ -155,7 +155,7 @@ export function useWorkoutsByDateRange(startDate: Date, endDate: Date) {
 export function useCompletedWorkouts() {
   return useLiveQuery(async () => {
     const workouts = await db.workouts
-      .filter(workout => workout.completed === true)
+      .filter((workout) => workout.completed === true)
       .toArray();
     return workouts.sort((a, b) => b.date.getTime() - a.date.getTime());
   });

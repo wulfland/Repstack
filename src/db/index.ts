@@ -71,22 +71,32 @@ class RepstackDatabase extends Dexie {
           }
 
           await Promise.all(
-            users.map((user: { id?: number; name?: string; trainingExperience?: string; createdAt?: Date; updatedAt?: Date }) => {
-              const profile: UserProfile = {
-                id: user.id?.toString() || crypto.randomUUID(),
-                name: user.name || 'User',
-                experienceLevel:
-                  (user.trainingExperience as 'beginner' | 'intermediate' | 'advanced') ||
-                  'beginner',
-                preferences: {
-                  units: 'metric',
-                  theme: 'system',
-                },
-                createdAt: user.createdAt || new Date(),
-                updatedAt: user.updatedAt || new Date(),
-              };
-              return tx.table('userProfiles').add(profile);
-            })
+            users.map(
+              (user: {
+                id?: number;
+                name?: string;
+                trainingExperience?: string;
+                createdAt?: Date;
+                updatedAt?: Date;
+              }) => {
+                const profile: UserProfile = {
+                  id: user.id?.toString() || crypto.randomUUID(),
+                  name: user.name || 'User',
+                  experienceLevel:
+                    (user.trainingExperience as
+                      | 'beginner'
+                      | 'intermediate'
+                      | 'advanced') || 'beginner',
+                  preferences: {
+                    units: 'metric',
+                    theme: 'system',
+                  },
+                  createdAt: user.createdAt || new Date(),
+                  updatedAt: user.updatedAt || new Date(),
+                };
+                return tx.table('userProfiles').add(profile);
+              }
+            )
           );
         } catch (error: unknown) {
           // If the legacy "users" table doesn't exist (e.g., fresh v2 install),

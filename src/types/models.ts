@@ -35,7 +35,13 @@ export interface UserProfile {
 export interface Exercise {
   id: string;
   name: string;
-  category: 'machine' | 'barbell' | 'dumbbell' | 'bodyweight' | 'cable' | 'other';
+  category:
+    | 'machine'
+    | 'barbell'
+    | 'dumbbell'
+    | 'bodyweight'
+    | 'cable'
+    | 'other';
   muscleGroups: MuscleGroup[];
   equipment?: string;
   notes?: string;
@@ -95,7 +101,12 @@ export interface Mesocycle {
   startDate: Date;
   endDate: Date;
   weekNumber: number;
-  trainingSplit: 'upper_lower' | 'push_pull_legs' | 'full_body' | 'bro_split' | 'custom';
+  trainingSplit:
+    | 'upper_lower'
+    | 'push_pull_legs'
+    | 'full_body'
+    | 'bro_split'
+    | 'custom';
   isDeloadWeek: boolean;
   status: 'planned' | 'active' | 'completed';
   notes?: string;

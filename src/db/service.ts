@@ -45,7 +45,9 @@ export async function createUserProfile(
   return newProfile.id;
 }
 
-export async function getUserProfile(id: string): Promise<UserProfile | undefined> {
+export async function getUserProfile(
+  id: string
+): Promise<UserProfile | undefined> {
   return db.userProfiles.get(id);
 }
 
@@ -99,7 +101,9 @@ export async function createExercise(
     name: sanitizeString(exercise.name),
     category: exercise.category,
     muscleGroups: exercise.muscleGroups,
-    equipment: exercise.equipment ? sanitizeString(exercise.equipment) : undefined,
+    equipment: exercise.equipment
+      ? sanitizeString(exercise.equipment)
+      : undefined,
     notes: exercise.notes ? sanitizeString(exercise.notes) : undefined,
     isCustom: exercise.isCustom,
     createdAt: new Date(),
@@ -161,10 +165,14 @@ export async function updateExercise(
 
 export async function deleteExercise(id: string): Promise<void> {
   // Prevent deleting exercises that are referenced by workout sets or training sessions
-  const referencingWorkoutSetsCount =
-    await db.workoutSets.where('exerciseId').equals(id).count();
-  const referencingTrainingSessionsCount =
-    await db.trainingSessions.where('exerciseId').equals(id).count();
+  const referencingWorkoutSetsCount = await db.workoutSets
+    .where('exerciseId')
+    .equals(id)
+    .count();
+  const referencingTrainingSessionsCount = await db.trainingSessions
+    .where('exerciseId')
+    .equals(id)
+    .count();
 
   if (referencingWorkoutSetsCount > 0 || referencingTrainingSessionsCount > 0) {
     throw new Error(
@@ -220,7 +228,7 @@ export async function getWorkoutsByDateRange(
 
 export async function getCompletedWorkouts(): Promise<Workout[]> {
   const workouts = await db.workouts
-    .filter(workout => workout.completed === true)
+    .filter((workout) => workout.completed === true)
     .toArray();
   return workouts.sort((a, b) => b.date.getTime() - a.date.getTime());
 }
@@ -258,7 +266,7 @@ export async function deleteWorkout(id: string): Promise<void> {
     .where('workoutId')
     .equals(id)
     .toArray();
-  
+
   await Promise.all([
     db.workouts.delete(id),
     ...sessions.map((session) => db.trainingSessions.delete(session.id)),
@@ -284,7 +292,9 @@ export async function createWorkoutSet(
   return newSet.id;
 }
 
-export async function getWorkoutSet(id: string): Promise<WorkoutSet | undefined> {
+export async function getWorkoutSet(
+  id: string
+): Promise<WorkoutSet | undefined> {
   return db.workoutSets.get(id);
 }
 
@@ -515,8 +525,7 @@ export async function importData(jsonData: string): Promise<void> {
   // Parse JSON safely and revive ISO date strings back to Date objects
   let data: unknown;
   try {
-    const isoDateRegex =
-      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
+    const isoDateRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
 
     data = JSON.parse(jsonData, (_key, value) => {
       if (typeof value === 'string' && isoDateRegex.test(value)) {
@@ -564,7 +573,7 @@ export async function importData(jsonData: string): Promise<void> {
     !isArrayOrUndefined(mesocycles)
   ) {
     throw new Error(
-      'Import data has invalid format: collections must be arrays.',
+      'Import data has invalid format: collections must be arrays.'
     );
   }
 

@@ -49,16 +49,28 @@ export function isValidTheme(
 
 export function isValidExerciseCategory(
   value: string
-): value is 'machine' | 'barbell' | 'dumbbell' | 'bodyweight' | 'cable' | 'other' {
-  return ['machine', 'barbell', 'dumbbell', 'bodyweight', 'cable', 'other'].includes(
-    value
-  );
+): value is
+  | 'machine'
+  | 'barbell'
+  | 'dumbbell'
+  | 'bodyweight'
+  | 'cable'
+  | 'other' {
+  return [
+    'machine',
+    'barbell',
+    'dumbbell',
+    'bodyweight',
+    'cable',
+    'other',
+  ].includes(value);
 }
 
 // Validation functions
-export function validateUserProfile(
-  profile: Partial<UserProfile>
-): { valid: boolean; errors: string[] } {
+export function validateUserProfile(profile: Partial<UserProfile>): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   if (!profile.name || profile.name.trim().length === 0) {
@@ -87,9 +99,10 @@ export function validateUserProfile(
   return { valid: errors.length === 0, errors };
 }
 
-export function validateExercise(
-  exercise: Partial<Exercise>
-): { valid: boolean; errors: string[] } {
+export function validateExercise(exercise: Partial<Exercise>): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   if (!exercise.name || exercise.name.trim().length === 0) {
@@ -120,9 +133,10 @@ export function validateExercise(
   return { valid: errors.length === 0, errors };
 }
 
-export function validateWorkoutSet(
-  set: Partial<WorkoutSet>
-): { valid: boolean; errors: string[] } {
+export function validateWorkoutSet(set: Partial<WorkoutSet>): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   if (!set.exerciseId || set.exerciseId.trim().length === 0) {
@@ -156,9 +170,10 @@ export function validateWorkoutSet(
   return { valid: errors.length === 0, errors };
 }
 
-export function validateWorkout(
-  workout: Partial<Workout>
-): { valid: boolean; errors: string[] } {
+export function validateWorkout(workout: Partial<Workout>): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   if (!workout.date) {
@@ -189,9 +204,10 @@ export function validateWorkout(
   return { valid: errors.length === 0, errors };
 }
 
-export function validateTrainingSession(
-  session: Partial<TrainingSession>
-): { valid: boolean; errors: string[] } {
+export function validateTrainingSession(session: Partial<TrainingSession>): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   if (!session.workoutId || session.workoutId.trim().length === 0) {
@@ -234,9 +250,10 @@ export function validateTrainingSession(
   return { valid: errors.length === 0, errors };
 }
 
-export function validateMesocycle(
-  mesocycle: Partial<Mesocycle>
-): { valid: boolean; errors: string[] } {
+export function validateMesocycle(mesocycle: Partial<Mesocycle>): {
+  valid: boolean;
+  errors: string[];
+} {
   const errors: string[] = [];
 
   if (!mesocycle.name || mesocycle.name.trim().length === 0) {

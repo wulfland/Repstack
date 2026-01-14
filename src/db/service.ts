@@ -8,7 +8,6 @@ import type {
   UserProfile,
   Exercise,
   Workout,
-  WorkoutSet,
   TrainingSession,
   Mesocycle,
 } from '../types/models';
@@ -16,7 +15,6 @@ import {
   validateUserProfile,
   validateExercise,
   validateWorkout,
-  validateWorkoutSet,
   validateTrainingSession,
   validateMesocycle,
   sanitizeString,
@@ -128,7 +126,7 @@ export async function getExercisesByCategory(
 }
 
 export async function getCustomExercises(): Promise<Exercise[]> {
-  return db.exercises.where('isCustom').equals(true).toArray();
+  return db.exercises.filter((exercise) => exercise.isCustom === true).toArray();
 }
 
 export async function updateExercise(
@@ -164,23 +162,26 @@ export async function updateExercise(
 }
 
 export async function deleteExercise(id: string): Promise<void> {
-  // Prevent deleting exercises that are referenced by workout sets or training sessions
-  const referencingWorkoutSetsCount = await db.workoutSets
-    .where('exerciseId')
-    .equals(id)
+  // Prevent deleting exercises that are referenced by workouts or training sessions
+  // Check workouts by searching through their exercises arrays
+  const workoutsWithExercise = await db.workouts
+    .filter((workout) => workout.exercises.some((ex) => ex.exerciseId === id))
     .count();
+
   const referencingTrainingSessionsCount = await db.trainingSessions
     .where('exerciseId')
     .equals(id)
     .count();
 
-  if (referencingWorkoutSetsCount > 0 || referencingTrainingSessionsCount > 0) {
+  if (workoutsWithExercise > 0 || referencingTrainingSessionsCount > 0) {
     throw new Error(
-      'Cannot delete exercise that is used in existing workouts or training sessions'
+      'Cannot delete exercise that is used in existing workouts or training sessions',
     );
   }
+
   await db.exercises.delete(id);
 }
+
 
 // ===== Workout CRUD =====
 
@@ -271,63 +272,6 @@ export async function deleteWorkout(id: string): Promise<void> {
     db.workouts.delete(id),
     ...sessions.map((session) => db.trainingSessions.delete(session.id)),
   ]);
-}
-
-// ===== WorkoutSet CRUD =====
-
-export async function createWorkoutSet(
-  set: Omit<WorkoutSet, 'id'>
-): Promise<string> {
-  const validation = validateWorkoutSet(set);
-  if (!validation.valid) {
-    throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
-  }
-
-  const newSet: WorkoutSet = {
-    id: crypto.randomUUID(),
-    ...set,
-  };
-
-  await db.workoutSets.add(newSet);
-  return newSet.id;
-}
-
-export async function getWorkoutSet(
-  id: string
-): Promise<WorkoutSet | undefined> {
-  return db.workoutSets.get(id);
-}
-
-export async function getWorkoutSetsByExercise(
-  exerciseId: string
-): Promise<WorkoutSet[]> {
-  return db.workoutSets.where('exerciseId').equals(exerciseId).toArray();
-}
-
-export async function updateWorkoutSet(
-  id: string,
-  updates: Partial<Omit<WorkoutSet, 'id'>>
-): Promise<void> {
-  const existing = await db.workoutSets.get(id);
-  if (!existing) {
-    throw new Error(`WorkoutSet with id ${id} not found`);
-  }
-
-  const updatedSet = {
-    ...existing,
-    ...updates,
-  };
-
-  const validation = validateWorkoutSet(updatedSet);
-  if (!validation.valid) {
-    throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
-  }
-
-  await db.workoutSets.update(id, updatedSet);
-}
-
-export async function deleteWorkoutSet(id: string): Promise<void> {
-  await db.workoutSets.delete(id);
 }
 
 // ===== TrainingSession CRUD =====
@@ -500,7 +444,6 @@ export async function clearAllData(): Promise<void> {
     db.userProfiles.clear(),
     db.exercises.clear(),
     db.workouts.clear(),
-    db.workoutSets.clear(),
     db.trainingSessions.clear(),
     db.mesocycles.clear(),
   ]);
@@ -511,7 +454,6 @@ export async function exportData(): Promise<string> {
     userProfiles: await db.userProfiles.toArray(),
     exercises: await db.exercises.toArray(),
     workouts: await db.workouts.toArray(),
-    workoutSets: await db.workoutSets.toArray(),
     trainingSessions: await db.trainingSessions.toArray(),
     mesocycles: await db.mesocycles.toArray(),
     exportDate: new Date().toISOString(),
@@ -549,14 +491,12 @@ export async function importData(jsonData: string): Promise<void> {
     userProfiles,
     exercises,
     workouts,
-    workoutSets,
     trainingSessions,
     mesocycles,
   } = data as {
     userProfiles?: unknown;
     exercises?: unknown;
     workouts?: unknown;
-    workoutSets?: unknown;
     trainingSessions?: unknown;
     mesocycles?: unknown;
   };
@@ -568,19 +508,17 @@ export async function importData(jsonData: string): Promise<void> {
     !isArrayOrUndefined(userProfiles) ||
     !isArrayOrUndefined(exercises) ||
     !isArrayOrUndefined(workouts) ||
-    !isArrayOrUndefined(workoutSets) ||
     !isArrayOrUndefined(trainingSessions) ||
     !isArrayOrUndefined(mesocycles)
   ) {
     throw new Error(
-      'Import data has invalid format: collections must be arrays.'
+      'Import data has invalid format: collections must be arrays.',
     );
   }
 
   const safeUserProfiles = (userProfiles as UserProfile[] | undefined) ?? [];
   const safeExercises = (exercises as Exercise[] | undefined) ?? [];
   const safeWorkouts = (workouts as Workout[] | undefined) ?? [];
-  const safeWorkoutSets = (workoutSets as WorkoutSet[] | undefined) ?? [];
   const safeTrainingSessions =
     (trainingSessions as TrainingSession[] | undefined) ?? [];
   const safeMesocycles = (mesocycles as Mesocycle[] | undefined) ?? [];
@@ -597,9 +535,6 @@ export async function importData(jsonData: string): Promise<void> {
   }
   if (safeWorkouts.length > 0) {
     await db.workouts.bulkAdd(safeWorkouts);
-  }
-  if (safeWorkoutSets.length > 0) {
-    await db.workoutSets.bulkAdd(safeWorkoutSets);
   }
   if (safeTrainingSessions.length > 0) {
     await db.trainingSessions.bulkAdd(safeTrainingSessions);

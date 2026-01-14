@@ -28,11 +28,6 @@ export {
   getCompletedWorkouts,
   updateWorkout,
   deleteWorkout,
-  createWorkoutSet,
-  getWorkoutSet,
-  getWorkoutSetsByExercise,
-  updateWorkoutSet,
-  deleteWorkoutSet,
   createTrainingSession,
   getTrainingSession,
   getTrainingSessionsByWorkout,
@@ -162,16 +157,6 @@ export function useCompletedWorkouts() {
 }
 
 /**
- * Get workout sets for a specific exercise with live updates
- */
-export function useWorkoutSetsByExercise(exerciseId: string | undefined) {
-  return useLiveQuery(() => {
-    if (!exerciseId) return [];
-    return db.workoutSets.where('exerciseId').equals(exerciseId).toArray();
-  }, [exerciseId]);
-}
-
-/**
  * Get training sessions for a specific workout with live updates
  */
 export function useTrainingSessionsByWorkout(workoutId: string | undefined) {
@@ -185,13 +170,13 @@ export function useTrainingSessionsByWorkout(workoutId: string | undefined) {
  * Get training sessions for a specific exercise with live updates
  */
 export function useTrainingSessionsByExercise(exerciseId: string | undefined) {
-  return useLiveQuery(() => {
+  return useLiveQuery(async () => {
     if (!exerciseId) return [];
-    return db.trainingSessions
+    const sessions = await db.trainingSessions
       .where('exerciseId')
       .equals(exerciseId)
-      .sortBy('date')
-      .reverse();
+      .sortBy('date');
+    return sessions.reverse();
   }, [exerciseId]);
 }
 
@@ -228,13 +213,14 @@ export function useActiveMesocycle() {
  */
 export function useMesocyclesByStatus(status: Mesocycle['status']) {
   return useLiveQuery(
-    () =>
-      db.mesocycles
+    async () => {
+      const mesocycles = await db.mesocycles
         .where('status')
         .equals(status)
-        .reverse()
-        .sortBy('startDate'),
-    [status]
+        .sortBy('startDate');
+      return mesocycles.reverse();
+    },
+    [status],
   );
 }
 

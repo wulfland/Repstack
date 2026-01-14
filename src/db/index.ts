@@ -3,7 +3,7 @@ import type {
   UserProfile,
   Exercise,
   Workout,
-  WorkoutSet,
+  
   TrainingSession,
   Mesocycle,
 } from '../types/models';
@@ -13,7 +13,7 @@ export type {
   UserProfile,
   Exercise,
   Workout,
-  WorkoutSet,
+  
   TrainingSession,
   Mesocycle,
   MuscleGroup,
@@ -26,7 +26,7 @@ class RepstackDatabase extends Dexie {
   userProfiles!: EntityTable<UserProfile, 'id'>;
   exercises!: EntityTable<Exercise, 'id'>;
   workouts!: EntityTable<Workout, 'id'>;
-  workoutSets!: EntityTable<WorkoutSet, 'id'>;
+  workoutSets!: EntityTable< 'id'>;
   trainingSessions!: EntityTable<TrainingSession, 'id'>;
   mesocycles!: EntityTable<Mesocycle, 'id'>;
 
@@ -51,7 +51,6 @@ class RepstackDatabase extends Dexie {
         // Enhanced workout model with better date indexing
         workouts: 'id, date, completed, createdAt, updatedAt',
         // Separate table for workout sets for better querying
-        workoutSets: 'id, exerciseId, completed',
         // New table for training session feedback
         trainingSessions: 'id, workoutId, exerciseId, date, createdAt',
         // Enhanced mesocycle model

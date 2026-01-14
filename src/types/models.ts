@@ -57,7 +57,7 @@ export interface WorkoutSet {
   targetReps: number;
   actualReps?: number;
   weight: number;
-  rir?: number; // Reps in Reserve (0-4+ for auto-regulation)
+  rir?: number; // Reps in Reserve, valid range 0-10 (typically 0-4 used for auto-regulation)
   completed: boolean;
 }
 

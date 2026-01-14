@@ -212,16 +212,13 @@ export function useActiveMesocycle() {
  * Get mesocycles by status with live updates
  */
 export function useMesocyclesByStatus(status: Mesocycle['status']) {
-  return useLiveQuery(
-    async () => {
-      const mesocycles = await db.mesocycles
-        .where('status')
-        .equals(status)
-        .sortBy('startDate');
-      return mesocycles.reverse();
-    },
-    [status],
-  );
+  return useLiveQuery(async () => {
+    const mesocycles = await db.mesocycles
+      .where('status')
+      .equals(status)
+      .sortBy('startDate');
+    return mesocycles.reverse();
+  }, [status]);
 }
 
 // ===== Legacy compatibility functions =====

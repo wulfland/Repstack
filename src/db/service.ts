@@ -126,7 +126,9 @@ export async function getExercisesByCategory(
 }
 
 export async function getCustomExercises(): Promise<Exercise[]> {
-  return db.exercises.filter((exercise) => exercise.isCustom === true).toArray();
+  return db.exercises
+    .filter((exercise) => exercise.isCustom === true)
+    .toArray();
 }
 
 export async function updateExercise(
@@ -175,13 +177,12 @@ export async function deleteExercise(id: string): Promise<void> {
 
   if (workoutsWithExercise > 0 || referencingTrainingSessionsCount > 0) {
     throw new Error(
-      'Cannot delete exercise that is used in existing workouts or training sessions',
+      'Cannot delete exercise that is used in existing workouts or training sessions'
     );
   }
 
   await db.exercises.delete(id);
 }
-
 
 // ===== Workout CRUD =====
 
@@ -487,19 +488,14 @@ export async function importData(jsonData: string): Promise<void> {
     throw new Error('Import data has invalid format: expected an object.');
   }
 
-  const {
-    userProfiles,
-    exercises,
-    workouts,
-    trainingSessions,
-    mesocycles,
-  } = data as {
-    userProfiles?: unknown;
-    exercises?: unknown;
-    workouts?: unknown;
-    trainingSessions?: unknown;
-    mesocycles?: unknown;
-  };
+  const { userProfiles, exercises, workouts, trainingSessions, mesocycles } =
+    data as {
+      userProfiles?: unknown;
+      exercises?: unknown;
+      workouts?: unknown;
+      trainingSessions?: unknown;
+      mesocycles?: unknown;
+    };
 
   const isArrayOrUndefined = (value: unknown): boolean =>
     value === undefined || Array.isArray(value);
@@ -512,7 +508,7 @@ export async function importData(jsonData: string): Promise<void> {
     !isArrayOrUndefined(mesocycles)
   ) {
     throw new Error(
-      'Import data has invalid format: collections must be arrays.',
+      'Import data has invalid format: collections must be arrays.'
     );
   }
 

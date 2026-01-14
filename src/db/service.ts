@@ -501,28 +501,90 @@ export async function exportData(): Promise<string> {
 }
 
 export async function importData(jsonData: string): Promise<void> {
-  const data = JSON.parse(jsonData);
+  // Parse JSON safely and revive ISO date strings back to Date objects
+  let data: any;
+  try {
+    const isoDateRegex =
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$/;
 
-  // Clear existing data
+    data = JSON.parse(jsonData, (_key, value) => {
+      if (typeof value === 'string' && isoDateRegex.test(value)) {
+        const d = new Date(value);
+        if (!Number.isNaN(d.getTime())) {
+          return d;
+        }
+      }
+      return value;
+    });
+  } catch (_err) {
+    // Do not clear existing data if the JSON is invalid
+    throw new Error('Failed to parse import data: invalid JSON.');
+  }
+
+  if (!data || typeof data !== 'object') {
+    throw new Error('Import data has invalid format: expected an object.');
+  }
+
+  const {
+    userProfiles,
+    exercises,
+    workouts,
+    workoutSets,
+    trainingSessions,
+    mesocycles,
+  } = data as {
+    userProfiles?: unknown;
+    exercises?: unknown;
+    workouts?: unknown;
+    workoutSets?: unknown;
+    trainingSessions?: unknown;
+    mesocycles?: unknown;
+  };
+
+  const isArrayOrUndefined = (value: unknown): boolean =>
+    value === undefined || Array.isArray(value);
+
+  if (
+    !isArrayOrUndefined(userProfiles) ||
+    !isArrayOrUndefined(exercises) ||
+    !isArrayOrUndefined(workouts) ||
+    !isArrayOrUndefined(workoutSets) ||
+    !isArrayOrUndefined(trainingSessions) ||
+    !isArrayOrUndefined(mesocycles)
+  ) {
+    throw new Error(
+      'Import data has invalid format: collections must be arrays.',
+    );
+  }
+
+  const safeUserProfiles = (userProfiles as UserProfile[] | undefined) ?? [];
+  const safeExercises = (exercises as Exercise[] | undefined) ?? [];
+  const safeWorkouts = (workouts as Workout[] | undefined) ?? [];
+  const safeWorkoutSets = (workoutSets as WorkoutSet[] | undefined) ?? [];
+  const safeTrainingSessions =
+    (trainingSessions as TrainingSession[] | undefined) ?? [];
+  const safeMesocycles = (mesocycles as Mesocycle[] | undefined) ?? [];
+
+  // Clear existing data only after the new data has been parsed and validated
   await clearAllData();
 
   // Import new data
-  if (data.userProfiles) {
-    await db.userProfiles.bulkAdd(data.userProfiles);
+  if (safeUserProfiles.length > 0) {
+    await db.userProfiles.bulkAdd(safeUserProfiles);
   }
-  if (data.exercises) {
-    await db.exercises.bulkAdd(data.exercises);
+  if (safeExercises.length > 0) {
+    await db.exercises.bulkAdd(safeExercises);
   }
-  if (data.workouts) {
-    await db.workouts.bulkAdd(data.workouts);
+  if (safeWorkouts.length > 0) {
+    await db.workouts.bulkAdd(safeWorkouts);
   }
-  if (data.workoutSets) {
-    await db.workoutSets.bulkAdd(data.workoutSets);
+  if (safeWorkoutSets.length > 0) {
+    await db.workoutSets.bulkAdd(safeWorkoutSets);
   }
-  if (data.trainingSessions) {
-    await db.trainingSessions.bulkAdd(data.trainingSessions);
+  if (safeTrainingSessions.length > 0) {
+    await db.trainingSessions.bulkAdd(safeTrainingSessions);
   }
-  if (data.mesocycles) {
-    await db.mesocycles.bulkAdd(data.mesocycles);
+  if (safeMesocycles.length > 0) {
+    await db.mesocycles.bulkAdd(safeMesocycles);
   }
 }

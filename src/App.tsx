@@ -52,7 +52,8 @@ function App() {
       name: 'Bench Press',
       category: 'barbell',
       muscleGroups: ['chest', 'triceps', 'shoulders'],
-      description: 'Compound exercise for upper body strength',
+      notes: 'Compound exercise for upper body strength',
+      isCustom: true,
     });
   };
 

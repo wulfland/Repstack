@@ -288,7 +288,25 @@ export function validateMesocycle(
 
 // Sanitization functions
 export function sanitizeString(input: string): string {
-  return input.trim().replace(/[<>]/g, '');
+  const safeInput = (input ?? '').trim();
+
+  // Encode special HTML characters to reduce XSS risk when rendering as HTML
+  return safeInput.replace(/[&<>"']/g, (char) => {
+    switch (char) {
+      case '&':
+        return '&amp;';
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '"':
+        return '&quot;';
+      case "'":
+        return '&#39;';
+      default:
+        return char;
+    }
+  });
 }
 
 export function sanitizeNumber(

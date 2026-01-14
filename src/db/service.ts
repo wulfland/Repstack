@@ -124,7 +124,7 @@ export async function getExercisesByCategory(
 }
 
 export async function getCustomExercises(): Promise<Exercise[]> {
-  return db.exercises.filter(exercise => exercise.isCustom === true).toArray();
+  return db.exercises.where('isCustom').equals(true).toArray();
 }
 
 export async function updateExercise(

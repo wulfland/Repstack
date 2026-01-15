@@ -30,8 +30,13 @@ export async function seedSampleMesocycle(): Promise<boolean> {
   const endDate = new Date();
   endDate.setDate(endDate.getDate() + 42); // 6 weeks
 
+  // Generate a dynamic name based on the current month and year
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+  const mesocycleName = `Hypertrophy Block - ${monthNames[startDate.getMonth()]} ${startDate.getFullYear()}`;
+
   const mesocycleId = await createMesocycle({
-    name: 'Hypertrophy Block - January 2026',
+    name: mesocycleName,
     startDate,
     endDate,
     weekNumber: 1,

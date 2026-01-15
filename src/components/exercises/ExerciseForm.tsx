@@ -100,7 +100,7 @@ export default function ExerciseForm({
         muscleGroups,
         equipment: equipment.trim() || undefined,
         notes: notes.trim() || undefined,
-        isCustom: true,
+        isCustom: exercise?.isCustom ?? true, // Preserve isCustom for edits, default to true for new
       });
       // Reset form on success
       setName('');

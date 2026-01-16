@@ -119,7 +119,10 @@ export default function ExerciseForm({
 
   return (
     <div className="dialog-overlay" onClick={onCancel}>
-      <div className="dialog-content form-dialog" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="dialog-content form-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
           <h2>{exercise ? 'Edit Exercise' : 'Create Exercise'}</h2>
           <button
@@ -163,7 +166,9 @@ export default function ExerciseForm({
                 id="exercise-category"
                 className="form-select"
                 value={category}
-                onChange={(e) => setCategory(e.target.value as Exercise['category'])}
+                onChange={(e) =>
+                  setCategory(e.target.value as Exercise['category'])
+                }
                 required
               >
                 {CATEGORIES.map((cat) => (

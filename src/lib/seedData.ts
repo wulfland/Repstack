@@ -12,7 +12,7 @@ import { starterExercises } from './starterExercises';
  */
 export async function seedStarterExercises(): Promise<boolean> {
   const existingExercises = await db.exercises.count();
-  
+
   // Only seed if database is empty
   if (existingExercises > 0) {
     return false;
@@ -25,7 +25,7 @@ export async function seedStarterExercises(): Promise<boolean> {
       .where('name')
       .equals(exercise.name)
       .first();
-    
+
     if (!existing) {
       await createExercise(exercise);
     }

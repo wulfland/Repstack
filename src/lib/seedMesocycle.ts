@@ -11,7 +11,7 @@ import { db } from '../db';
  */
 export async function seedSampleMesocycle(): Promise<boolean> {
   const existingMesocycles = await db.mesocycles.count();
-  
+
   // Only seed if no mesocycles exist
   if (existingMesocycles > 0) {
     return false;
@@ -19,7 +19,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
 
   // Get some exercises to use in workouts
   const exercises = await db.exercises.limit(10).toArray();
-  
+
   if (exercises.length === 0) {
     console.warn('No exercises found, skipping mesocycle seeding');
     return false;
@@ -31,8 +31,20 @@ export async function seedSampleMesocycle(): Promise<boolean> {
   endDate.setDate(endDate.getDate() + 42); // 6 weeks
 
   // Generate a dynamic name based on the current month and year
-  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
-                      'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthNames = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
   const mesocycleName = `Hypertrophy Block - ${monthNames[startDate.getMonth()]} ${startDate.getFullYear()}`;
 
   const mesocycleId = await createMesocycle({
@@ -49,17 +61,27 @@ export async function seedSampleMesocycle(): Promise<boolean> {
   console.log('Created sample mesocycle:', mesocycleId);
 
   // Create a few sample workouts with exercises
-  const pushExercises = exercises.filter(ex => 
-    ex.muscleGroups.some(mg => ['chest', 'shoulders', 'triceps'].includes(mg))
-  ).slice(0, 4);
+  const pushExercises = exercises
+    .filter((ex) =>
+      ex.muscleGroups.some((mg) =>
+        ['chest', 'shoulders', 'triceps'].includes(mg)
+      )
+    )
+    .slice(0, 4);
 
-  const pullExercises = exercises.filter(ex =>
-    ex.muscleGroups.some(mg => ['back', 'biceps'].includes(mg))
-  ).slice(0, 4);
+  const pullExercises = exercises
+    .filter((ex) =>
+      ex.muscleGroups.some((mg) => ['back', 'biceps'].includes(mg))
+    )
+    .slice(0, 4);
 
-  const legExercises = exercises.filter(ex =>
-    ex.muscleGroups.some(mg => ['quads', 'hamstrings', 'glutes', 'calves'].includes(mg))
-  ).slice(0, 4);
+  const legExercises = exercises
+    .filter((ex) =>
+      ex.muscleGroups.some((mg) =>
+        ['quads', 'hamstrings', 'glutes', 'calves'].includes(mg)
+      )
+    )
+    .slice(0, 4);
 
   // Create Push workout
   if (pushExercises.length > 0) {

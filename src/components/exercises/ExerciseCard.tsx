@@ -80,8 +80,12 @@ export default function ExerciseCard({
       </div>
       <div className="exercise-card-body">
         <div className="exercise-category">
-          <span className="category-icon">{getCategoryIcon(exercise.category)}</span>
-          <span className="category-label">{getCategoryLabel(exercise.category)}</span>
+          <span className="category-icon">
+            {getCategoryIcon(exercise.category)}
+          </span>
+          <span className="category-label">
+            {getCategoryLabel(exercise.category)}
+          </span>
         </div>
         <div className="exercise-muscles">
           {exercise.muscleGroups.map((muscle) => (
@@ -90,9 +94,7 @@ export default function ExerciseCard({
             </span>
           ))}
         </div>
-        {exercise.notes && (
-          <p className="exercise-notes">{exercise.notes}</p>
-        )}
+        {exercise.notes && <p className="exercise-notes">{exercise.notes}</p>}
       </div>
     </div>
   );

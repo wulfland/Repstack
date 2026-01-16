@@ -11,7 +11,9 @@ import './ExerciseList.css';
 
 interface ExerciseListProps {
   exercises: Exercise[];
-  onCreateExercise: (exercise: Omit<Exercise, 'id' | 'createdAt'>) => Promise<void>;
+  onCreateExercise: (
+    exercise: Omit<Exercise, 'id' | 'createdAt'>
+  ) => Promise<void>;
   onUpdateExercise: (id: string, exercise: Partial<Exercise>) => Promise<void>;
   onDeleteExercise: (id: string) => Promise<void>;
   checkExerciseHasHistory: (id: string) => Promise<boolean>;
@@ -27,7 +29,9 @@ export default function ExerciseList({
   checkExerciseHasHistory,
 }: ExerciseListProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<Exercise['category'] | 'all'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<
+    Exercise['category'] | 'all'
+  >('all');
   const [muscleFilter, setMuscleFilter] = useState<MuscleGroup | 'all'>('all');
   const [sortBy, setSortBy] = useState<SortOption>('alphabetical');
   const [showForm, setShowForm] = useState(false);
@@ -63,7 +67,9 @@ export default function ExerciseList({
 
     // Muscle group filter
     if (muscleFilter !== 'all') {
-      filtered = filtered.filter((ex) => ex.muscleGroups.includes(muscleFilter));
+      filtered = filtered.filter((ex) =>
+        ex.muscleGroups.includes(muscleFilter)
+      );
     }
 
     // Sorting
@@ -96,7 +102,9 @@ export default function ExerciseList({
     });
   };
 
-  const handleFormSave = async (exerciseData: Omit<Exercise, 'id' | 'createdAt'>) => {
+  const handleFormSave = async (
+    exerciseData: Omit<Exercise, 'id' | 'createdAt'>
+  ) => {
     if (editingExercise) {
       await onUpdateExercise(editingExercise.id, exerciseData);
     } else {
@@ -117,7 +125,9 @@ export default function ExerciseList({
         await onDeleteExercise(deleteDialog.exercise.id);
         setDeleteDialog({ isOpen: false, exercise: null, hasHistory: false });
       } catch (error) {
-        alert(error instanceof Error ? error.message : 'Failed to delete exercise');
+        alert(
+          error instanceof Error ? error.message : 'Failed to delete exercise'
+        );
       }
     }
   };
@@ -174,7 +184,9 @@ export default function ExerciseList({
           <select
             className="filter-select"
             value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value as Exercise['category'] | 'all')}
+            onChange={(e) =>
+              setCategoryFilter(e.target.value as Exercise['category'] | 'all')
+            }
           >
             <option value="all">All Categories</option>
             {uniqueCategories.map((cat) => (
@@ -187,7 +199,9 @@ export default function ExerciseList({
           <select
             className="filter-select"
             value={muscleFilter}
-            onChange={(e) => setMuscleFilter(e.target.value as MuscleGroup | 'all')}
+            onChange={(e) =>
+              setMuscleFilter(e.target.value as MuscleGroup | 'all')
+            }
           >
             <option value="all">All Muscle Groups</option>
             {uniqueMuscles.map((muscle) => (
@@ -221,7 +235,8 @@ export default function ExerciseList({
       ) : (
         <>
           <div className="exercise-list-count">
-            Showing {filteredAndSortedExercises.length} of {exercises.length} exercises
+            Showing {filteredAndSortedExercises.length} of {exercises.length}{' '}
+            exercises
           </div>
           <div className="exercise-grid">
             {filteredAndSortedExercises.map((exercise) => (

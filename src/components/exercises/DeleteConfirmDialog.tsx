@@ -42,8 +42,8 @@ export default function DeleteConfirmDialog({
             <div className="dialog-warning">
               <span className="warning-icon">⚠️</span>
               <p>
-                This exercise has workout history. Deleting it will prevent you
-                from viewing historical data for this exercise.
+                This exercise has workout history and cannot be deleted. This
+                protects your ability to view historical data for this exercise.
               </p>
             </div>
           )}

@@ -186,8 +186,7 @@ class RepstackDatabase extends Dexie {
           const exercise: Exercise = {
             id: newId,
             name: oldExercise.name || 'Unnamed Exercise',
-            category:
-              (oldExercise.category as Exercise['category']) || 'other',
+            category: (oldExercise.category as Exercise['category']) || 'other',
             muscleGroups: (oldExercise.muscleGroups || []) as MuscleGroup[],
             equipment: oldExercise.equipment,
             notes: oldExercise.notes,
@@ -237,7 +236,10 @@ class RepstackDatabase extends Dexie {
           }
         } catch (workoutError: unknown) {
           // Workouts table might not exist yet, that's okay
-          console.warn('Could not update workout exercise references:', workoutError);
+          console.warn(
+            'Could not update workout exercise references:',
+            workoutError
+          );
         }
 
         // Update foreign key references in training sessions
@@ -263,7 +265,10 @@ class RepstackDatabase extends Dexie {
           }
         } catch (sessionError: unknown) {
           // Training sessions table might not exist yet, that's okay
-          console.warn('Could not update training session exercise references:', sessionError);
+          console.warn(
+            'Could not update training session exercise references:',
+            sessionError
+          );
         }
       });
   }

@@ -18,7 +18,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
   }
 
   // Get some exercises to use in workouts
-  const exercises = await db.exercises.limit(10).toArray();
+  const exercises = await db.exercises.limit(50).toArray();
 
   if (exercises.length === 0) {
     console.warn('No exercises found, skipping mesocycle seeding');

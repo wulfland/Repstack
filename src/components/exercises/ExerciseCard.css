@@ -1,0 +1,133 @@
+.exercise-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exercise-card:hover {
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-color: #3b82f6;
+}
+
+.exercise-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.exercise-card-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.exercise-card-title h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.exercise-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+}
+
+.exercise-badge.starter {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.exercise-card-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.btn-icon {
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  font-size: 1.125rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-icon:hover {
+  background-color: #f3f4f6;
+}
+
+.btn-icon:active {
+  background-color: #e5e7eb;
+}
+
+.exercise-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.exercise-category {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.category-icon {
+  font-size: 1.25rem;
+}
+
+.category-label {
+  font-weight: 500;
+}
+
+.exercise-muscles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.muscle-tag {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border-radius: 4px;
+  text-transform: capitalize;
+}
+
+.exercise-notes {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .exercise-card {
+    padding: 0.875rem;
+  }
+
+  .exercise-card-title h3 {
+    font-size: 1rem;
+  }
+
+  .btn-icon {
+    font-size: 1rem;
+  }
+}

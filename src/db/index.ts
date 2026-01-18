@@ -140,53 +140,130 @@ class RepstackDatabase extends Dexie {
       })
       .upgrade(async (tx) => {
         // Migrate exercises from temp table to new table with UUIDs
-        try {
-          const oldExercises = await tx.table('exercisesTemp').toArray();
+        // Also handle the case where users have the broken v2 schema
+        let oldExercises: Array<{
+          id?: number | string;
+          name?: string;
+          category?: string;
+          muscleGroups?: string[];
+          equipment?: string;
+          notes?: string;
+          isCustom?: boolean;
+          createdAt?: Date;
+        }> = [];
 
-          if (!oldExercises || oldExercises.length === 0) {
+        // Try to get exercises from temp table first (normal migration path)
+        try {
+          oldExercises = await tx.table('exercisesTemp').toArray();
+        } catch {
+          // If temp table doesn't exist, try to get from exercises table
+          // (for users who already have the broken v2 schema)
+          try {
+            oldExercises = await tx.table('exercises').toArray();
+          } catch {
+            // Neither table exists - fresh install, nothing to migrate
             return;
           }
+        }
 
-          // Convert old exercises to new format with UUID primary keys
-          const newExercises = oldExercises.map(
-            (oldExercise: {
-              id?: number;
-              name?: string;
-              category?: string;
-              muscleGroups?: string[];
-              equipment?: string;
-              notes?: string;
-              isCustom?: boolean;
-              createdAt?: Date;
-            }) => {
-              const exercise: Exercise = {
-                id: crypto.randomUUID(),
-                name: oldExercise.name || 'Unnamed Exercise',
-                category:
-                  (oldExercise.category as Exercise['category']) || 'other',
-                muscleGroups: (oldExercise.muscleGroups || []) as MuscleGroup[],
-                equipment: oldExercise.equipment,
-                notes: oldExercise.notes,
-                isCustom: oldExercise.isCustom ?? true,
-                createdAt: oldExercise.createdAt || new Date(),
-              };
-              return exercise;
-            }
-          );
+        if (!oldExercises || oldExercises.length === 0) {
+          return;
+        }
 
-          await tx.table('exercises').bulkAdd(newExercises);
-        } catch (error: unknown) {
-          // If temp table doesn't exist, that's okay (fresh install or already migrated)
-          const err = error as { name?: string; message?: string };
-          const message = typeof err?.message === 'string' ? err.message : '';
-          if (
-            err?.name === 'NotFoundError' ||
-            /NoSuchTable|MissingTable|does not exist/i.test(message)
-          ) {
-            // Ignore - table doesn't exist
-          } else {
-            throw error;
+        // Create mapping from old IDs to new UUIDs
+        const idMapping = new Map<number | string, string>();
+
+        // Convert old exercises to new format with UUID primary keys
+        const newExercises = oldExercises.map((oldExercise) => {
+          const newId = crypto.randomUUID();
+          const oldId = oldExercise.id;
+
+          // Store mapping for foreign key updates
+          if (oldId !== undefined) {
+            idMapping.set(oldId, newId);
           }
+
+          const exercise: Exercise = {
+            id: newId,
+            name: oldExercise.name || 'Unnamed Exercise',
+            category:
+              (oldExercise.category as Exercise['category']) || 'other',
+            muscleGroups: (oldExercise.muscleGroups || []) as MuscleGroup[],
+            equipment: oldExercise.equipment,
+            notes: oldExercise.notes,
+            isCustom: oldExercise.isCustom ?? true,
+            createdAt: oldExercise.createdAt || new Date(),
+          };
+          return exercise;
+        });
+
+        // Add new exercises to the table
+        await tx.table('exercises').bulkAdd(newExercises);
+
+        // Update foreign key references in workouts
+        try {
+          const workouts = await tx.table('workouts').toArray();
+
+          if (workouts && workouts.length > 0) {
+            const updatedWorkouts = workouts.map((workout: Workout) => {
+              // Update exerciseId references in workout exercises
+              const updatedExercises = workout.exercises.map((we) => {
+                const newExerciseId = idMapping.get(we.exerciseId);
+                if (newExerciseId) {
+                  // Update exerciseId in WorkoutExercise
+                  const updatedSets = we.sets.map((set) => ({
+                    ...set,
+                    exerciseId: newExerciseId,
+                  }));
+                  return {
+                    ...we,
+                    exerciseId: newExerciseId,
+                    sets: updatedSets,
+                  };
+                }
+                return we;
+              });
+
+              return {
+                ...workout,
+                exercises: updatedExercises,
+              };
+            });
+
+            // Update all workouts with new exercise IDs
+            await Promise.all(
+              updatedWorkouts.map((w) => tx.table('workouts').put(w))
+            );
+          }
+        } catch (workoutError: unknown) {
+          // Workouts table might not exist yet, that's okay
+          console.warn('Could not update workout exercise references:', workoutError);
+        }
+
+        // Update foreign key references in training sessions
+        try {
+          const sessions = await tx.table('trainingSessions').toArray();
+
+          if (sessions && sessions.length > 0) {
+            const updatedSessions = sessions.map((session: TrainingSession) => {
+              const newExerciseId = idMapping.get(session.exerciseId);
+              if (newExerciseId) {
+                return {
+                  ...session,
+                  exerciseId: newExerciseId,
+                };
+              }
+              return session;
+            });
+
+            // Update all training sessions with new exercise IDs
+            await Promise.all(
+              updatedSessions.map((s) => tx.table('trainingSessions').put(s))
+            );
+          }
+        } catch (sessionError: unknown) {
+          // Training sessions table might not exist yet, that's okay
+          console.warn('Could not update training session exercise references:', sessionError);
         }
       });
   }

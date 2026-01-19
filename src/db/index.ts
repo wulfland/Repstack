@@ -260,3 +260,41 @@ class RepstackDatabase extends Dexie {
 
 // Create and export the database instance
 export const db = new RepstackDatabase();
+
+/**
+ * Initialize the database with error recovery.
+ * If the database is corrupted from a failed migration, this will
+ * delete it and create a fresh one.
+ */
+export async function initializeDatabase(): Promise<void> {
+  try {
+    // Try to open the database - this triggers migrations
+    await db.open();
+  } catch (error: unknown) {
+    const err = error as { name?: string; message?: string };
+    const message = err?.message || '';
+
+    // Check if this is a primary key change error (corrupted from old migration)
+    if (
+      message.includes('changing primary key') ||
+      message.includes('UpgradeError') ||
+      err?.name === 'UpgradeError'
+    ) {
+      console.warn(
+        'Database migration failed due to schema incompatibility. Resetting database...',
+        error
+      );
+
+      // Delete the corrupted database
+      await Dexie.delete('RepstackDB');
+
+      // Recreate and open - this will create fresh tables
+      await db.open();
+
+      console.log('Database reset successfully.');
+    } else {
+      // Re-throw other errors
+      throw error;
+    }
+  }
+}

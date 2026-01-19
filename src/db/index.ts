@@ -232,26 +232,29 @@ class RepstackDatabase extends Dexie {
 
     // Version 3: Clean up old tables and map new table names to expected properties
     // This version deletes the old auto-increment tables and creates aliases
-    this.version(3)
-      .stores({
-        // Delete old auto-increment tables
-        users: null,
-        exercises: null,
-        workouts: null,
-        mesocycles: null,
-        // Keep the UUID-based tables
-        userProfiles: 'id, createdAt, updatedAt',
-        exercisesV2: 'id, name, category, isCustom, createdAt',
-        workoutsV2: 'id, date, completed, createdAt, updatedAt',
-        trainingSessions: 'id, workoutId, exerciseId, date, createdAt',
-        mesocyclesV2: 'id, startDate, endDate, weekNumber, status, createdAt, updatedAt',
-      });
+    this.version(3).stores({
+      // Delete old auto-increment tables
+      users: null,
+      exercises: null,
+      workouts: null,
+      mesocycles: null,
+      // Keep the UUID-based tables
+      userProfiles: 'id, createdAt, updatedAt',
+      exercisesV2: 'id, name, category, isCustom, createdAt',
+      workoutsV2: 'id, date, completed, createdAt, updatedAt',
+      trainingSessions: 'id, workoutId, exerciseId, date, createdAt',
+      mesocyclesV2:
+        'id, startDate, endDate, weekNumber, status, createdAt, updatedAt',
+    });
 
     // Map the V2 tables to the expected property names
     // This allows the rest of the code to use db.exercises, db.workouts, etc.
     this.exercises = this.table('exercisesV2') as EntityTable<Exercise, 'id'>;
     this.workouts = this.table('workoutsV2') as EntityTable<Workout, 'id'>;
-    this.mesocycles = this.table('mesocyclesV2') as EntityTable<Mesocycle, 'id'>;
+    this.mesocycles = this.table('mesocyclesV2') as EntityTable<
+      Mesocycle,
+      'id'
+    >;
   }
 }
 

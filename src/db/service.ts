@@ -450,6 +450,118 @@ export async function clearAllData(): Promise<void> {
   ]);
 }
 
+// ===== Workout Logging Helpers =====
+
+/**
+ * Get the previous performance for a specific exercise
+ * Returns the most recent completed workout that includes this exercise
+ */
+export async function getPreviousPerformance(
+  exerciseId: string
+): Promise<{ date: Date; sets: import('../types/models').WorkoutSet[] } | null> {
+  // Find the most recent completed workout that includes this exercise
+  const workouts = await db.workouts
+    .filter(
+      (workout) =>
+        workout.completed &&
+        workout.exercises.some((ex) => ex.exerciseId === exerciseId)
+    )
+    .toArray();
+
+  if (workouts.length === 0) {
+    return null;
+  }
+
+  // Sort by date descending
+  workouts.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+  const lastWorkout = workouts[0];
+  const exerciseData = lastWorkout.exercises.find(
+    (ex) => ex.exerciseId === exerciseId
+  );
+
+  if (!exerciseData) {
+    return null;
+  }
+
+  return {
+    date: lastWorkout.date,
+    sets: exerciseData.sets,
+  };
+}
+
+/**
+ * Create a new workout set with default values
+ */
+export function createEmptySet(
+  exerciseId: string,
+  setNumber: number,
+  previousSet?: import('../types/models').WorkoutSet
+): import('../types/models').WorkoutSet {
+  return {
+    id: crypto.randomUUID(),
+    exerciseId,
+    setNumber,
+    targetReps: previousSet?.targetReps || 10,
+    actualReps: undefined,
+    weight: previousSet?.weight || 0,
+    rir: undefined,
+    completed: false,
+  };
+}
+
+/**
+ * Auto-save an active workout to prevent data loss
+ * Stores in a special key in localStorage for quick recovery
+ */
+export async function autoSaveWorkout(
+  workout: import('../types/models').Workout
+): Promise<void> {
+  try {
+    // Store in localStorage for quick access
+    localStorage.setItem('activeWorkout', JSON.stringify(workout));
+    
+    // Only save to IndexedDB if it's a real workout (not temporary)
+    if (workout.id && !workout.id.startsWith('temp-')) {
+      await updateWorkout(workout.id, workout);
+    }
+  } catch (error) {
+    console.error('Failed to auto-save workout:', error);
+  }
+}
+
+/**
+ * Recover an active workout from localStorage
+ */
+export function recoverActiveWorkout(): import('../types/models').Workout | null {
+  try {
+    const saved = localStorage.getItem('activeWorkout');
+    if (!saved) {
+      return null;
+    }
+
+    const workout = JSON.parse(saved, (_key, value) => {
+      // Revive Date objects
+      if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+        return new Date(value);
+      }
+      return value;
+    });
+
+    return workout;
+  } catch (error) {
+    console.error('Failed to recover active workout:', error);
+    return null;
+  }
+}
+
+/**
+ * Clear the auto-saved workout from localStorage
+ */
+export function clearAutoSavedWorkout(): void {
+  localStorage.removeItem('activeWorkout');
+}
+
 export async function exportData(): Promise<string> {
   const data = {
     userProfiles: await db.userProfiles.toArray(),

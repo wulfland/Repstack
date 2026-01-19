@@ -123,3 +123,26 @@ export interface VolumeLandmarks {
   mav: number; // Maximum Adaptive Volume
   mrv: number; // Maximum Recoverable Volume
 }
+
+// Active workout session state (not persisted to DB until completed)
+export interface ActiveWorkoutSession {
+  workout: Workout;
+  startTime: Date;
+  lastAutoSave?: Date;
+  currentExerciseIndex: number;
+  currentSetIndex: number;
+}
+
+// Rest timer configuration
+export interface RestTimerConfig {
+  defaultRestSeconds: number; // Default rest time between sets (30-300 seconds)
+  audioEnabled: boolean;
+  vibrationEnabled: boolean;
+}
+
+// Previous performance data for an exercise
+export interface ExercisePreviousPerformance {
+  exerciseId: string;
+  lastWorkoutDate?: Date;
+  sets: WorkoutSet[];
+}

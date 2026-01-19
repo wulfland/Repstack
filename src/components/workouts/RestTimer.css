@@ -1,0 +1,210 @@
+.rest-timer-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 1rem;
+}
+
+.rest-timer-content {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.rest-timer-content h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.rest-timer-content p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+/* Complete State */
+.rest-timer-content.complete {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+}
+
+.rest-timer-content.complete h2,
+.rest-timer-content.complete p {
+  color: white;
+}
+
+/* Timer Display */
+.rest-timer-display {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.rest-timer-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 10px 15px -3px rgba(59, 130, 246, 0.3),
+    0 4px 6px -2px rgba(59, 130, 246, 0.2);
+}
+
+.rest-timer-time {
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Preset Buttons */
+.rest-timer-presets {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.rest-timer-preset-btn {
+  padding: 1.25rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3b82f6;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-variant-numeric: tabular-nums;
+}
+
+.rest-timer-preset-btn:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Controls */
+.rest-timer-controls {
+  margin-bottom: 1rem;
+}
+
+.rest-timer-controls button {
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Extend Buttons */
+.rest-timer-extend {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.btn-extend {
+  padding: 0.5rem 1rem;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-extend:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.btn-extend:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Skip Button */
+.btn-skip {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  color: #6b7280;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-skip:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .rest-timer-content {
+    padding: 1.5rem;
+  }
+
+  .rest-timer-content h2 {
+    font-size: 1.25rem;
+  }
+
+  .rest-timer-circle {
+    width: 160px;
+    height: 160px;
+  }
+
+  .rest-timer-time {
+    font-size: 2.5rem;
+  }
+
+  .rest-timer-preset-btn {
+    padding: 1rem;
+    font-size: 1.25rem;
+  }
+
+  .rest-timer-controls button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  .btn-extend {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Animation */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.rest-timer-circle {
+  animation: pulse 2s ease-in-out infinite;
+}

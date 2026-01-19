@@ -1,0 +1,60 @@
+.previous-performance {
+  padding: 1rem;
+  background: #eff6ff;
+  border-left: 3px solid #3b82f6;
+  margin-bottom: 1rem;
+}
+
+.previous-performance-header {
+  margin-bottom: 0.75rem;
+}
+
+.previous-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e40af;
+}
+
+.previous-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.previous-set-item {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.previous-set-number {
+  font-weight: 600;
+  min-width: 50px;
+}
+
+.previous-set-data {
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .previous-performance {
+    padding: 0.875rem;
+  }
+
+  .previous-label {
+    font-size: 0.8125rem;
+  }
+
+  .previous-sets {
+    gap: 0.375rem;
+  }
+
+  .previous-set-item {
+    font-size: 0.8125rem;
+  }
+
+  .previous-set-number {
+    min-width: 45px;
+  }
+}

@@ -1,0 +1,310 @@
+.set-logger {
+  display: grid;
+  grid-template-columns: 50px 80px 1fr 80px 60px 80px;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.set-logger:hover {
+  background: #f9fafb;
+}
+
+.set-logger.completed {
+  background: #ecfdf5;
+  border-left: 3px solid #10b981;
+}
+
+/* Set Number */
+.set-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: #f3f4f6;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.set-logger.completed .set-number {
+  background: #d1fae5;
+  color: #059669;
+}
+
+/* Previous Data */
+.set-previous {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.previous-data {
+  font-weight: 500;
+}
+
+.no-previous {
+  color: #d1d5db;
+}
+
+/* Weight Input */
+.set-weight {
+  display: flex;
+  justify-content: center;
+}
+
+.weight-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.25rem;
+}
+
+.set-logger.completed .weight-input-group {
+  border-color: #d1fae5;
+  background: #f0fdf4;
+}
+
+.weight-btn {
+  padding: 0.25rem 0.5rem;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 40px;
+}
+
+.weight-btn:hover:not(:disabled) {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.weight-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.weight-input {
+  width: 70px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Reps Input */
+.set-reps {
+  display: flex;
+  justify-content: center;
+}
+
+.reps-input {
+  width: 60px;
+  text-align: center;
+  padding: 0.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.reps-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.set-logger.completed .reps-input {
+  border-color: #d1fae5;
+  background: #f0fdf4;
+}
+
+/* RIR Input */
+.set-rir {
+  display: flex;
+  justify-content: center;
+}
+
+.rir-input {
+  width: 50px;
+  text-align: center;
+  padding: 0.5rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  background: white;
+}
+
+.rir-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.set-logger.completed .rir-input {
+  border-color: #d1fae5;
+  background: #f0fdf4;
+}
+
+.btn-add-rir {
+  width: 2rem;
+  height: 2rem;
+  border: 2px dashed #d1d5db;
+  background: white;
+  border-radius: 50%;
+  color: #9ca3af;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-rir:hover:not(:disabled) {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+/* Input Disabled State */
+.set-input:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+/* Actions */
+.set-actions {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.btn-complete-set,
+.btn-remove-set,
+.btn-uncomplete-set {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-complete-set {
+  background: #10b981;
+  color: white;
+}
+
+.btn-complete-set:hover {
+  background: #059669;
+  transform: scale(1.05);
+}
+
+.btn-remove-set {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.btn-remove-set:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-uncomplete-set {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.btn-uncomplete-set:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+  .set-logger {
+    grid-template-columns: 40px 70px 1fr 70px 50px 70px;
+    gap: 0.25rem;
+    padding: 0.375rem;
+  }
+
+  .set-number {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .set-previous {
+    font-size: 0.75rem;
+  }
+
+  .weight-btn {
+    min-width: 35px;
+    font-size: 0.6875rem;
+    padding: 0.25rem 0.375rem;
+  }
+
+  .weight-input {
+    width: 55px;
+    font-size: 0.875rem;
+  }
+
+  .reps-input {
+    width: 50px;
+    font-size: 0.875rem;
+    padding: 0.375rem;
+  }
+
+  .rir-input {
+    width: 40px;
+    font-size: 0.875rem;
+    padding: 0.375rem;
+  }
+
+  .btn-add-rir {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 1rem;
+  }
+
+  .btn-complete-set,
+  .btn-remove-set,
+  .btn-uncomplete-set {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Large Screen */
+@media (min-width: 768px) {
+  .set-logger {
+    grid-template-columns: 60px 100px 1fr 100px 80px 100px;
+  }
+
+  .weight-input {
+    width: 80px;
+  }
+
+  .reps-input {
+    width: 70px;
+  }
+
+  .rir-input {
+    width: 60px;
+  }
+}

@@ -6,9 +6,12 @@
 import { useState } from 'react';
 import { useWorkoutSession } from '../../hooks/useWorkoutSession';
 import { useExercises } from '../../hooks/useDatabase';
+import { useToast } from '../../hooks/useToast';
 import ExerciseSelector from './ExerciseSelector';
 import WorkoutExerciseCard from './WorkoutExerciseCard';
 import RestTimer from './RestTimer';
+import ToastContainer from '../common/ToastContainer';
+import ConfirmDialog from '../common/ConfirmDialog';
 import './WorkoutSession.css';
 
 export default function WorkoutSession() {
@@ -28,6 +31,7 @@ export default function WorkoutSession() {
   } = useWorkoutSession();
 
   const exercises = useExercises();
+  const { toasts, showToast, removeToast } = useToast();
   const [showExerciseSelector, setShowExerciseSelector] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showRestTimer, setShowRestTimer] = useState(false);
@@ -38,12 +42,12 @@ export default function WorkoutSession() {
 
   const handleEndWorkout = async () => {
     if (!workout || workout.exercises.length === 0) {
-      alert('Please add at least one exercise before ending the workout.');
+      showToast('Please add at least one exercise before ending the workout.', 'error');
       return;
     }
 
     await endWorkout();
-    alert('Workout saved successfully!');
+    showToast('Workout saved successfully!', 'success');
   };
 
   const handleCancelWorkout = () => {
@@ -53,6 +57,7 @@ export default function WorkoutSession() {
   const confirmCancelWorkout = () => {
     cancelWorkout();
     setShowCancelDialog(false);
+    showToast('Workout cancelled', 'info');
   };
 
   const handleAddExercise = (exerciseId: string) => {
@@ -173,31 +178,22 @@ export default function WorkoutSession() {
       )}
 
       {showCancelDialog && (
-        <div className="dialog-overlay" onClick={() => setShowCancelDialog(false)}>
-          <div className="dialog" onClick={(e) => e.stopPropagation()}>
-            <h2>Cancel Workout?</h2>
-            <p>
-              Are you sure you want to cancel this workout? All unsaved progress
-              will be lost.
-            </p>
-            <div className="dialog-actions">
-              <button
-                onClick={() => setShowCancelDialog(false)}
-                className="btn-secondary"
-              >
-                Keep Training
-              </button>
-              <button onClick={confirmCancelWorkout} className="btn-danger">
-                Cancel Workout
-              </button>
-            </div>
-          </div>
-        </div>
+        <ConfirmDialog
+          title="Cancel Workout?"
+          message="Are you sure you want to cancel this workout? All unsaved progress will be lost."
+          confirmLabel="Cancel Workout"
+          cancelLabel="Keep Training"
+          onConfirm={confirmCancelWorkout}
+          onCancel={() => setShowCancelDialog(false)}
+          variant="danger"
+        />
       )}
 
       {showRestTimer && (
         <RestTimer onClose={() => setShowRestTimer(false)} />
       )}
+
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
 }

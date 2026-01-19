@@ -8,6 +8,7 @@ import type { Exercise, WorkoutExercise, WorkoutSet } from '../../types/models';
 import { usePreviousPerformance } from '../../hooks/usePreviousPerformance';
 import SetLogger from './SetLogger';
 import PreviousPerformance from './PreviousPerformance';
+import ConfirmDialog from '../common/ConfirmDialog';
 import './WorkoutExerciseCard.css';
 
 interface WorkoutExerciseCardProps {
@@ -35,16 +36,16 @@ export default function WorkoutExerciseCard({
 }: WorkoutExerciseCardProps) {
   const [showNotes, setShowNotes] = useState(false);
   const [showPrevious, setShowPrevious] = useState(false);
+  const [showRemoveDialog, setShowRemoveDialog] = useState(false);
   const previousPerformance = usePreviousPerformance(exercise.id);
 
   const handleRemoveExercise = () => {
-    if (
-      window.confirm(
-        `Remove ${exercise.name} from this workout? This cannot be undone.`
-      )
-    ) {
-      onRemoveExercise();
-    }
+    setShowRemoveDialog(true);
+  };
+
+  const confirmRemoveExercise = () => {
+    onRemoveExercise();
+    setShowRemoveDialog(false);
   };
 
   return (
@@ -127,6 +128,18 @@ export default function WorkoutExerciseCard({
             rows={2}
           />
         </div>
+      )}
+
+      {showRemoveDialog && (
+        <ConfirmDialog
+          title="Remove Exercise?"
+          message={`Remove ${exercise.name} from this workout? This cannot be undone.`}
+          confirmLabel="Remove"
+          cancelLabel="Cancel"
+          onConfirm={confirmRemoveExercise}
+          onCancel={() => setShowRemoveDialog(false)}
+          variant="danger"
+        />
       )}
     </div>
   );

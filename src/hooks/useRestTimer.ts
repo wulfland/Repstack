@@ -38,36 +38,8 @@ export function useRestTimer(
   const [isPaused, setIsPaused] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const intervalRef = useRef<number | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  // Initialize audio element
-  useEffect(() => {
-    if (audioEnabled && typeof window !== 'undefined') {
-      // Create a simple beep using Web Audio API
-      audioRef.current = new Audio();
-      // We'll use a data URI for a simple beep sound
-      // In a real implementation, you'd want to use an actual audio file
-    }
-
-    return () => {
-      if (audioRef.current) {
-        audioRef.current = null;
-      }
-    };
-  }, [audioEnabled]);
 
   const playAlert = useCallback(() => {
-    // Play audio
-    if (audioEnabled && audioRef.current) {
-      try {
-        audioRef.current.play().catch((error) => {
-          console.warn('Could not play audio alert:', error);
-        });
-      } catch (error) {
-        console.warn('Audio playback failed:', error);
-      }
-    }
-
     // Trigger vibration
     if (vibrationEnabled && 'vibrate' in navigator) {
       try {
@@ -77,7 +49,10 @@ export function useRestTimer(
         console.warn('Vibration failed:', error);
       }
     }
-  }, [audioEnabled, vibrationEnabled]);
+
+    // Note: Audio alerts can be added in the future with a proper sound file
+    // For now, vibration provides sufficient feedback
+  }, [vibrationEnabled]);
 
   useEffect(() => {
     if (!isRunning || isPaused) {

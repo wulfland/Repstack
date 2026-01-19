@@ -14,6 +14,7 @@ interface SetLoggerProps {
   onUpdate: (updates: Partial<WorkoutSet>) => void;
   onRemove: () => void;
   onComplete: () => void;
+  showToast?: (message: string, type: 'error' | 'success' | 'info') => void;
 }
 
 export default function SetLogger({
@@ -23,12 +24,15 @@ export default function SetLogger({
   onUpdate,
   onRemove,
   onComplete,
+  showToast,
 }: SetLoggerProps) {
   const [showRIR, setShowRIR] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleWeightChange = (value: string) => {
     const weight = parseFloat(value) || 0;
     onUpdate({ weight });
+    setValidationError(null);
   };
 
   const handleWeightIncrement = (amount: number) => {
@@ -38,6 +42,7 @@ export default function SetLogger({
   const handleRepsChange = (value: string) => {
     const reps = parseInt(value) || 0;
     onUpdate({ actualReps: reps });
+    setValidationError(null);
   };
 
   const handleRIRChange = (value: string) => {
@@ -47,11 +52,15 @@ export default function SetLogger({
 
   const handleComplete = () => {
     if (!set.actualReps || set.actualReps === 0) {
-      alert('Please enter reps completed before marking set as complete.');
+      setValidationError('Please enter reps completed');
+      if (showToast) {
+        showToast('Please enter reps completed before marking set as complete.', 'error');
+      }
       return;
     }
 
     onUpdate({ completed: true });
+    setValidationError(null);
     onComplete();
   };
 

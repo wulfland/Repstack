@@ -522,7 +522,7 @@ export async function autoSaveWorkout(
     localStorage.setItem('activeWorkout', JSON.stringify(workout));
     
     // Only save to IndexedDB if it's a real workout (not temporary)
-    if (workout.id && !workout.id.startsWith('temp-')) {
+    if (workout.id && !workout.id.startsWith('temp-workout-')) {
       await updateWorkout(workout.id, workout);
     }
   } catch (error) {
@@ -540,9 +540,12 @@ export function recoverActiveWorkout(): import('../types/models').Workout | null
       return null;
     }
 
+    // More robust ISO date string pattern
+    const isoDatePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
+
     const workout = JSON.parse(saved, (_key, value) => {
-      // Revive Date objects
-      if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(value)) {
+      // Revive Date objects from ISO date strings
+      if (typeof value === 'string' && isoDatePattern.test(value)) {
         return new Date(value);
       }
       return value;

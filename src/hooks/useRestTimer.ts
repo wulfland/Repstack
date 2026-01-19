@@ -7,7 +7,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface UseRestTimerOptions {
   defaultRestSeconds?: number;
-  audioEnabled?: boolean;
+  audioEnabled?: boolean; // Note: Audio alerts are not yet implemented. This parameter is reserved for future use.
   vibrationEnabled?: boolean;
 }
 

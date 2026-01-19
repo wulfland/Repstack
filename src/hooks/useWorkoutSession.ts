@@ -73,7 +73,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
 
   const startWorkout = useCallback(() => {
     const newWorkout: Workout = {
-      id: 'temp-' + crypto.randomUUID(), // Temporary ID until saved
+      id: 'temp-workout-' + crypto.randomUUID(), // Temporary ID until saved to DB
       date: new Date(),
       exercises: [],
       notes: undefined,
@@ -102,7 +102,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     };
 
     // Save to database
-    if (workout.id.startsWith('temp-')) {
+    if (workout.id.startsWith('temp-workout-')) {
       // Create new workout
       const id = await createWorkout({
         date: completedWorkout.date,

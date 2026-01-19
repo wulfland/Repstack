@@ -14,7 +14,6 @@ interface SetLoggerProps {
   onUpdate: (updates: Partial<WorkoutSet>) => void;
   onRemove: () => void;
   onComplete: () => void;
-  showToast?: (message: string, type: 'error' | 'success' | 'info') => void;
 }
 
 export default function SetLogger({
@@ -24,7 +23,6 @@ export default function SetLogger({
   onUpdate,
   onRemove,
   onComplete,
-  showToast,
 }: SetLoggerProps) {
   const [showRIR, setShowRIR] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
@@ -53,9 +51,6 @@ export default function SetLogger({
   const handleComplete = () => {
     if (!set.actualReps || set.actualReps === 0) {
       setValidationError('Please enter reps completed');
-      if (showToast) {
-        showToast('Please enter reps completed before marking set as complete.', 'error');
-      }
       return;
     }
 

@@ -5,7 +5,6 @@ import type {
   Workout,
   TrainingSession,
   Mesocycle,
-  MuscleGroup,
 } from '../types/models';
 
 // Re-export types for convenience
@@ -25,14 +24,17 @@ class RepstackDatabase extends Dexie {
   userProfiles!: EntityTable<UserProfile, 'id'>;
   exercises!: EntityTable<Exercise, 'id'>;
   workouts!: EntityTable<Workout, 'id'>;
-  workoutSets!: EntityTable<'id'>;
   trainingSessions!: EntityTable<TrainingSession, 'id'>;
   mesocycles!: EntityTable<Mesocycle, 'id'>;
 
   constructor() {
     super('RepstackDB');
 
-    // Version 1: Initial schema
+    // IMPORTANT: Dexie does not support changing primary key types between versions.
+    // To work around this, we use completely new table names when we need different
+    // primary key types. The old tables are marked as null (deleted) in later versions.
+
+    // Version 1: Initial schema (legacy - auto-increment integer IDs)
     this.version(1).stores({
       users: '++id, email, createdAt',
       exercises: '++id, name, category, createdAt',
@@ -40,22 +42,20 @@ class RepstackDatabase extends Dexie {
       mesocycles: '++id, startDate, endDate, status, createdAt',
     });
 
-    // Version 2: Enhanced schema with new models and improved indexes
-    // Copy exercises to temp table and prepare for migration
+    // Version 2: Transition version - prepare for UUID migration
     this.version(2)
       .stores({
-        // Rename users to userProfiles and add better indexes
+        // Keep old tables for now (will be deleted in v4)
+        users: '++id, email, createdAt',
+        exercises: '++id, name, category, createdAt',
+        workouts: '++id, date, completed, createdAt',
+        mesocycles: '++id, startDate, endDate, status, createdAt',
+        // New UUID-based tables with different names to avoid primary key change error
         userProfiles: 'id, createdAt, updatedAt',
-        // Remove old exercises table
-        exercises: null,
-        // Temporary table to hold exercises during migration
-        exercisesTemp: '++id, name, category, createdAt',
-        // Enhanced workout model with better date indexing
-        workouts: 'id, date, completed, createdAt, updatedAt',
-        // New table for training session feedback
+        exercisesV2: 'id, name, category, isCustom, createdAt',
+        workoutsV2: 'id, date, completed, createdAt, updatedAt',
         trainingSessions: 'id, workoutId, exerciseId, date, createdAt',
-        // Enhanced mesocycle model
-        mesocycles:
+        mesocyclesV2:
           'id, startDate, endDate, weekNumber, status, createdAt, updatedAt',
       })
       .upgrade(async (tx) => {
@@ -109,14 +109,114 @@ class RepstackDatabase extends Dexie {
           }
         }
 
-        // Copy exercises to temp table for migration
+        // Migrate exercises to new exercisesV2 table with UUID primary keys
         try {
           const oldExercises = await tx.table('exercises').toArray();
           if (oldExercises && oldExercises.length > 0) {
-            await tx.table('exercisesTemp').bulkAdd(oldExercises);
+            const newExercises = oldExercises.map(
+              (oldEx: {
+                id?: number | string;
+                name?: string;
+                category?: string;
+                muscleGroups?: string[];
+                equipment?: string;
+                notes?: string;
+                isCustom?: boolean;
+                createdAt?: Date;
+              }) => ({
+                id: crypto.randomUUID(),
+                name: oldEx.name || 'Unnamed Exercise',
+                category: oldEx.category || 'other',
+                muscleGroups: oldEx.muscleGroups || [],
+                equipment: oldEx.equipment,
+                notes: oldEx.notes,
+                isCustom: oldEx.isCustom ?? true,
+                createdAt: oldEx.createdAt || new Date(),
+              })
+            );
+            await tx.table('exercisesV2').bulkAdd(newExercises);
           }
         } catch (error: unknown) {
-          // If exercises table doesn't exist, that's okay (fresh install)
+          const err = error as { name?: string; message?: string };
+          const message = typeof err?.message === 'string' ? err.message : '';
+          if (
+            err?.name === 'NotFoundError' ||
+            /NoSuchTable|MissingTable|does not exist/i.test(message)
+          ) {
+            // Ignore - table doesn't exist
+          } else {
+            throw error;
+          }
+        }
+
+        // Migrate workouts to new workoutsV2 table
+        try {
+          const oldWorkouts = await tx.table('workouts').toArray();
+          if (oldWorkouts && oldWorkouts.length > 0) {
+            const newWorkouts = oldWorkouts.map(
+              (oldW: {
+                id?: number | string;
+                date?: Date;
+                completed?: boolean;
+                exercises?: unknown[];
+                notes?: string;
+                createdAt?: Date;
+                updatedAt?: Date;
+              }) => ({
+                id: crypto.randomUUID(),
+                date: oldW.date || new Date(),
+                completed: oldW.completed ?? false,
+                exercises: oldW.exercises || [],
+                notes: oldW.notes,
+                createdAt: oldW.createdAt || new Date(),
+                updatedAt: oldW.updatedAt || new Date(),
+              })
+            );
+            await tx.table('workoutsV2').bulkAdd(newWorkouts);
+          }
+        } catch (error: unknown) {
+          const err = error as { name?: string; message?: string };
+          const message = typeof err?.message === 'string' ? err.message : '';
+          if (
+            err?.name === 'NotFoundError' ||
+            /NoSuchTable|MissingTable|does not exist/i.test(message)
+          ) {
+            // Ignore - table doesn't exist
+          } else {
+            throw error;
+          }
+        }
+
+        // Migrate mesocycles to new mesocyclesV2 table
+        try {
+          const oldMesocycles = await tx.table('mesocycles').toArray();
+          if (oldMesocycles && oldMesocycles.length > 0) {
+            const newMesocycles = oldMesocycles.map(
+              (oldM: {
+                id?: number | string;
+                name?: string;
+                startDate?: Date;
+                endDate?: Date;
+                weekNumber?: number;
+                status?: string;
+                weeks?: unknown[];
+                createdAt?: Date;
+                updatedAt?: Date;
+              }) => ({
+                id: crypto.randomUUID(),
+                name: oldM.name || 'Mesocycle',
+                startDate: oldM.startDate || new Date(),
+                endDate: oldM.endDate,
+                weekNumber: oldM.weekNumber ?? 1,
+                status: oldM.status || 'planned',
+                weeks: oldM.weeks || [],
+                createdAt: oldM.createdAt || new Date(),
+                updatedAt: oldM.updatedAt || new Date(),
+              })
+            );
+            await tx.table('mesocyclesV2').bulkAdd(newMesocycles);
+          }
+        } catch (error: unknown) {
           const err = error as { name?: string; message?: string };
           const message = typeof err?.message === 'string' ? err.message : '';
           if (
@@ -130,147 +230,28 @@ class RepstackDatabase extends Dexie {
         }
       });
 
-    // Version 3: Re-create exercises table with UUID primary keys and migrate data
+    // Version 3: Clean up old tables and map new table names to expected properties
+    // This version deletes the old auto-increment tables and creates aliases
     this.version(3)
       .stores({
-        // Remove temp table
-        exercisesTemp: null,
-        // Re-create exercises with UUID primary key
-        exercises: 'id, name, category, isCustom, createdAt',
-      })
-      .upgrade(async (tx) => {
-        // Migrate exercises from temp table to new table with UUIDs
-        // Also handle the case where users have the broken v2 schema
-        let oldExercises: Array<{
-          id?: number | string;
-          name?: string;
-          category?: string;
-          muscleGroups?: string[];
-          equipment?: string;
-          notes?: string;
-          isCustom?: boolean;
-          createdAt?: Date;
-        }> = [];
-
-        // Try to get exercises from temp table first (normal migration path)
-        try {
-          oldExercises = await tx.table('exercisesTemp').toArray();
-        } catch {
-          // If temp table doesn't exist, try to get from exercises table
-          // (for users who already have the broken v2 schema)
-          try {
-            oldExercises = await tx.table('exercises').toArray();
-          } catch {
-            // Neither table exists - fresh install, nothing to migrate
-            return;
-          }
-        }
-
-        if (!oldExercises || oldExercises.length === 0) {
-          return;
-        }
-
-        // Create mapping from old IDs to new UUIDs
-        const idMapping = new Map<number | string, string>();
-
-        // Convert old exercises to new format with UUID primary keys
-        const newExercises = oldExercises.map((oldExercise) => {
-          const newId = crypto.randomUUID();
-          const oldId = oldExercise.id;
-
-          // Store mapping for foreign key updates
-          if (oldId !== undefined) {
-            idMapping.set(oldId, newId);
-          }
-
-          const exercise: Exercise = {
-            id: newId,
-            name: oldExercise.name || 'Unnamed Exercise',
-            category: (oldExercise.category as Exercise['category']) || 'other',
-            muscleGroups: (oldExercise.muscleGroups || []) as MuscleGroup[],
-            equipment: oldExercise.equipment,
-            notes: oldExercise.notes,
-            isCustom: oldExercise.isCustom ?? true,
-            createdAt: oldExercise.createdAt || new Date(),
-          };
-          return exercise;
-        });
-
-        // Add new exercises to the table
-        await tx.table('exercises').bulkAdd(newExercises);
-
-        // Update foreign key references in workouts
-        try {
-          const workouts = await tx.table('workouts').toArray();
-
-          if (workouts && workouts.length > 0) {
-            const updatedWorkouts = workouts.map((workout: Workout) => {
-              // Update exerciseId references in workout exercises
-              const updatedExercises = workout.exercises.map((we) => {
-                const newExerciseId = idMapping.get(we.exerciseId);
-                if (newExerciseId) {
-                  // Update exerciseId in WorkoutExercise
-                  const updatedSets = we.sets.map((set) => ({
-                    ...set,
-                    exerciseId: newExerciseId,
-                  }));
-                  return {
-                    ...we,
-                    exerciseId: newExerciseId,
-                    sets: updatedSets,
-                  };
-                }
-                return we;
-              });
-
-              return {
-                ...workout,
-                exercises: updatedExercises,
-              };
-            });
-
-            // Update all workouts with new exercise IDs
-            await Promise.all(
-              updatedWorkouts.map((w) => tx.table('workouts').put(w))
-            );
-          }
-        } catch (workoutError: unknown) {
-          // Workouts table might not exist yet, that's okay
-          console.warn(
-            'Could not update workout exercise references:',
-            workoutError
-          );
-        }
-
-        // Update foreign key references in training sessions
-        try {
-          const sessions = await tx.table('trainingSessions').toArray();
-
-          if (sessions && sessions.length > 0) {
-            const updatedSessions = sessions.map((session: TrainingSession) => {
-              const newExerciseId = idMapping.get(session.exerciseId);
-              if (newExerciseId) {
-                return {
-                  ...session,
-                  exerciseId: newExerciseId,
-                };
-              }
-              return session;
-            });
-
-            // Update all training sessions with new exercise IDs
-            await Promise.all(
-              updatedSessions.map((s) => tx.table('trainingSessions').put(s))
-            );
-          }
-        } catch (sessionError: unknown) {
-          // Training sessions table might not exist yet, that's okay
-          console.warn(
-            'Could not update training session exercise references:',
-            sessionError
-          );
-        }
+        // Delete old auto-increment tables
+        users: null,
+        exercises: null,
+        workouts: null,
+        mesocycles: null,
+        // Keep the UUID-based tables
+        userProfiles: 'id, createdAt, updatedAt',
+        exercisesV2: 'id, name, category, isCustom, createdAt',
+        workoutsV2: 'id, date, completed, createdAt, updatedAt',
+        trainingSessions: 'id, workoutId, exerciseId, date, createdAt',
+        mesocyclesV2: 'id, startDate, endDate, weekNumber, status, createdAt, updatedAt',
       });
+
+    // Map the V2 tables to the expected property names
+    // This allows the rest of the code to use db.exercises, db.workouts, etc.
+    this.exercises = this.table('exercisesV2') as EntityTable<Exercise, 'id'>;
+    this.workouts = this.table('workoutsV2') as EntityTable<Workout, 'id'>;
+    this.mesocycles = this.table('mesocyclesV2') as EntityTable<Mesocycle, 'id'>;
   }
 }
 

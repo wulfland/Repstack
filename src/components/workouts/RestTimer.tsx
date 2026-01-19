@@ -63,7 +63,10 @@ export default function RestTimer({ onClose }: RestTimerProps) {
   if (!isRunning) {
     return (
       <div className="rest-timer-modal" onClick={onClose}>
-        <div className="rest-timer-content" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="rest-timer-content"
+          onClick={(e) => e.stopPropagation()}
+        >
           <h2>Rest Timer</h2>
           <p>How long do you want to rest?</p>
           <div className="rest-timer-presets">

@@ -9,7 +9,11 @@ interface LayoutProps {
   onNavigate?: (page: Page) => void;
 }
 
-export default function Layout({ children, currentPage = 'workout', onNavigate }: LayoutProps) {
+export default function Layout({
+  children,
+  currentPage = 'workout',
+  onNavigate,
+}: LayoutProps) {
   const handleNavClick = (page: Page) => (e: React.MouseEvent) => {
     e.preventDefault();
     if (onNavigate) {

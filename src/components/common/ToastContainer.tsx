@@ -10,7 +10,10 @@ interface ToastContainerProps {
   onRemove: (id: string) => void;
 }
 
-export default function ToastContainer({ toasts, onRemove }: ToastContainerProps) {
+export default function ToastContainer({
+  toasts,
+  onRemove,
+}: ToastContainerProps) {
   return (
     <div className="toast-container">
       {toasts.map((toast) => (

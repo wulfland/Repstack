@@ -24,7 +24,11 @@ interface UseWorkoutSessionReturn {
   removeExercise: (exerciseId: string) => void;
   addSet: (exerciseId: string) => void;
   removeSet: (exerciseId: string, setId: string) => void;
-  updateSet: (exerciseId: string, setId: string, updates: Partial<WorkoutSet>) => void;
+  updateSet: (
+    exerciseId: string,
+    setId: string,
+    updates: Partial<WorkoutSet>
+  ) => void;
   updateExerciseNotes: (exerciseId: string, notes: string) => void;
   updateWorkoutNotes: (notes: string) => void;
   currentExerciseIndex: number;
@@ -163,7 +167,9 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
 
       setWorkout({
         ...workout,
-        exercises: workout.exercises.filter((ex) => ex.exerciseId !== exerciseId),
+        exercises: workout.exercises.filter(
+          (ex) => ex.exerciseId !== exerciseId
+        ),
         updatedAt: new Date(),
       });
 
@@ -185,7 +191,11 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
           if (ex.exerciseId !== exerciseId) return ex;
 
           const lastSet = ex.sets[ex.sets.length - 1];
-          const newSet = createEmptySet(exerciseId, ex.sets.length + 1, lastSet);
+          const newSet = createEmptySet(
+            exerciseId,
+            ex.sets.length + 1,
+            lastSet
+          );
 
           return {
             ...ex,

@@ -18,7 +18,7 @@ export function useToast() {
     (message: string, type: Toast['type'] = 'info', duration = 3000) => {
       const id = crypto.randomUUID();
       const toast: Toast = { id, message, type, duration };
-      
+
       setToasts((prev) => [...prev, toast]);
 
       if (duration > 0) {

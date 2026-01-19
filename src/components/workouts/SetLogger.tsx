@@ -70,7 +70,8 @@ export default function SetLogger({
       <div className="set-previous">
         {previousSet ? (
           <span className="previous-data">
-            {previousSet.weight} × {previousSet.actualReps || previousSet.targetReps}
+            {previousSet.weight} ×{' '}
+            {previousSet.actualReps || previousSet.targetReps}
           </span>
         ) : (
           <span className="no-previous">-</span>

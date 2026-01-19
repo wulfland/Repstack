@@ -458,7 +458,10 @@ export async function clearAllData(): Promise<void> {
  */
 export async function getPreviousPerformance(
   exerciseId: string
-): Promise<{ date: Date; sets: import('../types/models').WorkoutSet[] } | null> {
+): Promise<{
+  date: Date;
+  sets: import('../types/models').WorkoutSet[];
+} | null> {
   // Find the most recent completed workout that includes this exercise
   const workouts = await db.workouts
     .filter(
@@ -520,7 +523,7 @@ export async function autoSaveWorkout(
   try {
     // Store in localStorage for quick access
     localStorage.setItem('activeWorkout', JSON.stringify(workout));
-    
+
     // Only save to IndexedDB if it's a real workout (not temporary)
     if (workout.id && !workout.id.startsWith('temp-workout-')) {
       await updateWorkout(workout.id, workout);
@@ -533,7 +536,9 @@ export async function autoSaveWorkout(
 /**
  * Recover an active workout from localStorage
  */
-export function recoverActiveWorkout(): import('../types/models').Workout | null {
+export function recoverActiveWorkout():
+  | import('../types/models').Workout
+  | null {
   try {
     const saved = localStorage.getItem('activeWorkout');
     if (!saved) {

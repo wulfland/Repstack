@@ -42,7 +42,10 @@ export default function WorkoutSession() {
 
   const handleEndWorkout = async () => {
     if (!workout || workout.exercises.length === 0) {
-      showToast('Please add at least one exercise before ending the workout.', 'error');
+      showToast(
+        'Please add at least one exercise before ending the workout.',
+        'error'
+      );
       return;
     }
 
@@ -76,7 +79,10 @@ export default function WorkoutSession() {
         <div className="workout-start-screen">
           <h1>Ready to Train?</h1>
           <p>Start a new workout session to log your training.</p>
-          <button onClick={handleStartWorkout} className="btn-primary btn-large">
+          <button
+            onClick={handleStartWorkout}
+            className="btn-primary btn-large"
+          >
             🏋️ Start Workout
           </button>
         </div>
@@ -117,7 +123,9 @@ export default function WorkoutSession() {
       <div className="workout-content">
         {workout.exercises.length === 0 && (
           <div className="empty-workout-state">
-            <p>No exercises added yet. Add your first exercise to get started!</p>
+            <p>
+              No exercises added yet. Add your first exercise to get started!
+            </p>
           </div>
         )}
 
@@ -143,7 +151,9 @@ export default function WorkoutSession() {
               onUpdateNotes={(notes) =>
                 updateExerciseNotes(workoutExercise.exerciseId, notes)
               }
-              onRemoveExercise={() => removeExercise(workoutExercise.exerciseId)}
+              onRemoveExercise={() =>
+                removeExercise(workoutExercise.exerciseId)
+              }
               onSetComplete={handleSetComplete}
             />
           );
@@ -189,9 +199,7 @@ export default function WorkoutSession() {
         />
       )}
 
-      {showRestTimer && (
-        <RestTimer onClose={() => setShowRestTimer(false)} />
-      )}
+      {showRestTimer && <RestTimer onClose={() => setShowRestTimer(false)} />}
 
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>

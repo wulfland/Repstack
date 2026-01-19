@@ -20,9 +20,9 @@ export default function ExerciseSelector({
   onClose,
 }: ExerciseSelectorProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterCategory, setFilterCategory] = useState<Exercise['category'] | 'all'>(
-    'all'
-  );
+  const [filterCategory, setFilterCategory] = useState<
+    Exercise['category'] | 'all'
+  >('all');
 
   const filteredExercises = exercises.filter((exercise) => {
     const matchesSearch = exercise.name

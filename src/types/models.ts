@@ -72,6 +72,8 @@ export interface WorkoutExercise {
 export interface Workout {
   id: string;
   date: Date;
+  mesocycleId?: string; // Associated mesocycle
+  weekNumber?: number; // Week within mesocycle (1-6)
   exercises: WorkoutExercise[];
   notes?: string;
   completed: boolean;
@@ -100,15 +102,16 @@ export interface Mesocycle {
   name: string;
   startDate: Date;
   endDate: Date;
-  weekNumber: number;
+  durationWeeks: number; // Total duration (4-6 weeks)
+  currentWeek: number; // Current week in mesocycle (1-6)
+  deloadWeek: number; // Which week is deload (typically 4 or 6)
   trainingSplit:
     | 'upper_lower'
     | 'push_pull_legs'
     | 'full_body'
     | 'bro_split'
     | 'custom';
-  isDeloadWeek: boolean;
-  status: 'planned' | 'active' | 'completed';
+  status: 'planned' | 'active' | 'completed' | 'abandoned';
   notes?: string;
   createdAt: Date;
   updatedAt: Date;

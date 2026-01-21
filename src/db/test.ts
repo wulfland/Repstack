@@ -114,9 +114,10 @@ export async function runDatabaseTests() {
       name: 'Hypertrophy Block 1',
       startDate: startDate,
       endDate: endDate,
-      weekNumber: 1,
+      durationWeeks: 6,
+      currentWeek: 1,
+      deloadWeek: 6,
       trainingSplit: 'push_pull_legs',
-      isDeloadWeek: false,
       status: 'active',
       notes: 'Focus on progressive overload',
     });

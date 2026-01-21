@@ -247,6 +247,40 @@ class RepstackDatabase extends Dexie {
         'id, startDate, endDate, weekNumber, status, createdAt, updatedAt',
     });
 
+    // Version 4: Update mesocycles schema with new fields
+    this.version(4)
+      .stores({
+        userProfiles: 'id, createdAt, updatedAt',
+        exercisesV2: 'id, name, category, isCustom, createdAt',
+        workoutsV2: 'id, date, mesocycleId, completed, createdAt, updatedAt',
+        trainingSessions: 'id, workoutId, exerciseId, date, createdAt',
+        mesocyclesV2:
+          'id, startDate, endDate, durationWeeks, currentWeek, status, createdAt, updatedAt',
+      })
+      .upgrade(async (tx) => {
+        // Migrate existing mesocycles to new schema
+        const existingMesocycles = await tx.table('mesocyclesV2').toArray();
+
+        for (const mesocycle of existingMesocycles) {
+          // Calculate durationWeeks from start and end dates
+          const startDate = new Date(mesocycle.startDate);
+          const endDate = new Date(mesocycle.endDate);
+          const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          const durationWeeks = Math.ceil(diffDays / 7);
+
+          // Migrate old fields to new schema
+          const updates: Partial<Mesocycle> = {
+            durationWeeks: Math.min(Math.max(durationWeeks, 4), 6), // Clamp to 4-6 weeks
+            currentWeek: (mesocycle as { weekNumber?: number }).weekNumber || 1,
+            deloadWeek:
+              durationWeeks === 4 ? 4 : durationWeeks === 5 ? 5 : 6, // Default deload week
+          };
+
+          await tx.table('mesocyclesV2').update(mesocycle.id, updates);
+        }
+      });
+
     // Map the V2 tables to the expected property names
     // This allows the rest of the code to use db.exercises, db.workouts, etc.
     this.exercises = this.table('exercisesV2') as EntityTable<Exercise, 'id'>;

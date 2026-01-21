@@ -364,14 +364,28 @@ export async function createMesocycle(
     throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
   }
 
+  // Ensure only one active mesocycle at a time
+  if (mesocycle.status === 'active') {
+    const existingActive = await db.mesocycles
+      .where('status')
+      .equals('active')
+      .first();
+    if (existingActive) {
+      throw new Error(
+        'Cannot create active mesocycle: another mesocycle is already active'
+      );
+    }
+  }
+
   const newMesocycle: Mesocycle = {
     id: crypto.randomUUID(),
     name: sanitizeString(mesocycle.name),
     startDate: mesocycle.startDate,
     endDate: mesocycle.endDate,
-    weekNumber: mesocycle.weekNumber,
+    durationWeeks: mesocycle.durationWeeks,
+    currentWeek: mesocycle.currentWeek,
+    deloadWeek: mesocycle.deloadWeek,
     trainingSplit: mesocycle.trainingSplit,
-    isDeloadWeek: mesocycle.isDeloadWeek,
     status: mesocycle.status,
     notes: mesocycle.notes ? sanitizeString(mesocycle.notes) : undefined,
     createdAt: new Date(),

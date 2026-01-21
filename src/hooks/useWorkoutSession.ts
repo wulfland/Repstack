@@ -145,7 +145,8 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
 
       // Try to get previous performance for this exercise
       const previousPerformance = await getPreviousPerformance(exerciseId);
-      const previousSet = previousPerformance?.sets[0];
+      // Use the last set from previous workout for better progressive overload tracking
+      const previousSet = previousPerformance?.sets[previousPerformance.sets.length - 1];
 
       const newExercise: WorkoutExercise = {
         exerciseId,

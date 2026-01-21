@@ -500,8 +500,8 @@ export function createEmptySet(
   setNumber: number,
   previousSet?: import('../types/models').WorkoutSet
 ): import('../types/models').WorkoutSet {
-  // Use actualReps from previous set if available, fall back to targetReps, then 0
-  const defaultReps = previousSet?.actualReps ?? previousSet?.targetReps ?? 0;
+  // Use actualReps from previous set if available, fall back to targetReps, then 8 (optimal hypertrophy default)
+  const defaultReps = previousSet?.actualReps ?? previousSet?.targetReps ?? 8;
 
   return {
     id: crypto.randomUUID(),

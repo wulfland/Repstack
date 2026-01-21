@@ -38,6 +38,11 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+        // Force new service worker to take control immediately
+        skipWaiting: true,
+        clientsClaim: true,
+        // Clean old caches on activation
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

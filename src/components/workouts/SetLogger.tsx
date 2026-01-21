@@ -146,7 +146,11 @@ export default function SetLogger({
             <button
               onClick={handleComplete}
               className={`btn-complete-set ${canComplete ? 'ready' : ''}`}
-              title={canComplete ? 'Complete set & start rest timer' : 'Enter reps to complete set'}
+              title={
+                canComplete
+                  ? 'Complete set & start rest timer'
+                  : 'Enter reps to complete set'
+              }
             >
               ✓
             </button>

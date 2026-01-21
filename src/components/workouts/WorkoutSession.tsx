@@ -3,10 +3,11 @@
  * Handles active workout logging and tracking
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useWorkoutSession } from '../../hooks/useWorkoutSession';
-import { useExercises } from '../../hooks/useDatabase';
+import { useExercises, useActiveMesocycle } from '../../hooks/useDatabase';
 import { useToast } from '../../hooks/useToast';
+import { getMesocycleWeekDescription } from '../../lib/mesocycleUtils';
 import ExerciseSelector from './ExerciseSelector';
 import WorkoutExerciseCard from './WorkoutExerciseCard';
 import RestTimer from './RestTimer';
@@ -31,10 +32,25 @@ export default function WorkoutSession() {
   } = useWorkoutSession();
 
   const exercises = useExercises();
+  const activeMesocycle = useActiveMesocycle();
   const { toasts, showToast, removeToast } = useToast();
   const [showExerciseSelector, setShowExerciseSelector] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showRestTimer, setShowRestTimer] = useState(false);
+  const [mesocycleContext, setMesocycleContext] = useState<string | null>(null);
+
+  // Update mesocycle context when workout or mesocycle changes
+  useEffect(() => {
+    if (activeMesocycle && workout) {
+      const description = getMesocycleWeekDescription(
+        activeMesocycle,
+        activeMesocycle.currentWeek
+      );
+      setMesocycleContext(`${activeMesocycle.name} - ${description}`);
+    } else {
+      setMesocycleContext(null);
+    }
+  }, [activeMesocycle, workout]);
 
   const handleStartWorkout = () => {
     startWorkout();
@@ -79,6 +95,20 @@ export default function WorkoutSession() {
         <div className="workout-start-screen">
           <h1>Ready to Train?</h1>
           <p>Start a new workout session to log your training.</p>
+          {activeMesocycle && (
+            <div className="mesocycle-context-banner">
+              <span className="banner-icon">📅</span>
+              <div>
+                <div className="banner-title">{activeMesocycle.name}</div>
+                <div className="banner-subtitle">
+                  {getMesocycleWeekDescription(
+                    activeMesocycle,
+                    activeMesocycle.currentWeek
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
           <button
             onClick={handleStartWorkout}
             className="btn-primary btn-large"
@@ -100,6 +130,12 @@ export default function WorkoutSession() {
 
   return (
     <div className="workout-session-container">
+      {mesocycleContext && (
+        <div className="mesocycle-context-banner active-workout">
+          <span className="banner-icon">📅</span>
+          <span className="banner-text">{mesocycleContext}</span>
+        </div>
+      )}
       <div className="workout-header">
         <div className="workout-header-info">
           <h1>Active Workout</h1>

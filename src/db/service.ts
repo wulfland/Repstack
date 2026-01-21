@@ -194,9 +194,24 @@ export async function createWorkout(
     throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
   }
 
+  // Auto-associate with active mesocycle if not already set
+  let mesocycleId = workout.mesocycleId;
+  let weekNumber = workout.weekNumber;
+
+  if (!mesocycleId) {
+    const { getWorkoutMesocycleInfo } = await import('../lib/mesocycleUtils');
+    const mesocycleInfo = await getWorkoutMesocycleInfo(workout.date);
+    if (mesocycleInfo) {
+      mesocycleId = mesocycleInfo.mesocycleId;
+      weekNumber = mesocycleInfo.weekNumber;
+    }
+  }
+
   const newWorkout: Workout = {
     id: crypto.randomUUID(),
     date: workout.date,
+    mesocycleId,
+    weekNumber,
     exercises: workout.exercises,
     notes: workout.notes ? sanitizeString(workout.notes) : undefined,
     completed: workout.completed,
@@ -206,6 +221,13 @@ export async function createWorkout(
   };
 
   await db.workouts.add(newWorkout);
+
+  // Update mesocycle progress if workout is completed and associated with a mesocycle
+  if (newWorkout.completed && newWorkout.mesocycleId) {
+    const { updateMesocycleProgress } = await import('../lib/mesocycleUtils');
+    await updateMesocycleProgress(newWorkout.mesocycleId);
+  }
+
   return newWorkout.id;
 }
 
@@ -260,6 +282,12 @@ export async function updateWorkout(
   }
 
   await db.workouts.update(id, updatedWorkout);
+
+  // Update mesocycle progress if workout is completed and associated with a mesocycle
+  if (updatedWorkout.completed && updatedWorkout.mesocycleId) {
+    const { updateMesocycleProgress } = await import('../lib/mesocycleUtils');
+    await updateMesocycleProgress(updatedWorkout.mesocycleId);
+  }
 }
 
 export async function deleteWorkout(id: string): Promise<void> {

@@ -3,6 +3,47 @@
   padding-bottom: 2rem;
 }
 
+/* Mesocycle Context Banner */
+.mesocycle-context-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+  border: 1px solid #93c5fd;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  max-width: 600px;
+}
+
+.mesocycle-context-banner.active-workout {
+  margin: 0 1rem 1rem 1rem;
+  max-width: none;
+}
+
+.banner-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.banner-title {
+  font-weight: 600;
+  color: #1e40af;
+  font-size: 0.9375rem;
+}
+
+.banner-subtitle {
+  font-size: 0.8125rem;
+  color: #3730a3;
+  margin-top: 0.125rem;
+}
+
+.banner-text {
+  font-weight: 500;
+  color: #1e40af;
+  font-size: 0.875rem;
+}
+
 /* Start Screen */
 .workout-start-screen {
   display: flex;

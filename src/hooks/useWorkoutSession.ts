@@ -12,6 +12,7 @@ import {
   recoverActiveWorkout,
   clearAutoSavedWorkout,
   createEmptySet,
+  getPreviousPerformance,
 } from '../db/service';
 
 interface UseWorkoutSessionReturn {
@@ -20,7 +21,7 @@ interface UseWorkoutSessionReturn {
   startWorkout: () => void;
   endWorkout: () => Promise<void>;
   cancelWorkout: () => void;
-  addExercise: (exerciseId: string) => void;
+  addExercise: (exerciseId: string) => Promise<void>;
   removeExercise: (exerciseId: string) => void;
   addSet: (exerciseId: string) => void;
   removeSet: (exerciseId: string, setId: string) => void;
@@ -139,12 +140,16 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
   }, [workout]);
 
   const addExercise = useCallback(
-    (exerciseId: string) => {
+    async (exerciseId: string) => {
       if (!workout) return;
+
+      // Try to get previous performance for this exercise
+      const previousPerformance = await getPreviousPerformance(exerciseId);
+      const previousSet = previousPerformance?.sets[0];
 
       const newExercise: WorkoutExercise = {
         exerciseId,
-        sets: [createEmptySet(exerciseId, 1)],
+        sets: [createEmptySet(exerciseId, 1, previousSet)],
         notes: undefined,
       };
 

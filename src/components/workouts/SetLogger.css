@@ -205,13 +205,28 @@
 }
 
 .btn-complete-set {
+  background: #e5e7eb;
+  color: #9ca3af;
+}
+
+.btn-complete-set:hover {
+  background: #d1d5db;
+  color: #6b7280;
+}
+
+.btn-complete-set.ready {
   background: #10b981;
   color: white;
 }
 
-.btn-complete-set:hover {
+.btn-complete-set.ready:hover {
   background: #059669;
   transform: scale(1.05);
+}
+
+.btn-complete-set:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-remove-set {

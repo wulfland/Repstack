@@ -493,19 +493,23 @@ export async function getPreviousPerformance(exerciseId: string): Promise<{
 
 /**
  * Create a new workout set with default values
+ * Uses previous set data if available (prefers actualReps over targetReps)
  */
 export function createEmptySet(
   exerciseId: string,
   setNumber: number,
   previousSet?: import('../types/models').WorkoutSet
 ): import('../types/models').WorkoutSet {
+  // Use actualReps from previous set if available, fall back to targetReps, then 0
+  const defaultReps = previousSet?.actualReps ?? previousSet?.targetReps ?? 0;
+
   return {
     id: crypto.randomUUID(),
     exerciseId,
     setNumber,
-    targetReps: previousSet?.targetReps || 10,
+    targetReps: defaultReps,
     actualReps: undefined,
-    weight: previousSet?.weight || 0,
+    weight: previousSet?.weight ?? 0,
     rir: undefined,
     completed: false,
   };

@@ -45,9 +45,10 @@ export default function SetLogger({
     onUpdate({ rir });
   };
 
+  const canComplete = set.actualReps !== undefined && set.actualReps > 0;
+
   const handleComplete = () => {
-    if (!set.actualReps || set.actualReps === 0) {
-      // Don't complete set without reps
+    if (!canComplete) {
       return;
     }
 
@@ -144,8 +145,12 @@ export default function SetLogger({
           <>
             <button
               onClick={handleComplete}
-              className="btn-complete-set"
-              title="Complete set"
+              className={`btn-complete-set ${canComplete ? 'ready' : ''}`}
+              title={
+                canComplete
+                  ? 'Complete set & start rest timer'
+                  : 'Enter reps to complete set'
+              }
             >
               ✓
             </button>

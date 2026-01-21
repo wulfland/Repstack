@@ -3,7 +3,7 @@
  * Handles active workout logging and tracking
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useWorkoutSession } from '../../hooks/useWorkoutSession';
 import { useExercises, useActiveMesocycle } from '../../hooks/useDatabase';
 import { useToast } from '../../hooks/useToast';
@@ -37,20 +37,11 @@ export default function WorkoutSession() {
   const [showExerciseSelector, setShowExerciseSelector] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showRestTimer, setShowRestTimer] = useState(false);
-  const [mesocycleContext, setMesocycleContext] = useState<string | null>(null);
 
-  // Update mesocycle context when workout or mesocycle changes
-  useEffect(() => {
-    if (activeMesocycle && workout) {
-      const description = getMesocycleWeekDescription(
-        activeMesocycle,
-        activeMesocycle.currentWeek
-      );
-      setMesocycleContext(`${activeMesocycle.name} - ${description}`);
-    } else {
-      setMesocycleContext(null);
-    }
-  }, [activeMesocycle, workout]);
+  // Calculate mesocycle context from activeMesocycle (memo to avoid recalculation)
+  const mesocycleContext = activeMesocycle
+    ? `${activeMesocycle.name} - ${getMesocycleWeekDescription(activeMesocycle, activeMesocycle.currentWeek)}`
+    : null;
 
   const handleStartWorkout = () => {
     startWorkout();

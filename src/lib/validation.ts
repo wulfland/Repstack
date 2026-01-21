@@ -279,10 +279,24 @@ export function validateMesocycle(mesocycle: Partial<Mesocycle>): {
   }
 
   if (
-    mesocycle.weekNumber !== undefined &&
-    (mesocycle.weekNumber < 1 || mesocycle.weekNumber > 12)
+    mesocycle.durationWeeks !== undefined &&
+    (mesocycle.durationWeeks < 4 || mesocycle.durationWeeks > 6)
   ) {
-    errors.push('Week number must be between 1 and 12');
+    errors.push('Duration must be between 4 and 6 weeks');
+  }
+
+  if (
+    mesocycle.currentWeek !== undefined &&
+    (mesocycle.currentWeek < 1 || mesocycle.currentWeek > 6)
+  ) {
+    errors.push('Current week must be between 1 and 6');
+  }
+
+  if (
+    mesocycle.deloadWeek !== undefined &&
+    (mesocycle.deloadWeek < 1 || mesocycle.deloadWeek > 6)
+  ) {
+    errors.push('Deload week must be between 1 and 6');
   }
 
   if (
@@ -300,7 +314,7 @@ export function validateMesocycle(mesocycle: Partial<Mesocycle>): {
 
   if (
     mesocycle.status &&
-    !['planned', 'active', 'completed'].includes(mesocycle.status)
+    !['planned', 'active', 'completed', 'abandoned'].includes(mesocycle.status)
   ) {
     errors.push('Invalid mesocycle status');
   }

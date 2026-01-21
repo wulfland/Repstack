@@ -19,6 +19,10 @@ import {
   validateMesocycle,
   sanitizeString,
 } from '../lib/validation';
+import {
+  getWorkoutMesocycleInfo,
+  updateMesocycleProgress,
+} from '../lib/mesocycleUtils';
 
 // ===== UserProfile CRUD =====
 
@@ -194,9 +198,23 @@ export async function createWorkout(
     throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
   }
 
+  // Auto-associate with active mesocycle if not already set
+  let mesocycleId = workout.mesocycleId;
+  let weekNumber = workout.weekNumber;
+
+  if (!mesocycleId) {
+    const mesocycleInfo = await getWorkoutMesocycleInfo(workout.date);
+    if (mesocycleInfo) {
+      mesocycleId = mesocycleInfo.mesocycleId;
+      weekNumber = mesocycleInfo.weekNumber;
+    }
+  }
+
   const newWorkout: Workout = {
     id: crypto.randomUUID(),
     date: workout.date,
+    mesocycleId,
+    weekNumber,
     exercises: workout.exercises,
     notes: workout.notes ? sanitizeString(workout.notes) : undefined,
     completed: workout.completed,
@@ -206,6 +224,12 @@ export async function createWorkout(
   };
 
   await db.workouts.add(newWorkout);
+
+  // Update mesocycle progress if workout is completed and associated with a mesocycle
+  if (newWorkout.completed && newWorkout.mesocycleId) {
+    await updateMesocycleProgress(newWorkout.mesocycleId);
+  }
+
   return newWorkout.id;
 }
 
@@ -260,6 +284,11 @@ export async function updateWorkout(
   }
 
   await db.workouts.update(id, updatedWorkout);
+
+  // Update mesocycle progress if workout is completed and associated with a mesocycle
+  if (updatedWorkout.completed && updatedWorkout.mesocycleId) {
+    await updateMesocycleProgress(updatedWorkout.mesocycleId);
+  }
 }
 
 export async function deleteWorkout(id: string): Promise<void> {
@@ -364,14 +393,28 @@ export async function createMesocycle(
     throw new Error(`Validation failed: ${validation.errors.join(', ')}`);
   }
 
+  // Ensure only one active mesocycle at a time
+  if (mesocycle.status === 'active') {
+    const existingActive = await db.mesocycles
+      .where('status')
+      .equals('active')
+      .first();
+    if (existingActive) {
+      throw new Error(
+        'Cannot create active mesocycle: another mesocycle is already active'
+      );
+    }
+  }
+
   const newMesocycle: Mesocycle = {
     id: crypto.randomUUID(),
     name: sanitizeString(mesocycle.name),
     startDate: mesocycle.startDate,
     endDate: mesocycle.endDate,
-    weekNumber: mesocycle.weekNumber,
+    durationWeeks: mesocycle.durationWeeks,
+    currentWeek: mesocycle.currentWeek,
+    deloadWeek: mesocycle.deloadWeek,
     trainingSplit: mesocycle.trainingSplit,
-    isDeloadWeek: mesocycle.isDeloadWeek,
     status: mesocycle.status,
     notes: mesocycle.notes ? sanitizeString(mesocycle.notes) : undefined,
     createdAt: new Date(),

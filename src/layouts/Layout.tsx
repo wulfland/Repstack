@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import './Layout.css';
 
-type Page = 'workout' | 'exercises' | 'progress';
+type Page = 'workout' | 'exercises' | 'mesocycles' | 'progress';
 
 interface LayoutProps {
   children: ReactNode;
@@ -33,6 +33,13 @@ export default function Layout({
               onClick={handleNavClick('workout')}
             >
               Workouts
+            </a>
+            <a
+              href="#mesocycles"
+              className={`nav-link ${currentPage === 'mesocycles' ? 'active' : ''}`}
+              onClick={handleNavClick('mesocycles')}
+            >
+              Mesocycles
             </a>
             <a
               href="#exercises"

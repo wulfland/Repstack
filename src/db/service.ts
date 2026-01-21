@@ -456,9 +456,7 @@ export async function clearAllData(): Promise<void> {
  * Get the previous performance for a specific exercise
  * Returns the most recent completed workout that includes this exercise
  */
-export async function getPreviousPerformance(
-  exerciseId: string
-): Promise<{
+export async function getPreviousPerformance(exerciseId: string): Promise<{
   date: Date;
   sets: import('../types/models').WorkoutSet[];
 } | null> {

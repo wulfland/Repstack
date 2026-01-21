@@ -29,7 +29,7 @@ export function useRestTimer(
 ): UseRestTimerReturn {
   const {
     defaultRestSeconds = 90,
-    audioEnabled = false,
+    // audioEnabled - Reserved for future audio alerts implementation
     vibrationEnabled = true,
   } = options;
 

@@ -38,19 +38,15 @@ interface UseWorkoutSessionReturn {
 const AUTO_SAVE_INTERVAL = 30000; // 30 seconds
 
 export function useWorkoutSession(): UseWorkoutSessionReturn {
-  const [workout, setWorkout] = useState<Workout | null>(null);
-  const [isActive, setIsActive] = useState(false);
+  // Initialize state with recovered workout if available
+  const [workout, setWorkout] = useState<Workout | null>(() => {
+    return recoverActiveWorkout();
+  });
+  const [isActive, setIsActive] = useState(() => {
+    return recoverActiveWorkout() !== null;
+  });
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const autoSaveTimerRef = useRef<number | null>(null);
-
-  // Recover active workout on mount
-  useEffect(() => {
-    const recovered = recoverActiveWorkout();
-    if (recovered) {
-      setWorkout(recovered);
-      setIsActive(true);
-    }
-  }, []);
 
   // Auto-save active workout
   useEffect(() => {

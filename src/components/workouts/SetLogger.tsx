@@ -25,12 +25,10 @@ export default function SetLogger({
   onComplete,
 }: SetLoggerProps) {
   const [showRIR, setShowRIR] = useState(false);
-  const [validationError, setValidationError] = useState<string | null>(null);
 
   const handleWeightChange = (value: string) => {
     const weight = parseFloat(value) || 0;
     onUpdate({ weight });
-    setValidationError(null);
   };
 
   const handleWeightIncrement = (amount: number) => {
@@ -40,7 +38,6 @@ export default function SetLogger({
   const handleRepsChange = (value: string) => {
     const reps = parseInt(value) || 0;
     onUpdate({ actualReps: reps });
-    setValidationError(null);
   };
 
   const handleRIRChange = (value: string) => {
@@ -50,12 +47,11 @@ export default function SetLogger({
 
   const handleComplete = () => {
     if (!set.actualReps || set.actualReps === 0) {
-      setValidationError('Please enter reps completed');
+      // Don't complete set without reps
       return;
     }
 
     onUpdate({ completed: true });
-    setValidationError(null);
     onComplete();
   };
 

@@ -2,7 +2,7 @@
  * Simple toast notification hook
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 export interface Toast {
   id: string;

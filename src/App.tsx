@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Layout from './layouts/Layout';
 import ExerciseList from './components/exercises/ExerciseList';
 import WorkoutSession from './components/workouts/WorkoutSession';
+import MesocycleDashboard from './components/mesocycles/MesocycleDashboard';
 import {
   useExercises,
   createExercise,
@@ -15,7 +16,7 @@ import type { BeforeInstallPromptEvent } from './types/global';
 import type { Exercise } from './types/models';
 import './App.css';
 
-type Page = 'workout' | 'exercises' | 'progress';
+type Page = 'workout' | 'exercises' | 'mesocycles' | 'progress';
 
 function App() {
   const exercises = useExercises();
@@ -136,6 +137,8 @@ function App() {
         </div>
 
         {currentPage === 'workout' && <WorkoutSession />}
+
+        {currentPage === 'mesocycles' && <MesocycleDashboard />}
 
         {currentPage === 'exercises' && (
           <ExerciseList

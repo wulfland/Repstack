@@ -1,0 +1,17 @@
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-help {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: #6b7280;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

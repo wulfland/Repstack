@@ -19,6 +19,10 @@ import {
   validateMesocycle,
   sanitizeString,
 } from '../lib/validation';
+import {
+  getWorkoutMesocycleInfo,
+  updateMesocycleProgress,
+} from '../lib/mesocycleUtils';
 
 // ===== UserProfile CRUD =====
 
@@ -199,7 +203,6 @@ export async function createWorkout(
   let weekNumber = workout.weekNumber;
 
   if (!mesocycleId) {
-    const { getWorkoutMesocycleInfo } = await import('../lib/mesocycleUtils');
     const mesocycleInfo = await getWorkoutMesocycleInfo(workout.date);
     if (mesocycleInfo) {
       mesocycleId = mesocycleInfo.mesocycleId;
@@ -224,7 +227,6 @@ export async function createWorkout(
 
   // Update mesocycle progress if workout is completed and associated with a mesocycle
   if (newWorkout.completed && newWorkout.mesocycleId) {
-    const { updateMesocycleProgress } = await import('../lib/mesocycleUtils');
     await updateMesocycleProgress(newWorkout.mesocycleId);
   }
 
@@ -285,7 +287,6 @@ export async function updateWorkout(
 
   // Update mesocycle progress if workout is completed and associated with a mesocycle
   if (updatedWorkout.completed && updatedWorkout.mesocycleId) {
-    const { updateMesocycleProgress } = await import('../lib/mesocycleUtils');
     await updateMesocycleProgress(updatedWorkout.mesocycleId);
   }
 }

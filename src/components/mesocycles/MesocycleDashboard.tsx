@@ -74,7 +74,7 @@ export default function MesocycleDashboard() {
     if (activeMesocycle) {
       if (
         !confirm(
-          'You already have an active mesocycle. Creating a new one will complete the current mesocycle. Continue?'
+          'You already have an active mesocycle. Creating a new one will mark the current mesocycle as completed. Continue?'
         )
       ) {
         return;

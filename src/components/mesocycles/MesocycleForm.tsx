@@ -82,9 +82,7 @@ export default function MesocycleForm({
     }
 
     if (deloadWeek > durationWeeks || deloadWeek < 1) {
-      setError(
-        `Deload week must be between 1 and ${durationWeeks}`
-      );
+      setError(`Deload week must be between 1 and ${durationWeeks}`);
       return;
     }
 
@@ -216,9 +214,7 @@ export default function MesocycleForm({
                 className="form-select"
                 value={trainingSplit}
                 onChange={(e) =>
-                  setTrainingSplit(
-                    e.target.value as Mesocycle['trainingSplit']
-                  )
+                  setTrainingSplit(e.target.value as Mesocycle['trainingSplit'])
                 }
                 required
               >

@@ -72,9 +72,7 @@ export default function MesocycleCard({
             </span>
             {isActive && daysRemaining !== null && (
               <span className="days-remaining">
-                {daysRemaining > 0
-                  ? `${daysRemaining} days left`
-                  : 'Completed'}
+                {daysRemaining > 0 ? `${daysRemaining} days left` : 'Completed'}
               </span>
             )}
           </div>
@@ -98,11 +96,7 @@ export default function MesocycleCard({
                 <div
                   key={week}
                   className={`week-indicator ${isCurrent ? 'current' : ''} ${isComplete ? 'complete' : ''} ${isDeload ? 'deload' : ''}`}
-                  title={
-                    isDeload
-                      ? `Week ${week} (Deload)`
-                      : `Week ${week}`
-                  }
+                  title={isDeload ? `Week ${week} (Deload)` : `Week ${week}`}
                 >
                   <span className="week-number">{week}</span>
                   {isDeload && <span className="week-badge">D</span>}

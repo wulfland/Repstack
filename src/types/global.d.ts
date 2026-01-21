@@ -6,12 +6,19 @@ declare module 'virtual:pwa-register' {
     immediate?: boolean;
     onNeedRefresh?: () => void;
     onOfflineReady?: () => void;
-    onRegistered?: (registration: ServiceWorkerRegistration | undefined) => void;
-    onRegisteredSW?: (swUrl: string, registration: ServiceWorkerRegistration | undefined) => void;
+    onRegistered?: (
+      registration: ServiceWorkerRegistration | undefined
+    ) => void;
+    onRegisteredSW?: (
+      swUrl: string,
+      registration: ServiceWorkerRegistration | undefined
+    ) => void;
     onRegisterError?: (error: Error) => void;
   }
 
-  export function registerSW(options?: RegisterSWOptions): (reloadPage?: boolean) => Promise<void>;
+  export function registerSW(
+    options?: RegisterSWOptions
+  ): (reloadPage?: boolean) => Promise<void>;
 }
 
 // PWA Install Prompt Event

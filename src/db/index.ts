@@ -273,8 +273,7 @@ class RepstackDatabase extends Dexie {
           const updates: Partial<Mesocycle> = {
             durationWeeks: Math.min(Math.max(durationWeeks, 4), 6), // Clamp to 4-6 weeks
             currentWeek: (mesocycle as { weekNumber?: number }).weekNumber || 1,
-            deloadWeek:
-              durationWeeks === 4 ? 4 : durationWeeks === 5 ? 5 : 6, // Default deload week
+            deloadWeek: durationWeeks === 4 ? 4 : durationWeeks === 5 ? 5 : 6, // Default deload week
           };
 
           await tx.table('mesocyclesV2').update(mesocycle.id, updates);

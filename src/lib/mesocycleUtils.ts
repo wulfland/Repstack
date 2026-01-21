@@ -142,11 +142,17 @@ export function getMesocycleWeekDescription(
     return `Week ${weekNumber} - Accumulation`;
   }
 
-  if (weekNumber === mesocycle.durationWeeks - 1 && weekNumber !== mesocycle.deloadWeek) {
+  if (
+    weekNumber === mesocycle.durationWeeks - 1 &&
+    weekNumber !== mesocycle.deloadWeek
+  ) {
     return `Week ${weekNumber} - Intensification`;
   }
 
-  if (weekNumber === mesocycle.durationWeeks && weekNumber !== mesocycle.deloadWeek) {
+  if (
+    weekNumber === mesocycle.durationWeeks &&
+    weekNumber !== mesocycle.deloadWeek
+  ) {
     return `Week ${weekNumber} - Peak`;
   }
 

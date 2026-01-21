@@ -59,3 +59,24 @@
     padding: 0.75rem;
   }
 }
+
+.coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  padding: 2rem;
+}
+
+.coming-soon h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.coming-soon p {
+  font-size: 1.125rem;
+  color: #6b7280;
+}

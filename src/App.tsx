@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Layout from './layouts/Layout';
 import ExerciseList from './components/exercises/ExerciseList';
+import WorkoutSession from './components/workouts/WorkoutSession';
 import {
   useExercises,
   createExercise,
@@ -14,12 +15,15 @@ import type { BeforeInstallPromptEvent } from './types/global';
 import type { Exercise } from './types/models';
 import './App.css';
 
+type Page = 'workout' | 'exercises' | 'progress';
+
 function App() {
   const exercises = useExercises();
   const [installPrompt, setInstallPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState<Page>('workout');
 
   useEffect(() => {
     // Seed starter exercises on first load
@@ -118,7 +122,7 @@ function App() {
   }
 
   return (
-    <Layout>
+    <Layout currentPage={currentPage} onNavigate={setCurrentPage}>
       <div className="app-container">
         <div className="status-bar">
           <span className={`status ${isOnline ? 'online' : 'offline'}`}>
@@ -131,13 +135,24 @@ function App() {
           )}
         </div>
 
-        <ExerciseList
-          exercises={exercises || []}
-          onCreateExercise={handleCreateExercise}
-          onUpdateExercise={handleUpdateExercise}
-          onDeleteExercise={handleDeleteExercise}
-          checkExerciseHasHistory={checkExerciseHasHistory}
-        />
+        {currentPage === 'workout' && <WorkoutSession />}
+
+        {currentPage === 'exercises' && (
+          <ExerciseList
+            exercises={exercises || []}
+            onCreateExercise={handleCreateExercise}
+            onUpdateExercise={handleUpdateExercise}
+            onDeleteExercise={handleDeleteExercise}
+            checkExerciseHasHistory={checkExerciseHasHistory}
+          />
+        )}
+
+        {currentPage === 'progress' && (
+          <div className="coming-soon">
+            <h2>Progress Tracking</h2>
+            <p>Coming soon! Track your training progress and analytics here.</p>
+          </div>
+        )}
       </div>
     </Layout>
   );

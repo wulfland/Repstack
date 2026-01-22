@@ -63,7 +63,7 @@ export default function WorkoutFeedback({
 }: WorkoutFeedbackProps) {
   const [selectedRecovery, setSelectedRecovery] = useState<RecoveryStatus | undefined>();
   const [muscleGroupFeedback, setMuscleGroupFeedback] = useState<MuscleGroupFeedback[]>(
-    muscleGroups.map((mg) => ({ muscleGroup: mg }))
+    () => muscleGroups.map((mg) => ({ muscleGroup: mg }))
   );
   const [notes, setNotes] = useState('');
 

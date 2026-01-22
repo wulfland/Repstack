@@ -16,6 +16,9 @@ export type {
   Mesocycle,
   MuscleGroup,
   WorkoutExercise,
+  WorkoutFeedback,
+  MuscleGroupFeedback,
+  RecoveryStatus,
   VolumeLandmarks,
 } from '../types/models';
 

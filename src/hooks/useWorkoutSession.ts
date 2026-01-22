@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { Workout, WorkoutExercise, WorkoutSet } from '../types/models';
+import type { Workout, WorkoutExercise, WorkoutSet, WorkoutFeedback } from '../types/models';
 import {
   createWorkout,
   updateWorkout,
@@ -32,6 +32,7 @@ interface UseWorkoutSessionReturn {
   ) => void;
   updateExerciseNotes: (exerciseId: string, notes: string) => void;
   updateWorkoutNotes: (notes: string) => void;
+  updateWorkoutFeedback: (feedback: WorkoutFeedback) => void;
   currentExerciseIndex: number;
   setCurrentExerciseIndex: (index: number) => void;
 }
@@ -286,6 +287,19 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     [workout]
   );
 
+  const updateWorkoutFeedback = useCallback(
+    (feedback: WorkoutFeedback) => {
+      if (!workout) return;
+
+      setWorkout({
+        ...workout,
+        feedback,
+        updatedAt: new Date(),
+      });
+    },
+    [workout]
+  );
+
   return {
     workout,
     isActive,
@@ -299,6 +313,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     updateSet,
     updateExerciseNotes,
     updateWorkoutNotes,
+    updateWorkoutFeedback,
     currentExerciseIndex,
     setCurrentExerciseIndex,
   };

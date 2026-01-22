@@ -1,0 +1,267 @@
+/* Workout Feedback Modal */
+.workout-feedback-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+.workout-feedback-modal {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.feedback-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.feedback-header h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.feedback-header p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.feedback-content {
+  padding: 1.5rem;
+}
+
+.feedback-section {
+  margin-bottom: 2rem;
+}
+
+.feedback-section:last-child {
+  margin-bottom: 0;
+}
+
+.feedback-section h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.section-description {
+  margin: 0 0 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Recovery Options */
+.recovery-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.recovery-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.recovery-option:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.recovery-option.selected {
+  border-color: var(--primary-color);
+  background: var(--primary-color-light);
+}
+
+.option-emoji {
+  font-size: 2rem;
+}
+
+.option-label {
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+/* Muscle Group Feedback */
+.muscle-group-feedback {
+  background: var(--bg-secondary);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.muscle-group-feedback:last-child {
+  margin-bottom: 0;
+}
+
+.muscle-group-feedback h4 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.rating-row:last-child {
+  margin-bottom: 0;
+}
+
+.rating-row label {
+  min-width: 200px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.rating-scale {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.rating-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rating-button:hover {
+  border-color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.rating-button.selected {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Feedback Actions */
+.feedback-actions {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  justify-content: flex-end;
+}
+
+.feedback-actions button {
+  min-width: 120px;
+}
+
+/* Textarea in feedback */
+.feedback-section textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.feedback-section textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .workout-feedback-modal {
+    max-height: 95vh;
+  }
+
+  .feedback-header {
+    padding: 1rem;
+  }
+
+  .feedback-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .feedback-content {
+    padding: 1rem;
+  }
+
+  .recovery-options {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .recovery-option {
+    padding: 0.75rem;
+  }
+
+  .option-emoji {
+    font-size: 1.5rem;
+  }
+
+  .option-label {
+    font-size: 0.85rem;
+  }
+
+  .rating-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .rating-row label {
+    min-width: auto;
+  }
+
+  .rating-scale {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .rating-button {
+    width: 35px;
+    height: 35px;
+  }
+
+  .feedback-actions {
+    flex-direction: column-reverse;
+    padding: 1rem;
+  }
+
+  .feedback-actions button {
+    width: 100%;
+  }
+}

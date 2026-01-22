@@ -15,7 +15,7 @@
 }
 
 .workout-feedback-modal {
-  background: var(--bg-primary);
+  background: #ffffff;
   border-radius: 12px;
   max-width: 800px;
   width: 100%;
@@ -26,19 +26,19 @@
 
 .feedback-header {
   padding: 1.5rem;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid #e2e8f0;
   text-align: center;
 }
 
 .feedback-header h2 {
   margin: 0 0 0.5rem;
   font-size: 1.5rem;
-  color: var(--text-primary);
+  color: #2d3748;
 }
 
 .feedback-header p {
   margin: 0;
-  color: var(--text-secondary);
+  color: #718096;
   font-size: 0.95rem;
 }
 
@@ -57,12 +57,12 @@
 .feedback-section h3 {
   margin: 0 0 0.5rem;
   font-size: 1.1rem;
-  color: var(--text-primary);
+  color: #2d3748;
 }
 
 .section-description {
   margin: 0 0 1rem;
-  color: var(--text-secondary);
+  color: #718096;
   font-size: 0.9rem;
 }
 
@@ -79,21 +79,21 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1rem;
-  border: 2px solid var(--border-color);
+  border: 2px solid #e2e8f0;
   border-radius: 8px;
-  background: var(--bg-secondary);
+  background: #f7fafc;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .recovery-option:hover {
-  border-color: var(--primary-color);
+  border-color: #667eea;
   transform: translateY(-2px);
 }
 
 .recovery-option.selected {
-  border-color: var(--primary-color);
-  background: var(--primary-color-light);
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
 }
 
 .option-emoji {
@@ -103,12 +103,12 @@
 .option-label {
   font-size: 0.9rem;
   text-align: center;
-  color: var(--text-primary);
+  color: #2d3748;
 }
 
 /* Muscle Group Feedback */
 .muscle-group-feedback {
-  background: var(--bg-secondary);
+  background: #f7fafc;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -121,7 +121,7 @@
 .muscle-group-feedback h4 {
   margin: 0 0 0.75rem;
   font-size: 1rem;
-  color: var(--text-primary);
+  color: #2d3748;
 }
 
 .rating-row {
@@ -138,7 +138,7 @@
 .rating-row label {
   min-width: 200px;
   font-size: 0.9rem;
-  color: var(--text-secondary);
+  color: #718096;
 }
 
 .rating-scale {
@@ -151,22 +151,22 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid var(--border-color);
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  border: 2px solid #e2e8f0;
+  background: #ffffff;
+  color: #2d3748;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .rating-button:hover {
-  border-color: var(--primary-color);
+  border-color: #667eea;
   transform: scale(1.1);
 }
 
 .rating-button.selected {
-  border-color: var(--primary-color);
-  background: var(--primary-color);
+  border-color: #667eea;
+  background: #667eea;
   color: white;
 }
 
@@ -175,7 +175,7 @@
   display: flex;
   gap: 1rem;
   padding: 1.5rem;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid #e2e8f0;
   justify-content: flex-end;
 }
 
@@ -187,10 +187,10 @@
 .feedback-section textarea {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid #e2e8f0;
   border-radius: 6px;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  background: #f7fafc;
+  color: #2d3748;
   font-family: inherit;
   font-size: 0.95rem;
   resize: vertical;
@@ -198,7 +198,7 @@
 
 .feedback-section textarea:focus {
   outline: none;
-  border-color: var(--primary-color);
+  border-color: #667eea;
 }
 
 /* Mobile Responsive */

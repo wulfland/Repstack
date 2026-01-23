@@ -18,7 +18,11 @@ interface WorkoutFeedbackProps {
   onSkip: () => void;
 }
 
-const RECOVERY_OPTIONS: { value: RecoveryStatus; label: string; emoji: string }[] = [
+const RECOVERY_OPTIONS: {
+  value: RecoveryStatus;
+  label: string;
+  emoji: string;
+}[] = [
   { value: 'well_recovered', label: 'Well Recovered', emoji: '💪' },
   { value: 'moderately_recovered', label: 'Moderately Recovered', emoji: '👍' },
   { value: 'fatigued', label: 'Fatigued', emoji: '😓' },
@@ -61,10 +65,12 @@ export default function WorkoutFeedback({
   onSubmit,
   onSkip,
 }: WorkoutFeedbackProps) {
-  const [selectedRecovery, setSelectedRecovery] = useState<RecoveryStatus | undefined>();
-  const [muscleGroupFeedback, setMuscleGroupFeedback] = useState<MuscleGroupFeedback[]>(
-    () => muscleGroups.map((mg) => ({ muscleGroup: mg }))
-  );
+  const [selectedRecovery, setSelectedRecovery] = useState<
+    RecoveryStatus | undefined
+  >();
+  const [muscleGroupFeedback, setMuscleGroupFeedback] = useState<
+    MuscleGroupFeedback[]
+  >(() => muscleGroups.map((mg) => ({ muscleGroup: mg })));
   const [notes, setNotes] = useState('');
 
   const handlePumpChange = (muscleGroup: MuscleGroup, pump: number) => {

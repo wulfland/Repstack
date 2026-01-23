@@ -4,7 +4,12 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { Workout, WorkoutExercise, WorkoutSet, WorkoutFeedback } from '../types/models';
+import type {
+  Workout,
+  WorkoutExercise,
+  WorkoutSet,
+  WorkoutFeedback,
+} from '../types/models';
 import {
   createWorkout,
   updateWorkout,

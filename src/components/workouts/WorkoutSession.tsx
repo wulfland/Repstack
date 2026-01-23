@@ -8,7 +8,10 @@ import { useWorkoutSession } from '../../hooks/useWorkoutSession';
 import { useExercises, useActiveMesocycle } from '../../hooks/useDatabase';
 import { useToast } from '../../hooks/useToast';
 import { getMesocycleWeekDescription } from '../../lib/mesocycleUtils';
-import type { WorkoutFeedback as WorkoutFeedbackType, MuscleGroup } from '../../types/models';
+import type {
+  WorkoutFeedback as WorkoutFeedbackType,
+  MuscleGroup,
+} from '../../types/models';
 import ExerciseSelector from './ExerciseSelector';
 import WorkoutExerciseCard from './WorkoutExerciseCard';
 import WorkoutFeedback from './WorkoutFeedback';
@@ -52,7 +55,7 @@ export default function WorkoutSession() {
   // Get all unique muscle groups from workout exercises
   const workoutMuscleGroups = useMemo(() => {
     if (!workout || !exercises) return [];
-    
+
     const muscleGroupSet = new Set<MuscleGroup>();
     workout.exercises.forEach((workoutEx) => {
       const exercise = exercises.find((ex) => ex.id === workoutEx.exerciseId);
@@ -60,7 +63,7 @@ export default function WorkoutSession() {
         exercise.muscleGroups.forEach((mg) => muscleGroupSet.add(mg));
       }
     });
-    
+
     return Array.from(muscleGroupSet);
   }, [workout, exercises]);
 

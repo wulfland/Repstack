@@ -91,6 +91,11 @@
   transform: translateY(-2px);
 }
 
+.recovery-option:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
 .recovery-option.selected {
   border-color: #667eea;
   background: rgba(102, 126, 234, 0.1);
@@ -162,6 +167,11 @@
 .rating-button:hover {
   border-color: #667eea;
   transform: scale(1.1);
+}
+
+.rating-button:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
 }
 
 .rating-button.selected {

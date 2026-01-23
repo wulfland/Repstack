@@ -34,7 +34,6 @@ export default function WorkoutSession() {
     updateSet,
     updateExerciseNotes,
     updateWorkoutNotes,
-    updateWorkoutFeedback,
   } = useWorkoutSession();
 
   const exercises = useExercises();
@@ -85,9 +84,8 @@ export default function WorkoutSession() {
   };
 
   const handleFeedbackSubmit = async (feedback: WorkoutFeedbackType) => {
-    updateWorkoutFeedback(feedback);
     setShowFeedback(false);
-    await endWorkout();
+    await endWorkout(feedback);
     showToast('Workout saved successfully!', 'success');
   };
 

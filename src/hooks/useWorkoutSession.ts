@@ -24,7 +24,7 @@ interface UseWorkoutSessionReturn {
   workout: Workout | null;
   isActive: boolean;
   startWorkout: () => void;
-  endWorkout: () => Promise<void>;
+  endWorkout: (feedback?: WorkoutFeedback) => Promise<void>;
   cancelWorkout: () => void;
   addExercise: (exerciseId: string) => Promise<void>;
   removeExercise: (exerciseId: string) => void;
@@ -94,7 +94,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     setCurrentExerciseIndex(0);
   }, []);
 
-  const endWorkout = useCallback(async () => {
+  const endWorkout = useCallback(async (feedback?: WorkoutFeedback) => {
     if (!workout) return;
 
     const duration = Math.round(
@@ -105,6 +105,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
       ...workout,
       completed: true,
       duration,
+      feedback: feedback || workout.feedback,
       updatedAt: new Date(),
     };
 
@@ -117,6 +118,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
         notes: completedWorkout.notes,
         completed: true,
         duration,
+        feedback: completedWorkout.feedback,
       });
       completedWorkout.id = id;
     } else {

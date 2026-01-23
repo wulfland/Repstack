@@ -102,9 +102,14 @@ export default function WorkoutFeedback({
 
   return (
     <div className="workout-feedback-overlay">
-      <div className="workout-feedback-modal">
+      <div
+        className="workout-feedback-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="feedback-heading"
+      >
         <div className="feedback-header">
-          <h2>Post-Workout Feedback</h2>
+          <h2 id="feedback-heading">Post-Workout Feedback</h2>
           <p>Help us optimize your training by sharing how you felt</p>
         </div>
 
@@ -119,10 +124,12 @@ export default function WorkoutFeedback({
               {RECOVERY_OPTIONS.map((option) => (
                 <button
                   key={option.value}
+                  type="button"
                   className={`recovery-option ${
                     selectedRecovery === option.value ? 'selected' : ''
                   }`}
                   onClick={() => setSelectedRecovery(option.value)}
+                  aria-pressed={selectedRecovery === option.value}
                 >
                   <span className="option-emoji">{option.emoji}</span>
                   <span className="option-label">{option.label}</span>
@@ -157,6 +164,7 @@ export default function WorkoutFeedback({
                       {[1, 2, 3, 4, 5].map((rating) => (
                         <button
                           key={rating}
+                          type="button"
                           className={`rating-button ${
                             mgf.pump === rating ? 'selected' : ''
                           }`}
@@ -164,6 +172,7 @@ export default function WorkoutFeedback({
                             handlePumpChange(mgf.muscleGroup, rating)
                           }
                           title={PUMP_LABELS[rating - 1]}
+                          aria-label={`Rate pump ${rating} out of 5: ${PUMP_LABELS[rating - 1]}`}
                         >
                           {rating}
                         </button>
@@ -184,6 +193,7 @@ export default function WorkoutFeedback({
                       {[1, 2, 3, 4, 5].map((rating) => (
                         <button
                           key={rating}
+                          type="button"
                           className={`rating-button ${
                             mgf.soreness === rating ? 'selected' : ''
                           }`}
@@ -191,6 +201,7 @@ export default function WorkoutFeedback({
                             handleSorenessChange(mgf.muscleGroup, rating)
                           }
                           title={SORENESS_LABELS[rating - 1]}
+                          aria-label={`Rate soreness ${rating} out of 5: ${SORENESS_LABELS[rating - 1]}`}
                         >
                           {rating}
                         </button>
@@ -215,10 +226,10 @@ export default function WorkoutFeedback({
         </div>
 
         <div className="feedback-actions">
-          <button onClick={onSkip} className="btn-secondary">
+          <button type="button" onClick={onSkip} className="btn-secondary">
             Skip Feedback
           </button>
-          <button onClick={handleSubmit} className="btn-primary">
+          <button type="button" onClick={handleSubmit} className="btn-primary">
             Save Feedback
           </button>
         </div>

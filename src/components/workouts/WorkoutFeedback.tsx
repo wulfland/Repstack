@@ -132,49 +132,68 @@ export default function WorkoutFeedback({
               Rate pump and soreness for trained muscle groups
             </p>
 
-            {muscleGroupFeedback.map((mgf) => (
-              <div key={mgf.muscleGroup} className="muscle-group-feedback">
-                <h4>{MUSCLE_GROUP_LABELS[mgf.muscleGroup]}</h4>
+            {muscleGroupFeedback.map((mgf) => {
+              const pumpLabelId = `pump-label-${mgf.muscleGroup}`;
+              const sorenessLabelId = `soreness-label-${mgf.muscleGroup}`;
 
-                {/* Pump Rating */}
-                <div className="rating-row">
-                  <label>Pump:</label>
-                  <div className="rating-scale">
-                    {[1, 2, 3, 4, 5].map((rating) => (
-                      <button
-                        key={rating}
-                        className={`rating-button ${
-                          mgf.pump === rating ? 'selected' : ''
-                        }`}
-                        onClick={() => handlePumpChange(mgf.muscleGroup, rating)}
-                        title={PUMP_LABELS[rating - 1]}
-                      >
-                        {rating}
-                      </button>
-                    ))}
+              return (
+                <div key={mgf.muscleGroup} className="muscle-group-feedback">
+                  <h4>{MUSCLE_GROUP_LABELS[mgf.muscleGroup]}</h4>
+
+                  {/* Pump Rating */}
+                  <div className="rating-row">
+                    <span id={pumpLabelId}>Pump:</span>
+                    <div
+                      className="rating-scale"
+                      role="radiogroup"
+                      aria-labelledby={pumpLabelId}
+                    >
+                      {[1, 2, 3, 4, 5].map((rating) => (
+                        <button
+                          key={rating}
+                          className={`rating-button ${
+                            mgf.pump === rating ? 'selected' : ''
+                          }`}
+                          onClick={() =>
+                            handlePumpChange(mgf.muscleGroup, rating)
+                          }
+                          title={PUMP_LABELS[rating - 1]}
+                        >
+                          {rating}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Soreness Rating */}
+                  <div className="rating-row">
+                    <span id={sorenessLabelId}>
+                      Soreness (previous workout):
+                    </span>
+                    <div
+                      className="rating-scale"
+                      role="radiogroup"
+                      aria-labelledby={sorenessLabelId}
+                    >
+                      {[1, 2, 3, 4, 5].map((rating) => (
+                        <button
+                          key={rating}
+                          className={`rating-button ${
+                            mgf.soreness === rating ? 'selected' : ''
+                          }`}
+                          onClick={() =>
+                            handleSorenessChange(mgf.muscleGroup, rating)
+                          }
+                          title={SORENESS_LABELS[rating - 1]}
+                        >
+                          {rating}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
-
-                {/* Soreness Rating */}
-                <div className="rating-row">
-                  <label>Soreness (previous workout):</label>
-                  <div className="rating-scale">
-                    {[1, 2, 3, 4, 5].map((rating) => (
-                      <button
-                        key={rating}
-                        className={`rating-button ${
-                          mgf.soreness === rating ? 'selected' : ''
-                        }`}
-                        onClick={() => handleSorenessChange(mgf.muscleGroup, rating)}
-                        title={SORENESS_LABELS[rating - 1]}
-                      >
-                        {rating}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Notes */}

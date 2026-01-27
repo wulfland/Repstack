@@ -12,6 +12,8 @@ import ExerciseSelector from '../workouts/ExerciseSelector';
 import { isExerciseValidForSplitDay } from '../../lib/splitUtils';
 import './SplitDayEditor.css';
 
+const DEFAULT_REST_SECONDS = 90;
+
 interface SplitDayEditorProps {
   splitDay: MesocycleSplitDay;
   exercises: Exercise[];
@@ -215,14 +217,14 @@ export default function SplitDayEditor({
                       min="0"
                       max="600"
                       step="15"
-                      value={exercise.restSeconds ?? 90}
+                      value={exercise.restSeconds ?? DEFAULT_REST_SECONDS}
                       onChange={(e) =>
                         handleUpdateExercise(index, {
                           restSeconds: parseInt(e.target.value, 10),
                         })
                       }
                       className="config-input"
-                      placeholder="90"
+                      placeholder={DEFAULT_REST_SECONDS.toString()}
                     />
                   </div>
                 </div>

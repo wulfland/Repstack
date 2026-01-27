@@ -321,7 +321,11 @@ export function validateMesocycle(mesocycle: Partial<Mesocycle>): {
     errors.push('Invalid mesocycle status');
   }
 
-  if (mesocycle.splitDays) {
+  if (!mesocycle.splitDays) {
+    errors.push('Split days configuration is required');
+  } else if (!Array.isArray(mesocycle.splitDays)) {
+    errors.push('Split days must be an array');
+  } else {
     mesocycle.splitDays.forEach((splitDay, index) => {
       const splitDayValidation = validateMesocycleSplitDay(splitDay);
       if (!splitDayValidation.valid) {

@@ -95,10 +95,7 @@ export default function TemplateSelector({
                     </p>
                     <button
                       className="btn btn-primary"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleTemplateClick(template);
-                      }}
+                      onClick={() => handleTemplateClick(template)}
                     >
                       View Details
                     </button>

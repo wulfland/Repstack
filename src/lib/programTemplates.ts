@@ -3,7 +3,7 @@
  * Following evidence-based hypertrophy training principles
  */
 
-import type { ProgramTemplate } from '../types/models';
+import type { ProgramTemplate, TemplateType } from '../types/models';
 
 /**
  * Upper/Lower Split Template
@@ -473,7 +473,7 @@ export const PROGRAM_TEMPLATES: ProgramTemplate[] = [
  * Get a template by ID
  */
 export function getTemplateById(
-  id: string
+  id: TemplateType
 ): ProgramTemplate | undefined {
   return PROGRAM_TEMPLATES.find((template) => template.id === id);
 }

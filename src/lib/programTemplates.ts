@@ -37,7 +37,8 @@ const upperLowerTemplate: ProgramTemplate = {
         },
         {
           name: 'Vertical Push (shoulders)',
-          description: 'Overhead press, shoulder press machine, or dumbbell press',
+          description:
+            'Overhead press, shoulder press machine, or dumbbell press',
           muscleGroups: ['shoulders', 'triceps'],
           targetSets: '2-3 sets',
           targetReps: '10-15 reps',
@@ -77,7 +78,8 @@ const upperLowerTemplate: ProgramTemplate = {
         },
         {
           name: 'Hip-hinge (hamstring focus)',
-          description: 'Romanian deadlift, stiff-leg deadlift, or good mornings',
+          description:
+            'Romanian deadlift, stiff-leg deadlift, or good mornings',
           muscleGroups: ['hamstrings', 'glutes', 'back'],
           targetSets: '3-4 sets',
           targetReps: '8-12 reps',
@@ -110,7 +112,8 @@ const upperLowerTemplate: ProgramTemplate = {
       exercises: [
         {
           name: 'Horizontal Push (chest focus)',
-          description: 'Incline press, decline press, or different angle than Day A',
+          description:
+            'Incline press, decline press, or different angle than Day A',
           muscleGroups: ['chest', 'triceps', 'shoulders'],
           targetSets: '3-4 sets',
           targetReps: '8-12 reps',
@@ -472,8 +475,6 @@ export const PROGRAM_TEMPLATES: ProgramTemplate[] = [
 /**
  * Get a template by ID
  */
-export function getTemplateById(
-  id: TemplateType
-): ProgramTemplate | undefined {
+export function getTemplateById(id: TemplateType): ProgramTemplate | undefined {
   return PROGRAM_TEMPLATES.find((template) => template.id === id);
 }

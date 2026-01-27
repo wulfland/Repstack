@@ -3,6 +3,7 @@ import Layout from './layouts/Layout';
 import ExerciseList from './components/exercises/ExerciseList';
 import WorkoutSession from './components/workouts/WorkoutSession';
 import MesocycleDashboard from './components/mesocycles/MesocycleDashboard';
+import ProgressTracker from './components/progress/ProgressTracker';
 import {
   useExercises,
   createExercise,
@@ -150,12 +151,7 @@ function App() {
           />
         )}
 
-        {currentPage === 'progress' && (
-          <div className="coming-soon">
-            <h2>Progress Tracking</h2>
-            <p>Coming soon! Track your training progress and analytics here.</p>
-          </div>
-        )}
+        {currentPage === 'progress' && <ProgressTracker />}
       </div>
     </Layout>
   );

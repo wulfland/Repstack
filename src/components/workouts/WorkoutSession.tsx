@@ -20,6 +20,7 @@ import RestTimer from './RestTimer';
 import ToastContainer from '../common/ToastContainer';
 import ConfirmDialog from '../common/ConfirmDialog';
 import TemplateSelector from '../templates/TemplateSelector';
+import TemplateGuide from '../templates/TemplateGuide';
 import './WorkoutSession.css';
 
 export default function WorkoutSession() {
@@ -48,6 +49,9 @@ export default function WorkoutSession() {
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [selectedTemplate, setSelectedTemplate] =
     useState<ProgramTemplate | null>(null);
+  const [activeWorkoutTemplate, setActiveWorkoutTemplate] =
+    useState<ProgramTemplate | null>(null);
+  const [templateDayIndex, setTemplateDayIndex] = useState(0);
 
   // Memoize mesocycle context to avoid recalculation on every render
   const mesocycleContext = useMemo(() => {
@@ -73,6 +77,11 @@ export default function WorkoutSession() {
 
   const handleStartWorkout = () => {
     startWorkout();
+    // If a template is selected, activate it for the workout
+    if (selectedTemplate) {
+      setActiveWorkoutTemplate(selectedTemplate);
+      setTemplateDayIndex(0);
+    }
   };
 
   const handleEndWorkout = async () => {
@@ -92,12 +101,18 @@ export default function WorkoutSession() {
     setShowFeedback(false);
     await endWorkout(feedback);
     showToast('Workout saved successfully!', 'success');
+    // Clear active template after workout ends
+    setActiveWorkoutTemplate(null);
+    setTemplateDayIndex(0);
   };
 
   const handleSkipFeedback = async () => {
     setShowFeedback(false);
     await endWorkout();
     showToast('Workout saved successfully!', 'success');
+    // Clear active template after workout ends
+    setActiveWorkoutTemplate(null);
+    setTemplateDayIndex(0);
   };
 
   const handleCancelWorkout = () => {
@@ -108,6 +123,9 @@ export default function WorkoutSession() {
     cancelWorkout();
     setShowCancelDialog(false);
     showToast('Workout cancelled', 'info');
+    // Clear active template when workout is cancelled
+    setActiveWorkoutTemplate(null);
+    setTemplateDayIndex(0);
   };
 
   const handleAddExercise = (exerciseId: string) => {
@@ -242,6 +260,15 @@ export default function WorkoutSession() {
       </div>
 
       <div className="workout-content">
+        {activeWorkoutTemplate && (
+          <TemplateGuide
+            template={activeWorkoutTemplate}
+            currentDayIndex={templateDayIndex}
+            onChangeDayIndex={setTemplateDayIndex}
+            onDismiss={() => setActiveWorkoutTemplate(null)}
+          />
+        )}
+
         {workout.exercises.length === 0 && (
           <div className="empty-workout-state">
             <p>

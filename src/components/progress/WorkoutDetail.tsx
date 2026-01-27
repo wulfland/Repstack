@@ -1,6 +1,9 @@
 import { useExercises } from '../../hooks/useDatabase';
 import type { Workout } from '../../types/models';
-import { calculateSetVolume, calculateExerciseVolume } from '../../lib/progressTracking';
+import {
+  calculateSetVolume,
+  calculateExerciseVolume,
+} from '../../lib/progressTracking';
 import './WorkoutDetail.css';
 
 interface WorkoutDetailProps {
@@ -8,7 +11,10 @@ interface WorkoutDetailProps {
   onClose: () => void;
 }
 
-export default function WorkoutDetail({ workout, onClose }: WorkoutDetailProps) {
+export default function WorkoutDetail({
+  workout,
+  onClose,
+}: WorkoutDetailProps) {
   const exercises = useExercises();
 
   const formatDate = (date: Date) => {
@@ -33,13 +39,13 @@ export default function WorkoutDetail({ workout, onClose }: WorkoutDetailProps) 
   };
 
   const getExerciseName = (exerciseId: string) => {
-    const exercise = exercises?.find(e => e.id === exerciseId);
+    const exercise = exercises?.find((e) => e.id === exerciseId);
     return exercise?.name || 'Unknown Exercise';
   };
 
   const getTotalSets = () => {
     return workout.exercises.reduce(
-      (total, ex) => total + ex.sets.filter(s => s.completed).length,
+      (total, ex) => total + ex.sets.filter((s) => s.completed).length,
       0
     );
   };
@@ -57,7 +63,10 @@ export default function WorkoutDetail({ workout, onClose }: WorkoutDetailProps) 
 
   return (
     <div className="workout-detail-overlay" onClick={onClose}>
-      <div className="workout-detail-modal" onClick={e => e.stopPropagation()}>
+      <div
+        className="workout-detail-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <h2>Workout Details</h2>
           <button className="close-btn" onClick={onClose}>
@@ -71,7 +80,9 @@ export default function WorkoutDetail({ workout, onClose }: WorkoutDetailProps) 
             <div className="detail-stats">
               <div className="detail-stat">
                 <span className="detail-stat-label">Duration</span>
-                <span className="detail-stat-value">{formatDuration(workout.duration)}</span>
+                <span className="detail-stat-value">
+                  {formatDuration(workout.duration)}
+                </span>
               </div>
               <div className="detail-stat">
                 <span className="detail-stat-label">Total Sets</span>
@@ -79,7 +90,9 @@ export default function WorkoutDetail({ workout, onClose }: WorkoutDetailProps) 
               </div>
               <div className="detail-stat">
                 <span className="detail-stat-label">Total Volume</span>
-                <span className="detail-stat-value">{Math.round(getTotalVolume())} kg</span>
+                <span className="detail-stat-value">
+                  {Math.round(getTotalVolume())} kg
+                </span>
               </div>
             </div>
           </div>
@@ -94,8 +107,12 @@ export default function WorkoutDetail({ workout, onClose }: WorkoutDetailProps) 
           <div className="detail-exercises">
             <h3>Exercises</h3>
             {workout.exercises.map((workoutExercise, exIdx) => {
-              const exerciseVolume = calculateExerciseVolume(workoutExercise.sets);
-              const completedSets = workoutExercise.sets.filter(s => s.completed);
+              const exerciseVolume = calculateExerciseVolume(
+                workoutExercise.sets
+              );
+              const completedSets = workoutExercise.sets.filter(
+                (s) => s.completed
+              );
 
               return (
                 <div key={exIdx} className="exercise-detail">
@@ -138,7 +155,9 @@ export default function WorkoutDetail({ workout, onClose }: WorkoutDetailProps) 
                             )}
                           </span>
                           <span className="set-rir">{set.rir ?? '-'}</span>
-                          <span className="set-volume">{Math.round(volume)} kg</span>
+                          <span className="set-volume">
+                            {Math.round(volume)} kg
+                          </span>
                         </div>
                       );
                     })}
@@ -159,7 +178,8 @@ export default function WorkoutDetail({ workout, onClose }: WorkoutDetailProps) 
               <h3>Workout Feedback</h3>
               {workout.feedback.overallRecovery && (
                 <div className="feedback-item">
-                  <strong>Overall Recovery:</strong> {workout.feedback.overallRecovery}
+                  <strong>Overall Recovery:</strong>{' '}
+                  {workout.feedback.overallRecovery}
                 </div>
               )}
               {workout.feedback.muscleGroupFeedback &&

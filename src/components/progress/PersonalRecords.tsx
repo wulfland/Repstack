@@ -12,9 +12,10 @@ export default function PersonalRecords() {
   const exercisesWithHistory = useMemo(() => {
     if (!exercises || !workouts) return [];
 
-    return exercises.filter(exercise => {
-      return workouts.some(w =>
-        w.completed && w.exercises.some(ex => ex.exerciseId === exercise.id)
+    return exercises.filter((exercise) => {
+      return workouts.some(
+        (w) =>
+          w.completed && w.exercises.some((ex) => ex.exerciseId === exercise.id)
       );
     });
   }, [exercises, workouts]);
@@ -26,7 +27,7 @@ export default function PersonalRecords() {
 
   const selectedExerciseData = useMemo(() => {
     if (!exercises || !selectedExercise) return null;
-    return exercises.find(ex => ex.id === selectedExercise);
+    return exercises.find((ex) => ex.id === selectedExercise);
   }, [exercises, selectedExercise]);
 
   const formatDate = (date: Date) => {
@@ -50,11 +51,11 @@ export default function PersonalRecords() {
         <select
           id="exercise-select"
           value={selectedExercise}
-          onChange={e => setSelectedExercise(e.target.value)}
+          onChange={(e) => setSelectedExercise(e.target.value)}
           className="exercise-select"
         >
           <option value="">-- Choose an exercise --</option>
-          {exercisesWithHistory.map(ex => (
+          {exercisesWithHistory.map((ex) => (
             <option key={ex.id} value={ex.id}>
               {ex.name}
             </option>
@@ -82,7 +83,7 @@ export default function PersonalRecords() {
                 </span>
                 <span className="exercise-muscles">
                   {selectedExerciseData.muscleGroups
-                    .map(mg => mg.charAt(0).toUpperCase() + mg.slice(1))
+                    .map((mg) => mg.charAt(0).toUpperCase() + mg.slice(1))
                     .join(', ')}
                 </span>
               </div>
@@ -97,12 +98,14 @@ export default function PersonalRecords() {
               <span>Est. 1RM</span>
               <span>Date Achieved</span>
             </div>
-            {personalRecords.map(pr => (
+            {personalRecords.map((pr) => (
               <div key={pr.repRange} className="pr-table-row">
                 <span className="pr-rep-range">{pr.repRange}</span>
                 <span className="pr-weight">{pr.weight} kg</span>
                 <span className="pr-reps">{pr.reps}</span>
-                <span className="pr-one-rm">{Math.round(pr.estimatedOneRM)} kg</span>
+                <span className="pr-one-rm">
+                  {Math.round(pr.estimatedOneRM)} kg
+                </span>
                 <span className="pr-date">{formatDate(pr.date)}</span>
               </div>
             ))}
@@ -111,13 +114,14 @@ export default function PersonalRecords() {
           <div className="pr-info">
             <h4>About 1RM Estimates</h4>
             <p>
-              One-rep max (1RM) estimates are calculated using the Epley formula:
+              One-rep max (1RM) estimates are calculated using the Epley
+              formula:
               <br />
               <strong>1RM = weight × (1 + reps / 30)</strong>
             </p>
             <p className="pr-note">
-              Note: These are estimates. Actual 1RM values may vary based on technique,
-              recovery, and other factors.
+              Note: These are estimates. Actual 1RM values may vary based on
+              technique, recovery, and other factors.
             </p>
           </div>
         </>

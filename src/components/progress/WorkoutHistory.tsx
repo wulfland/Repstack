@@ -1,5 +1,9 @@
 import { useState, useMemo } from 'react';
-import { useWorkouts, useExercises, useMesocycles } from '../../hooks/useDatabase';
+import {
+  useWorkouts,
+  useExercises,
+  useMesocycles,
+} from '../../hooks/useDatabase';
 import type { Workout } from '../../types/models';
 import { calculateWorkoutVolume } from '../../lib/progressTracking';
 import './WorkoutHistory.css';
@@ -24,39 +28,37 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
   const filteredWorkouts = useMemo(() => {
     if (!workouts) return [];
 
-    let filtered = workouts.filter(w => w.completed);
+    let filtered = workouts.filter((w) => w.completed);
 
     // Filter by date range
     if (dateRangeStart) {
       const startDate = new Date(dateRangeStart);
-      filtered = filtered.filter(w => w.date >= startDate);
+      filtered = filtered.filter((w) => w.date >= startDate);
     }
     if (dateRangeEnd) {
       const endDate = new Date(dateRangeEnd);
       endDate.setHours(23, 59, 59, 999);
-      filtered = filtered.filter(w => w.date <= endDate);
+      filtered = filtered.filter((w) => w.date <= endDate);
     }
 
     // Filter by mesocycle
     if (filterMesocycle) {
-      filtered = filtered.filter(w => w.mesocycleId === filterMesocycle);
+      filtered = filtered.filter((w) => w.mesocycleId === filterMesocycle);
     }
 
     // Filter by exercise
     if (filterExercise) {
-      filtered = filtered.filter(w =>
-        w.exercises.some(ex => ex.exerciseId === filterExercise)
+      filtered = filtered.filter((w) =>
+        w.exercises.some((ex) => ex.exerciseId === filterExercise)
       );
     }
 
     // Filter by muscle group
     if (filterMuscleGroup && exercises) {
-      filtered = filtered.filter(w =>
-        w.exercises.some(ex => {
-          const exercise = exercises.find(e => e.id === ex.exerciseId);
-          return exercise?.muscleGroups.includes(
-            filterMuscleGroup as never
-          );
+      filtered = filtered.filter((w) =>
+        w.exercises.some((ex) => {
+          const exercise = exercises.find((e) => e.id === ex.exerciseId);
+          return exercise?.muscleGroups.includes(filterMuscleGroup as never);
         })
       );
     }
@@ -64,11 +66,20 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
     // Filter by search term (notes)
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(w => w.notes?.toLowerCase().includes(term));
+      filtered = filtered.filter((w) => w.notes?.toLowerCase().includes(term));
     }
 
     return filtered;
-  }, [workouts, exercises, searchTerm, filterExercise, filterMuscleGroup, filterMesocycle, dateRangeStart, dateRangeEnd]);
+  }, [
+    workouts,
+    exercises,
+    searchTerm,
+    filterExercise,
+    filterMuscleGroup,
+    filterMesocycle,
+    dateRangeStart,
+    dateRangeEnd,
+  ]);
 
   const handleClearFilters = () => {
     setSearchTerm('');
@@ -100,7 +111,7 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
 
   const getMesocycleName = (mesocycleId?: string) => {
     if (!mesocycleId || !mesocycles) return '';
-    const mesocycle = mesocycles.find(m => m.id === mesocycleId);
+    const mesocycle = mesocycles.find((m) => m.id === mesocycleId);
     return mesocycle ? mesocycle.name : '';
   };
 
@@ -110,7 +121,7 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
 
   const getTotalSets = (workout: Workout) => {
     return workout.exercises.reduce(
-      (total, ex) => total + ex.sets.filter(s => s.completed).length,
+      (total, ex) => total + ex.sets.filter((s) => s.completed).length,
       0
     );
   };
@@ -124,9 +135,11 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
       <div className="history-header">
         <h2>Workout History</h2>
         <p className="history-count">
-          {filteredWorkouts.length} workout{filteredWorkouts.length !== 1 ? 's' : ''}
-          {filteredWorkouts.length !== workouts.filter(w => w.completed).length &&
-            ` (${workouts.filter(w => w.completed).length} total)`}
+          {filteredWorkouts.length} workout
+          {filteredWorkouts.length !== 1 ? 's' : ''}
+          {filteredWorkouts.length !==
+            workouts.filter((w) => w.completed).length &&
+            ` (${workouts.filter((w) => w.completed).length} total)`}
         </p>
       </div>
 
@@ -136,17 +149,17 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
             type="text"
             placeholder="Search notes..."
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
           />
 
           <select
             value={filterExercise}
-            onChange={e => setFilterExercise(e.target.value)}
+            onChange={(e) => setFilterExercise(e.target.value)}
             className="filter-select"
           >
             <option value="">All Exercises</option>
-            {exercises.map(ex => (
+            {exercises.map((ex) => (
               <option key={ex.id} value={ex.id}>
                 {ex.name}
               </option>
@@ -155,7 +168,7 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
 
           <select
             value={filterMuscleGroup}
-            onChange={e => setFilterMuscleGroup(e.target.value)}
+            onChange={(e) => setFilterMuscleGroup(e.target.value)}
             className="filter-select"
           >
             <option value="">All Muscle Groups</option>
@@ -173,11 +186,11 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
 
           <select
             value={filterMesocycle}
-            onChange={e => setFilterMesocycle(e.target.value)}
+            onChange={(e) => setFilterMesocycle(e.target.value)}
             className="filter-select"
           >
             <option value="">All Mesocycles</option>
-            {mesocycles?.map(m => (
+            {mesocycles?.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.name}
               </option>
@@ -191,7 +204,7 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
             <input
               type="date"
               value={dateRangeStart}
-              onChange={e => setDateRangeStart(e.target.value)}
+              onChange={(e) => setDateRangeStart(e.target.value)}
               className="date-input"
             />
           </div>
@@ -201,7 +214,7 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
             <input
               type="date"
               value={dateRangeEnd}
-              onChange={e => setDateRangeEnd(e.target.value)}
+              onChange={(e) => setDateRangeEnd(e.target.value)}
               className="date-input"
             />
           </div>
@@ -219,7 +232,7 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
             <p>Try adjusting your filters or start logging workouts!</p>
           </div>
         ) : (
-          filteredWorkouts.map(workout => (
+          filteredWorkouts.map((workout) => (
             <div
               key={workout.id}
               className="workout-card"
@@ -235,14 +248,18 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
                     </span>
                   )}
                 </div>
-                <div className="workout-duration">{formatDuration(workout.duration)}</div>
+                <div className="workout-duration">
+                  {formatDuration(workout.duration)}
+                </div>
               </div>
 
               <div className="workout-card-body">
                 <div className="workout-stats">
                   <div className="stat">
                     <span className="stat-label">Exercises</span>
-                    <span className="stat-value">{getExerciseCount(workout)}</span>
+                    <span className="stat-value">
+                      {getExerciseCount(workout)}
+                    </span>
                   </div>
                   <div className="stat">
                     <span className="stat-label">Sets</span>
@@ -258,7 +275,9 @@ export default function WorkoutHistory({ onViewWorkout }: WorkoutHistoryProps) {
 
                 <div className="workout-exercises">
                   {workout.exercises.map((ex, idx) => {
-                    const exercise = exercises.find(e => e.id === ex.exerciseId);
+                    const exercise = exercises.find(
+                      (e) => e.id === ex.exerciseId
+                    );
                     return (
                       <span key={idx} className="exercise-tag">
                         {exercise?.name || 'Unknown'}

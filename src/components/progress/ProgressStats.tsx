@@ -122,7 +122,9 @@ export default function ProgressStats() {
         <div className="stat-card">
           <div className="stat-icon">📆</div>
           <div className="stat-content">
-            <div className="stat-value">{formatDate(stats.firstWorkoutDate)}</div>
+            <div className="stat-value">
+              {formatDate(stats.firstWorkoutDate)}
+            </div>
             <div className="stat-label">First Workout</div>
           </div>
         </div>
@@ -136,11 +138,12 @@ export default function ProgressStats() {
           ) : (
             weeklyMuscleVolume
               .sort((a, b) => b.volume - a.volume)
-              .map(mgv => (
+              .map((mgv) => (
                 <div key={mgv.muscleGroup} className="muscle-volume-item">
                   <div className="muscle-info">
                     <span className="muscle-name">
-                      {mgv.muscleGroup.charAt(0).toUpperCase() + mgv.muscleGroup.slice(1)}
+                      {mgv.muscleGroup.charAt(0).toUpperCase() +
+                        mgv.muscleGroup.slice(1)}
                     </span>
                     <span className="muscle-sets">{mgv.sets} sets</span>
                   </div>
@@ -150,7 +153,9 @@ export default function ProgressStats() {
                       style={{
                         width: `${
                           (mgv.volume /
-                            Math.max(...weeklyMuscleVolume.map(m => m.volume))) *
+                            Math.max(
+                              ...weeklyMuscleVolume.map((m) => m.volume)
+                            )) *
                           100
                         }%`,
                       }}
@@ -173,11 +178,12 @@ export default function ProgressStats() {
           ) : (
             monthlyMuscleVolume
               .sort((a, b) => b.volume - a.volume)
-              .map(mgv => (
+              .map((mgv) => (
                 <div key={mgv.muscleGroup} className="muscle-volume-item">
                   <div className="muscle-info">
                     <span className="muscle-name">
-                      {mgv.muscleGroup.charAt(0).toUpperCase() + mgv.muscleGroup.slice(1)}
+                      {mgv.muscleGroup.charAt(0).toUpperCase() +
+                        mgv.muscleGroup.slice(1)}
                     </span>
                     <span className="muscle-sets">{mgv.sets} sets</span>
                   </div>
@@ -187,7 +193,9 @@ export default function ProgressStats() {
                       style={{
                         width: `${
                           (mgv.volume /
-                            Math.max(...monthlyMuscleVolume.map(m => m.volume))) *
+                            Math.max(
+                              ...monthlyMuscleVolume.map((m) => m.volume)
+                            )) *
                           100
                         }%`,
                       }}

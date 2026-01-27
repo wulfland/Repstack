@@ -2,7 +2,12 @@
  * Progress tracking utilities for workout history and analytics
  */
 
-import type { Workout, WorkoutSet, Exercise, MuscleGroup } from '../types/models';
+import type {
+  Workout,
+  WorkoutSet,
+  Exercise,
+  MuscleGroup,
+} from '../types/models';
 
 /**
  * Calculate 1RM using Epley formula
@@ -18,7 +23,10 @@ export function calculateOneRepMax(weight: number, reps: number): number {
  * Calculate 1RM using Brzycki formula (alternative, more conservative)
  * 1RM = weight × (36 / (37 - reps))
  */
-export function calculateOneRepMaxBrzycki(weight: number, reps: number): number {
+export function calculateOneRepMaxBrzycki(
+  weight: number,
+  reps: number
+): number {
   if (reps <= 0 || weight <= 0) return 0;
   if (reps === 1) return weight;
   if (reps >= 37) return weight; // Formula breaks down at high reps
@@ -84,7 +92,12 @@ export function findPersonalRecords(
   const records: PersonalRecord[] = [];
 
   for (const range of repRanges) {
-    let bestSet: { weight: number; reps: number; date: Date; workoutId: string } | null = null;
+    let bestSet: {
+      weight: number;
+      reps: number;
+      date: Date;
+      workoutId: string;
+    } | null = null;
 
     for (const workout of workouts) {
       if (!workout.completed) continue;
@@ -143,7 +156,7 @@ export function calculateMuscleGroupVolume(
   const volumeMap = new Map<MuscleGroup, { volume: number; sets: number }>();
 
   // Create exercise lookup map
-  const exerciseMap = new Map(exercises.map(ex => [ex.id, ex]));
+  const exerciseMap = new Map(exercises.map((ex) => [ex.id, ex]));
 
   for (const workout of workouts) {
     if (!workout.completed) continue;
@@ -157,7 +170,9 @@ export function calculateMuscleGroupVolume(
       if (!exercise) continue;
 
       const volume = calculateExerciseVolume(workoutExercise.sets);
-      const completedSets = workoutExercise.sets.filter(s => s.completed).length;
+      const completedSets = workoutExercise.sets.filter(
+        (s) => s.completed
+      ).length;
 
       // Add volume to each muscle group targeted by this exercise
       for (const muscleGroup of exercise.muscleGroups) {
@@ -193,8 +208,10 @@ export interface TrainingStatistics {
   lastWorkoutDate: Date | null;
 }
 
-export function calculateTrainingStatistics(workouts: Workout[]): TrainingStatistics {
-  const completedWorkouts = workouts.filter(w => w.completed);
+export function calculateTrainingStatistics(
+  workouts: Workout[]
+): TrainingStatistics {
+  const completedWorkouts = workouts.filter((w) => w.completed);
 
   if (completedWorkouts.length === 0) {
     return {
@@ -227,7 +244,7 @@ export function calculateTrainingStatistics(workouts: Workout[]): TrainingStatis
 
   for (const workout of completedWorkouts) {
     for (const exercise of workout.exercises) {
-      totalSets += exercise.sets.filter(s => s.completed).length;
+      totalSets += exercise.sets.filter((s) => s.completed).length;
       totalVolume += calculateExerciseVolume(exercise.sets);
     }
 
@@ -243,9 +260,11 @@ export function calculateTrainingStatistics(workouts: Workout[]): TrainingStatis
 
   // Calculate workouts per week
   const daysBetween =
-    (lastWorkoutDate.getTime() - firstWorkoutDate.getTime()) / (1000 * 60 * 60 * 24);
+    (lastWorkoutDate.getTime() - firstWorkoutDate.getTime()) /
+    (1000 * 60 * 60 * 24);
   const weeksBetween = daysBetween / 7;
-  const workoutsPerWeek = weeksBetween > 0 ? completedWorkouts.length / weeksBetween : 0;
+  const workoutsPerWeek =
+    weeksBetween > 0 ? completedWorkouts.length / weeksBetween : 0;
 
   // Calculate streaks (consecutive days with workouts)
   const { currentStreak, longestStreak } = calculateStreaks(sortedWorkouts);
@@ -285,7 +304,9 @@ function calculateStreaks(sortedWorkouts: Workout[]): {
   lastDate.setHours(0, 0, 0, 0);
 
   // Check if the most recent workout was today or yesterday
-  const lastWorkoutDate = new Date(sortedWorkouts[sortedWorkouts.length - 1].date);
+  const lastWorkoutDate = new Date(
+    sortedWorkouts[sortedWorkouts.length - 1].date
+  );
   lastWorkoutDate.setHours(0, 0, 0, 0);
   const daysSinceLastWorkout =
     (today.getTime() - lastWorkoutDate.getTime()) / (1000 * 60 * 60 * 24);
@@ -294,7 +315,8 @@ function calculateStreaks(sortedWorkouts: Workout[]): {
     const currentDate = new Date(sortedWorkouts[i].date);
     currentDate.setHours(0, 0, 0, 0);
 
-    const daysDiff = (currentDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
+    const daysDiff =
+      (currentDate.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
 
     if (daysDiff === 1) {
       // Consecutive day
@@ -383,7 +405,7 @@ export function getExerciseProgressTrend(
   const dataPoints: ProgressDataPoint[] = [];
 
   const completedWorkouts = workouts
-    .filter(w => w.completed)
+    .filter((w) => w.completed)
     .sort((a, b) => a.date.getTime() - b.date.getTime());
 
   for (const workout of completedWorkouts) {

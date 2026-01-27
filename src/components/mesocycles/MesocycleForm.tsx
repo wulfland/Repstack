@@ -3,7 +3,11 @@
  */
 
 import { useState, useEffect } from 'react';
-import type { Mesocycle } from '../../types/models';
+import { useLiveQuery } from 'dexie-react-hooks';
+import type { Mesocycle, MesocycleSplitDay } from '../../types/models';
+import { db } from '../../db';
+import { generateDefaultSplitDays } from '../../lib/splitUtils';
+import MesocycleExerciseConfig from './MesocycleExerciseConfig';
 import './MesocycleForm.css';
 
 interface MesocycleFormProps {
@@ -30,6 +34,7 @@ export default function MesocycleForm({
   onSave,
   onCancel,
 }: MesocycleFormProps) {
+  const [step, setStep] = useState<'basic' | 'exercises'>('basic');
   const [name, setName] = useState('');
   const [durationWeeks, setDurationWeeks] = useState<number>(6);
   const [deloadWeek, setDeloadWeek] = useState<number>(6);
@@ -39,18 +44,24 @@ export default function MesocycleForm({
     new Date().toISOString().split('T')[0]
   );
   const [notes, setNotes] = useState('');
+  const [splitDays, setSplitDays] = useState<MesocycleSplitDay[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Load exercises for exercise selector
+  const exercises = useLiveQuery(() => db.exercises.orderBy('name').toArray());
 
   useEffect(() => {
     if (isOpen) {
       // Reset form when opened
+      setStep('basic');
       setName('');
       setDurationWeeks(6);
       setDeloadWeek(6);
       setTrainingSplit('push_pull_legs');
       setStartDate(new Date().toISOString().split('T')[0]);
       setNotes('');
+      setSplitDays(generateDefaultSplitDays('push_pull_legs'));
       setError(null);
     }
   }, [isOpen]);
@@ -66,14 +77,20 @@ export default function MesocycleForm({
     }
   }, [durationWeeks]);
 
+  // Update split days when training split changes
+  useEffect(() => {
+    if (step === 'basic') {
+      setSplitDays(generateDefaultSplitDays(trainingSplit));
+    }
+  }, [trainingSplit, step]);
+
   const calculateEndDate = (start: Date, weeks: number): Date => {
     const end = new Date(start);
     end.setDate(end.getDate() + weeks * 7);
     return end;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleNextStep = () => {
     setError(null);
 
     if (!name.trim()) {
@@ -86,6 +103,16 @@ export default function MesocycleForm({
       return;
     }
 
+    setStep('exercises');
+  };
+
+  const handleBackStep = () => {
+    setStep('basic');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
     setIsSubmitting(true);
 
     try {
@@ -100,17 +127,20 @@ export default function MesocycleForm({
         currentWeek: 1,
         deloadWeek,
         trainingSplit,
+        splitDays,
         status: 'active',
         notes: notes.trim() || undefined,
       });
 
       // Reset form after successful save
+      setStep('basic');
       setName('');
       setDurationWeeks(6);
       setDeloadWeek(6);
       setTrainingSplit('push_pull_legs');
       setStartDate(new Date().toISOString().split('T')[0]);
       setNotes('');
+      setSplitDays(generateDefaultSplitDays('push_pull_legs'));
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Failed to create mesocycle'
@@ -127,9 +157,14 @@ export default function MesocycleForm({
 
   return (
     <div className="dialog-overlay" onClick={onCancel}>
-      <div className="dialog form-dialog" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="dialog form-dialog mesocycle-form-dialog"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="dialog-header">
-          <h2>Create New Mesocycle</h2>
+          <h2>
+            {step === 'basic' ? 'Create New Mesocycle' : 'Configure Exercises'}
+          </h2>
           <button
             type="button"
             className="dialog-close"
@@ -149,132 +184,172 @@ export default function MesocycleForm({
               </div>
             )}
 
-            <div className="form-group">
-              <label htmlFor="name" className="form-label">
-                Mesocycle Name *
-              </label>
-              <input
-                type="text"
-                id="name"
-                className="form-input"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g., Hypertrophy Block - January 2024"
-                required
-                autoFocus
-              />
-            </div>
+            {step === 'basic' && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="name" className="form-label">
+                    Mesocycle Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    className="form-input"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g., Hypertrophy Block - January 2024"
+                    required
+                    autoFocus
+                  />
+                </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="durationWeeks" className="form-label">
-                  Duration *
-                </label>
-                <select
-                  id="durationWeeks"
-                  className="form-select"
-                  value={durationWeeks}
-                  onChange={(e) => setDurationWeeks(Number(e.target.value))}
-                  required
-                >
-                  <option value="4">4 weeks</option>
-                  <option value="5">5 weeks</option>
-                  <option value="6">6 weeks</option>
-                </select>
-              </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="durationWeeks" className="form-label">
+                      Duration *
+                    </label>
+                    <select
+                      id="durationWeeks"
+                      className="form-select"
+                      value={durationWeeks}
+                      onChange={(e) =>
+                        setDurationWeeks(Number(e.target.value))
+                      }
+                      required
+                    >
+                      <option value="4">4 weeks</option>
+                      <option value="5">5 weeks</option>
+                      <option value="6">6 weeks</option>
+                    </select>
+                  </div>
 
-              <div className="form-group">
-                <label htmlFor="deloadWeek" className="form-label">
-                  Deload Week *
-                </label>
-                <select
-                  id="deloadWeek"
-                  className="form-select"
-                  value={deloadWeek}
-                  onChange={(e) => setDeloadWeek(Number(e.target.value))}
-                  required
-                >
-                  {Array.from({ length: durationWeeks }, (_, i) => i + 1).map(
-                    (week) => (
-                      <option key={week} value={week}>
-                        Week {week}
+                  <div className="form-group">
+                    <label htmlFor="deloadWeek" className="form-label">
+                      Deload Week *
+                    </label>
+                    <select
+                      id="deloadWeek"
+                      className="form-select"
+                      value={deloadWeek}
+                      onChange={(e) => setDeloadWeek(Number(e.target.value))}
+                      required
+                    >
+                      {Array.from(
+                        { length: durationWeeks },
+                        (_, i) => i + 1
+                      ).map((week) => (
+                        <option key={week} value={week}>
+                          Week {week}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="trainingSplit" className="form-label">
+                    Training Split *
+                  </label>
+                  <select
+                    id="trainingSplit"
+                    className="form-select"
+                    value={trainingSplit}
+                    onChange={(e) =>
+                      setTrainingSplit(
+                        e.target.value as Mesocycle['trainingSplit']
+                      )
+                    }
+                    required
+                  >
+                    {TRAINING_SPLITS.map((split) => (
+                      <option key={split.value} value={split.value}>
+                        {split.label}
                       </option>
-                    )
-                  )}
-                </select>
-              </div>
-            </div>
+                    ))}
+                  </select>
+                </div>
 
-            <div className="form-group">
-              <label htmlFor="trainingSplit" className="form-label">
-                Training Split *
-              </label>
-              <select
-                id="trainingSplit"
-                className="form-select"
-                value={trainingSplit}
-                onChange={(e) =>
-                  setTrainingSplit(e.target.value as Mesocycle['trainingSplit'])
-                }
-                required
-              >
-                {TRAINING_SPLITS.map((split) => (
-                  <option key={split.value} value={split.value}>
-                    {split.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+                <div className="form-group">
+                  <label htmlFor="startDate" className="form-label">
+                    Start Date *
+                  </label>
+                  <input
+                    type="date"
+                    id="startDate"
+                    className="form-input"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    required
+                  />
+                  <div className="form-help">
+                    End date: {endDateObj.toLocaleDateString()} (
+                    {durationWeeks} weeks)
+                  </div>
+                </div>
 
-            <div className="form-group">
-              <label htmlFor="startDate" className="form-label">
-                Start Date *
-              </label>
-              <input
-                type="date"
-                id="startDate"
-                className="form-input"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                required
+                <div className="form-group">
+                  <label htmlFor="notes" className="form-label">
+                    Notes (optional)
+                  </label>
+                  <textarea
+                    id="notes"
+                    className="form-textarea"
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Training goals, focus areas, etc."
+                    rows={3}
+                  />
+                </div>
+              </>
+            )}
+
+            {step === 'exercises' && exercises && (
+              <MesocycleExerciseConfig
+                splitDays={splitDays}
+                exercises={exercises}
+                onChange={setSplitDays}
               />
-              <div className="form-help">
-                End date: {endDateObj.toLocaleDateString()} ({durationWeeks}{' '}
-                weeks)
-              </div>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="notes" className="form-label">
-                Notes (optional)
-              </label>
-              <textarea
-                id="notes"
-                className="form-textarea"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Training goals, focus areas, etc."
-                rows={3}
-              />
-            </div>
+            )}
           </div>
 
           <div className="dialog-footer">
-            <button
-              type="button"
-              onClick={onCancel}
-              className="btn btn-secondary"
-              disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Creating...' : 'Create Mesocycle'}
-            </button>
+            {step === 'basic' ? (
+              <>
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="btn btn-secondary"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextStep}
+                  className="btn btn-primary"
+                  disabled={isSubmitting}
+                >
+                  Next: Configure Exercises
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={handleBackStep}
+                  className="btn btn-secondary"
+                  disabled={isSubmitting}
+                >
+                  Back
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Creating...' : 'Create Mesocycle'}
+                </button>
+              </>
+            )}
           </div>
         </form>
       </div>

@@ -1,0 +1,154 @@
+.mesocycle-exercise-config {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.config-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.config-summary {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.split-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid #e5e7eb;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.split-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.split-tab:hover {
+  color: #111827;
+  background: #f9fafb;
+}
+
+.split-tab.active {
+  color: #3b82f6;
+  border-bottom-color: #3b82f6;
+}
+
+.split-tab-name {
+  font-weight: inherit;
+}
+
+.split-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 0.375rem;
+  background: #3b82f6;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+}
+
+.split-tab:not(.active) .split-tab-badge {
+  background: #d1d5db;
+  color: #6b7280;
+}
+
+.split-content {
+  position: relative;
+  min-height: 20rem;
+}
+
+.split-panel {
+  display: none;
+}
+
+.split-panel.active {
+  display: block;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.config-hint {
+  padding: 1.5rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+}
+
+.config-hint p {
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+  color: #1e40af;
+  line-height: 1.5;
+}
+
+.config-hint p:first-child {
+  margin-top: 0;
+}
+
+.config-hint p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .config-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .split-tabs {
+    gap: 0.25rem;
+  }
+
+  .split-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  .split-tab-badge {
+    min-width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.625rem;
+  }
+}

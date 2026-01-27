@@ -10,6 +10,8 @@ import type {
   TrainingSession,
   Mesocycle,
   MuscleGroup,
+  MesocycleExercise,
+  MesocycleSplitDay,
 } from '../types/models';
 
 // Type guards
@@ -319,6 +321,17 @@ export function validateMesocycle(mesocycle: Partial<Mesocycle>): {
     errors.push('Invalid mesocycle status');
   }
 
+  if (mesocycle.splitDays) {
+    mesocycle.splitDays.forEach((splitDay, index) => {
+      const splitDayValidation = validateMesocycleSplitDay(splitDay);
+      if (!splitDayValidation.valid) {
+        errors.push(
+          `Split day ${index + 1}: ${splitDayValidation.errors.join(', ')}`
+        );
+      }
+    });
+  }
+
   return { valid: errors.length === 0, errors };
 }
 
@@ -351,4 +364,95 @@ export function sanitizeNumber(
   max: number
 ): number {
   return Math.max(min, Math.min(max, input));
+}
+
+// Validation for MesocycleExercise
+export function validateMesocycleExercise(
+  exercise: Partial<MesocycleExercise>
+): {
+  valid: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+
+  if (!exercise.exerciseId || exercise.exerciseId.trim().length === 0) {
+    errors.push('Exercise ID is required');
+  }
+
+  if (exercise.order !== undefined && exercise.order < 0) {
+    errors.push('Exercise order must be non-negative');
+  }
+
+  if (
+    exercise.targetSets !== undefined &&
+    (exercise.targetSets < 1 || exercise.targetSets > 10)
+  ) {
+    errors.push('Target sets must be between 1 and 10');
+  }
+
+  if (
+    exercise.targetRepsMin !== undefined &&
+    (exercise.targetRepsMin < 1 || exercise.targetRepsMin > 50)
+  ) {
+    errors.push('Target minimum reps must be between 1 and 50');
+  }
+
+  if (
+    exercise.targetRepsMax !== undefined &&
+    (exercise.targetRepsMax < 1 || exercise.targetRepsMax > 50)
+  ) {
+    errors.push('Target maximum reps must be between 1 and 50');
+  }
+
+  if (
+    exercise.targetRepsMin !== undefined &&
+    exercise.targetRepsMax !== undefined &&
+    exercise.targetRepsMin > exercise.targetRepsMax
+  ) {
+    errors.push('Target minimum reps cannot exceed maximum reps');
+  }
+
+  if (
+    exercise.restSeconds !== undefined &&
+    (exercise.restSeconds < 0 || exercise.restSeconds > 600)
+  ) {
+    errors.push('Rest time must be between 0 and 600 seconds');
+  }
+
+  return { valid: errors.length === 0, errors };
+}
+
+// Validation for MesocycleSplitDay
+export function validateMesocycleSplitDay(
+  splitDay: Partial<MesocycleSplitDay>
+): {
+  valid: boolean;
+  errors: string[];
+} {
+  const errors: string[] = [];
+
+  if (!splitDay.name || splitDay.name.trim().length === 0) {
+    errors.push('Split day name is required');
+  }
+
+  if (splitDay.name && splitDay.name.length > 50) {
+    errors.push('Split day name must be less than 50 characters');
+  }
+
+  if (splitDay.dayOrder !== undefined && splitDay.dayOrder < 1) {
+    errors.push('Day order must be at least 1');
+  }
+
+  if (splitDay.exercises) {
+    splitDay.exercises.forEach((exercise, index) => {
+      const exerciseValidation = validateMesocycleExercise(exercise);
+      if (!exerciseValidation.valid) {
+        errors.push(
+          `Exercise ${index + 1}: ${exerciseValidation.errors.join(', ')}`
+        );
+      }
+    });
+  }
+
+  return { valid: errors.length === 0, errors };
 }

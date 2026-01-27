@@ -55,6 +55,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
     currentWeek: 1,
     deloadWeek: 6,
     trainingSplit: 'push_pull_legs',
+    splitDays: [],
     status: 'active',
     notes: 'Focus on progressive overload and muscle building',
   });

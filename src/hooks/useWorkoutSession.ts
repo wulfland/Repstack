@@ -4,7 +4,12 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { Workout, WorkoutExercise, WorkoutSet } from '../types/models';
+import type {
+  Workout,
+  WorkoutExercise,
+  WorkoutSet,
+  WorkoutFeedback,
+} from '../types/models';
 import {
   createWorkout,
   updateWorkout,
@@ -19,7 +24,7 @@ interface UseWorkoutSessionReturn {
   workout: Workout | null;
   isActive: boolean;
   startWorkout: () => void;
-  endWorkout: () => Promise<void>;
+  endWorkout: (feedback?: WorkoutFeedback) => Promise<void>;
   cancelWorkout: () => void;
   addExercise: (exerciseId: string) => Promise<void>;
   removeExercise: (exerciseId: string) => void;
@@ -32,6 +37,7 @@ interface UseWorkoutSessionReturn {
   ) => void;
   updateExerciseNotes: (exerciseId: string, notes: string) => void;
   updateWorkoutNotes: (notes: string) => void;
+  updateWorkoutFeedback: (feedback: WorkoutFeedback) => void;
   currentExerciseIndex: number;
   setCurrentExerciseIndex: (index: number) => void;
 }
@@ -88,44 +94,49 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     setCurrentExerciseIndex(0);
   }, []);
 
-  const endWorkout = useCallback(async () => {
-    if (!workout) return;
+  const endWorkout = useCallback(
+    async (feedback?: WorkoutFeedback) => {
+      if (!workout) return;
 
-    const duration = Math.round(
-      (new Date().getTime() - workout.date.getTime()) / 60000
-    ); // minutes
+      const duration = Math.round(
+        (new Date().getTime() - workout.date.getTime()) / 60000
+      ); // minutes
 
-    const completedWorkout: Workout = {
-      ...workout,
-      completed: true,
-      duration,
-      updatedAt: new Date(),
-    };
-
-    // Save to database
-    if (workout.id.startsWith('temp-workout-')) {
-      // Create new workout
-      const id = await createWorkout({
-        date: completedWorkout.date,
-        exercises: completedWorkout.exercises,
-        notes: completedWorkout.notes,
+      const completedWorkout: Workout = {
+        ...workout,
         completed: true,
         duration,
-      });
-      completedWorkout.id = id;
-    } else {
-      // Update existing workout
-      await updateWorkout(workout.id, completedWorkout);
-    }
+        feedback: feedback || workout.feedback,
+        updatedAt: new Date(),
+      };
 
-    // Clear auto-saved data
-    clearAutoSavedWorkout();
+      // Save to database
+      if (workout.id.startsWith('temp-workout-')) {
+        // Create new workout
+        const id = await createWorkout({
+          date: completedWorkout.date,
+          exercises: completedWorkout.exercises,
+          notes: completedWorkout.notes,
+          completed: true,
+          duration,
+          feedback: completedWorkout.feedback,
+        });
+        completedWorkout.id = id;
+      } else {
+        // Update existing workout
+        await updateWorkout(workout.id, completedWorkout);
+      }
 
-    // Reset state
-    setWorkout(null);
-    setIsActive(false);
-    setCurrentExerciseIndex(0);
-  }, [workout]);
+      // Clear auto-saved data
+      clearAutoSavedWorkout();
+
+      // Reset state
+      setWorkout(null);
+      setIsActive(false);
+      setCurrentExerciseIndex(0);
+    },
+    [workout]
+  );
 
   const cancelWorkout = useCallback(() => {
     if (!workout) return;
@@ -286,6 +297,19 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     [workout]
   );
 
+  const updateWorkoutFeedback = useCallback(
+    (feedback: WorkoutFeedback) => {
+      if (!workout) return;
+
+      setWorkout({
+        ...workout,
+        feedback,
+        updatedAt: new Date(),
+      });
+    },
+    [workout]
+  );
+
   return {
     workout,
     isActive,
@@ -299,6 +323,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     updateSet,
     updateExerciseNotes,
     updateWorkoutNotes,
+    updateWorkoutFeedback,
     currentExerciseIndex,
     setCurrentExerciseIndex,
   };

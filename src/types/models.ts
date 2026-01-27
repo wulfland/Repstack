@@ -68,6 +68,27 @@ export interface WorkoutExercise {
   notes?: string;
 }
 
+// Recovery/fatigue status for auto-regulation
+export type RecoveryStatus =
+  | 'well_recovered'
+  | 'moderately_recovered'
+  | 'fatigued'
+  | 'very_fatigued';
+
+// Muscle group feedback for auto-regulation
+export interface MuscleGroupFeedback {
+  muscleGroup: MuscleGroup;
+  pump?: number; // 1-5 scale
+  soreness?: number; // 1-5 scale
+}
+
+// Workout feedback for auto-regulation
+export interface WorkoutFeedback {
+  overallRecovery?: RecoveryStatus;
+  muscleGroupFeedback?: MuscleGroupFeedback[];
+  notes?: string;
+}
+
 // Complete workout session
 export interface Workout {
   id: string;
@@ -78,6 +99,7 @@ export interface Workout {
   notes?: string;
   completed: boolean;
   duration?: number; // Duration in minutes
+  feedback?: WorkoutFeedback; // Auto-regulation feedback
   createdAt: Date;
   updatedAt: Date;
 }

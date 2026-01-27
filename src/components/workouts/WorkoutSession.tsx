@@ -8,8 +8,13 @@ import { useWorkoutSession } from '../../hooks/useWorkoutSession';
 import { useExercises, useActiveMesocycle } from '../../hooks/useDatabase';
 import { useToast } from '../../hooks/useToast';
 import { getMesocycleWeekDescription } from '../../lib/mesocycleUtils';
+import type {
+  WorkoutFeedback as WorkoutFeedbackType,
+  MuscleGroup,
+} from '../../types/models';
 import ExerciseSelector from './ExerciseSelector';
 import WorkoutExerciseCard from './WorkoutExerciseCard';
+import WorkoutFeedback from './WorkoutFeedback';
 import RestTimer from './RestTimer';
 import ToastContainer from '../common/ToastContainer';
 import ConfirmDialog from '../common/ConfirmDialog';
@@ -37,6 +42,7 @@ export default function WorkoutSession() {
   const [showExerciseSelector, setShowExerciseSelector] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showRestTimer, setShowRestTimer] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   // Memoize mesocycle context to avoid recalculation on every render
   const mesocycleContext = useMemo(() => {
@@ -44,6 +50,21 @@ export default function WorkoutSession() {
       ? `${activeMesocycle.name} - ${getMesocycleWeekDescription(activeMesocycle, activeMesocycle.currentWeek)}`
       : null;
   }, [activeMesocycle]);
+
+  // Get all unique muscle groups from workout exercises
+  const workoutMuscleGroups = useMemo(() => {
+    if (!workout || !exercises) return [];
+
+    const muscleGroupSet = new Set<MuscleGroup>();
+    workout.exercises.forEach((workoutEx) => {
+      const exercise = exercises.find((ex) => ex.id === workoutEx.exerciseId);
+      if (exercise) {
+        exercise.muscleGroups.forEach((mg) => muscleGroupSet.add(mg));
+      }
+    });
+
+    return Array.from(muscleGroupSet);
+  }, [workout, exercises]);
 
   const handleStartWorkout = () => {
     startWorkout();
@@ -58,6 +79,18 @@ export default function WorkoutSession() {
       return;
     }
 
+    // Show feedback prompt
+    setShowFeedback(true);
+  };
+
+  const handleFeedbackSubmit = async (feedback: WorkoutFeedbackType) => {
+    setShowFeedback(false);
+    await endWorkout(feedback);
+    showToast('Workout saved successfully!', 'success');
+  };
+
+  const handleSkipFeedback = async () => {
+    setShowFeedback(false);
     await endWorkout();
     showToast('Workout saved successfully!', 'success');
   };
@@ -229,6 +262,14 @@ export default function WorkoutSession() {
       )}
 
       {showRestTimer && <RestTimer onClose={() => setShowRestTimer(false)} />}
+
+      {showFeedback && (
+        <WorkoutFeedback
+          muscleGroups={workoutMuscleGroups}
+          onSubmit={handleFeedbackSubmit}
+          onSkip={handleSkipFeedback}
+        />
+      )}
 
       <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>

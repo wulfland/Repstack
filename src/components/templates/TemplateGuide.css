@@ -1,0 +1,234 @@
+/* Template Guide Styles */
+
+.template-guide {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #fbbf24;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.template-guide.collapsed {
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.template-guide-expand {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #fbbf24;
+  border-radius: 8px;
+  color: #92400e;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.template-guide-expand:hover {
+  background: linear-gradient(135deg, #fde68a 0%, #fcd34d 100%);
+  border-color: #f59e0b;
+}
+
+.template-guide-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.template-guide-title {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.template-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.template-guide-title h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  color: #92400e;
+}
+
+.template-subtitle {
+  margin: 0.25rem 0 0 0;
+  font-size: 0.875rem;
+  color: #78350f;
+}
+
+.template-guide-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #92400e;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.btn-icon:hover {
+  color: #78350f;
+}
+
+.template-guide-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.template-day-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.template-day-selector label {
+  font-weight: 500;
+  color: #92400e;
+  font-size: 0.9375rem;
+}
+
+.day-select {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #f59e0b;
+  border-radius: 6px;
+  background: white;
+  color: #92400e;
+  font-weight: 500;
+  cursor: pointer;
+  flex: 1;
+  max-width: 300px;
+}
+
+.template-current-day h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: #92400e;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #fbbf24;
+}
+
+.template-exercises-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.template-exercise-guide {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #fbbf24;
+}
+
+.template-exercise-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: #fbbf24;
+  color: white;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.template-exercise-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.template-exercise-name {
+  font-weight: 600;
+  color: #92400e;
+  font-size: 0.9375rem;
+}
+
+.template-exercise-volume {
+  color: #78350f;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.template-exercise-description {
+  color: #92400e;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.template-exercise-muscles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.muscle-badge {
+  display: inline-block;
+  padding: 0.1875rem 0.5rem;
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  color: #78350f;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.template-guide-note {
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #92400e;
+  border: 1px dashed #fbbf24;
+}
+
+.template-guide-note strong {
+  color: #78350f;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .template-guide {
+    padding: 1rem;
+  }
+
+  .template-guide-header {
+    flex-direction: column;
+  }
+
+  .template-day-selector {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .day-select {
+    max-width: none;
+  }
+
+  .template-exercise-guide {
+    flex-direction: column;
+  }
+
+  .template-exercise-number {
+    align-self: flex-start;
+  }
+}

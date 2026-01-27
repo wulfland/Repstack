@@ -11,6 +11,7 @@ import { getMesocycleWeekDescription } from '../../lib/mesocycleUtils';
 import type {
   WorkoutFeedback as WorkoutFeedbackType,
   MuscleGroup,
+  ProgramTemplate,
 } from '../../types/models';
 import ExerciseSelector from './ExerciseSelector';
 import WorkoutExerciseCard from './WorkoutExerciseCard';
@@ -18,6 +19,8 @@ import WorkoutFeedback from './WorkoutFeedback';
 import RestTimer from './RestTimer';
 import ToastContainer from '../common/ToastContainer';
 import ConfirmDialog from '../common/ConfirmDialog';
+import TemplateSelector from '../templates/TemplateSelector';
+import TemplateGuide from '../templates/TemplateGuide';
 import './WorkoutSession.css';
 
 export default function WorkoutSession() {
@@ -43,6 +46,12 @@ export default function WorkoutSession() {
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showRestTimer, setShowRestTimer] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<ProgramTemplate | null>(null);
+  const [activeWorkoutTemplate, setActiveWorkoutTemplate] =
+    useState<ProgramTemplate | null>(null);
+  const [templateDayIndex, setTemplateDayIndex] = useState(0);
 
   // Memoize mesocycle context to avoid recalculation on every render
   const mesocycleContext = useMemo(() => {
@@ -68,6 +77,11 @@ export default function WorkoutSession() {
 
   const handleStartWorkout = () => {
     startWorkout();
+    // If a template is selected, activate it for the workout
+    if (selectedTemplate) {
+      setActiveWorkoutTemplate(selectedTemplate);
+      setTemplateDayIndex(0);
+    }
   };
 
   const handleEndWorkout = async () => {
@@ -87,12 +101,18 @@ export default function WorkoutSession() {
     setShowFeedback(false);
     await endWorkout(feedback);
     showToast('Workout saved successfully!', 'success');
+    // Clear active template after workout ends
+    setActiveWorkoutTemplate(null);
+    setTemplateDayIndex(0);
   };
 
   const handleSkipFeedback = async () => {
     setShowFeedback(false);
     await endWorkout();
     showToast('Workout saved successfully!', 'success');
+    // Clear active template after workout ends
+    setActiveWorkoutTemplate(null);
+    setTemplateDayIndex(0);
   };
 
   const handleCancelWorkout = () => {
@@ -103,6 +123,9 @@ export default function WorkoutSession() {
     cancelWorkout();
     setShowCancelDialog(false);
     showToast('Workout cancelled', 'info');
+    // Clear active template when workout is cancelled
+    setActiveWorkoutTemplate(null);
+    setTemplateDayIndex(0);
   };
 
   const handleAddExercise = (exerciseId: string) => {
@@ -113,6 +136,20 @@ export default function WorkoutSession() {
   const handleSetComplete = () => {
     // Show rest timer when a set is completed
     setShowRestTimer(true);
+  };
+
+  const handleTemplateSelect = (template: ProgramTemplate) => {
+    setSelectedTemplate(template);
+    setShowTemplateSelector(false);
+    showToast(
+      `Template "${template.name}" selected! Start your workout to use it.`,
+      'success'
+    );
+  };
+
+  const handleSkipTemplate = () => {
+    setShowTemplateSelector(false);
+    setSelectedTemplate(null);
   };
 
   if (!isActive) {
@@ -135,13 +172,53 @@ export default function WorkoutSession() {
               </div>
             </div>
           )}
-          <button
-            onClick={handleStartWorkout}
-            className="btn-primary btn-large"
-          >
-            🏋️ Start Workout
-          </button>
+          {selectedTemplate && (
+            <div className="template-selected-banner">
+              <span className="banner-icon">📋</span>
+              <div>
+                <div className="banner-title">
+                  Template: {selectedTemplate.name}
+                </div>
+                <div className="banner-subtitle">
+                  {selectedTemplate.daysPerWeek} days/week •{' '}
+                  {selectedTemplate.targetLevel}
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedTemplate(null)}
+                className="banner-clear-btn"
+                aria-label="Clear template"
+              >
+                ×
+              </button>
+            </div>
+          )}
+          <div className="workout-start-actions">
+            <button
+              onClick={handleStartWorkout}
+              className="btn-primary btn-large"
+            >
+              🏋️ Start Workout
+            </button>
+            <button
+              onClick={() => setShowTemplateSelector(true)}
+              className="btn-secondary btn-large"
+            >
+              📋 Browse Templates
+            </button>
+          </div>
         </div>
+
+        {showTemplateSelector && (
+          <TemplateSelector
+            isOpen={showTemplateSelector}
+            onSelectTemplate={handleTemplateSelect}
+            onSkip={handleSkipTemplate}
+            onClose={() => setShowTemplateSelector(false)}
+          />
+        )}
+
+        <ToastContainer toasts={toasts} onRemove={removeToast} />
       </div>
     );
   }
@@ -183,6 +260,15 @@ export default function WorkoutSession() {
       </div>
 
       <div className="workout-content">
+        {activeWorkoutTemplate && (
+          <TemplateGuide
+            template={activeWorkoutTemplate}
+            currentDayIndex={templateDayIndex}
+            onChangeDayIndex={setTemplateDayIndex}
+            onDismiss={() => setActiveWorkoutTemplate(null)}
+          />
+        )}
+
         {workout.exercises.length === 0 && (
           <div className="empty-workout-state">
             <p>

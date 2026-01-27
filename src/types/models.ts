@@ -171,3 +171,28 @@ export interface ExercisePreviousPerformance {
   lastWorkoutDate?: Date;
   sets: WorkoutSet[];
 }
+
+// Program template types
+export type TemplateType = 'upper_lower' | 'push_pull_legs' | 'full_body';
+
+export interface TemplateExerciseSlot {
+  name: string; // Display name like "Horizontal Push (chest focus)"
+  description: string; // More details
+  muscleGroups: MuscleGroup[]; // Primary muscle groups
+  targetSets: string; // e.g., "3-4 sets"
+  targetReps: string; // e.g., "8-12 reps"
+}
+
+export interface TemplateDayPlan {
+  name: string; // e.g., "Upper Day A", "Push Day"
+  exercises: TemplateExerciseSlot[];
+}
+
+export interface ProgramTemplate {
+  id: TemplateType;
+  name: string;
+  description: string;
+  daysPerWeek: number;
+  targetLevel: 'beginner' | 'intermediate' | 'advanced' | 'all';
+  days: TemplateDayPlan[];
+}

@@ -1,0 +1,105 @@
+.progress-tracker {
+  min-height: 100%;
+}
+
+.progress-header {
+  padding: 2rem 1rem 1rem 1rem;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.progress-header h1 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary, #1a1a1a);
+  font-size: 2rem;
+}
+
+.progress-subtitle {
+  margin: 0;
+  color: var(--text-secondary, #666);
+  font-size: 1rem;
+}
+
+.progress-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-bottom: 2px solid var(--border-color, #e0e0e0);
+  background: var(--card-background, #fff);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tab-btn {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-secondary, #666);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--primary-color, #3b82f6);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.tab-btn.active {
+  color: var(--primary-color, #3b82f6);
+  border-bottom-color: var(--primary-color, #3b82f6);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.progress-content {
+  padding: 1rem 0;
+  min-height: 500px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .progress-header {
+    padding: 1rem 0.5rem 0.5rem 0.5rem;
+  }
+
+  .progress-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .progress-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .progress-tabs {
+    gap: 0.25rem;
+    padding: 0.5rem;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .progress-content {
+    padding: 0.5rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-header h1 {
+    font-size: 1.25rem;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}

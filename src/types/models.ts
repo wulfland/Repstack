@@ -95,6 +95,7 @@ export interface Workout {
   date: Date;
   mesocycleId?: string; // Associated mesocycle
   weekNumber?: number; // Week within mesocycle (1-6)
+  splitDayId?: string; // Associated split day from mesocycle
   exercises: WorkoutExercise[];
   notes?: string;
   completed: boolean;

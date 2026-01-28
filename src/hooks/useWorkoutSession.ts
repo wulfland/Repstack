@@ -20,6 +20,7 @@ import {
   createEmptySet,
   getPreviousPerformance,
   startWorkoutFromSplit as startWorkoutFromSplitService,
+  getActiveMesocycle,
 } from '../db/service';
 
 interface UseWorkoutSessionReturn {
@@ -95,7 +96,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
       const activeMesocycle = await getActiveMesocycle();
       if (activeMesocycle) {
         splitDay = activeMesocycle.splitDays.find(
-          (sd) => sd.id === selectedSplitDayId
+          (sd: MesocycleSplitDay) => sd.id === selectedSplitDayId
         );
         if (splitDay) {
           splitDayId = selectedSplitDayId;

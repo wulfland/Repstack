@@ -25,29 +25,6 @@ export async function seedSampleMesocycle(): Promise<boolean> {
     return false;
   }
 
-  // Categorize exercises by type
-  const pushExercises = exercises
-    .filter((ex) =>
-      ex.muscleGroups.some((mg) =>
-        ['chest', 'shoulders', 'triceps'].includes(mg)
-      )
-    )
-    .slice(0, 5);
-
-  const pullExercises = exercises
-    .filter((ex) =>
-      ex.muscleGroups.some((mg) => ['back', 'biceps'].includes(mg))
-    )
-    .slice(0, 5);
-
-  const legExercises = exercises
-    .filter((ex) =>
-      ex.muscleGroups.some((mg) =>
-        ['quads', 'hamstrings', 'glutes', 'calves'].includes(mg)
-      )
-    )
-    .slice(0, 5);
-
   // Create a mesocycle (6-week hypertrophy block)
   const startDate = new Date();
   const endDate = new Date();
@@ -94,9 +71,13 @@ export async function seedSampleMesocycle(): Promise<boolean> {
     .slice(0, 4);
 
   // Create split days with exercise configurations
+  const pushSplitId = crypto.randomUUID();
+  const pullSplitId = crypto.randomUUID();
+  const legSplitId = crypto.randomUUID();
+
   const splitDays: import('../types/models').MesocycleSplitDay[] = [
     {
-      id: crypto.randomUUID(),
+      id: pushSplitId,
       name: 'Push Day',
       dayOrder: 1,
       exercises: pushExercises.map((ex, idx) => ({
@@ -109,7 +90,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
       })),
     },
     {
-      id: crypto.randomUUID(),
+      id: pullSplitId,
       name: 'Pull Day',
       dayOrder: 2,
       exercises: pullExercises.map((ex, idx) => ({
@@ -122,7 +103,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
       })),
     },
     {
-      id: crypto.randomUUID(),
+      id: legSplitId,
       name: 'Leg Day',
       dayOrder: 3,
       exercises: legExercises.map((ex, idx) => ({

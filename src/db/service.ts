@@ -654,9 +654,7 @@ function getMesocycleWeekBounds(
  * Get split completion status for current week
  * Returns which splits have been completed and when
  */
-export async function getSplitCompletionStatus(
-  mesocycleId: string
-): Promise<
+export async function getSplitCompletionStatus(mesocycleId: string): Promise<
   {
     splitDay: import('../types/models').MesocycleSplitDay;
     completed: boolean;

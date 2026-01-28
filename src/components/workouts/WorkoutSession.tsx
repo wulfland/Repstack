@@ -3,20 +3,29 @@
  * Handles active workout logging and tracking
  */
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useWorkoutSession } from '../../hooks/useWorkoutSession';
-import { useExercises, useActiveMesocycle } from '../../hooks/useDatabase';
+import {
+  useExercises,
+  useActiveMesocycle,
+  useCompletedWorkouts,
+} from '../../hooks/useDatabase';
 import { useToast } from '../../hooks/useToast';
-import { getMesocycleWeekDescription } from '../../lib/mesocycleUtils';
+import {
+  getMesocycleWeekDescription,
+  getNextSplitDay,
+} from '../../lib/mesocycleUtils';
 import type {
   WorkoutFeedback as WorkoutFeedbackType,
   MuscleGroup,
   ProgramTemplate,
+  MesocycleSplitDay,
 } from '../../types/models';
 import ExerciseSelector from './ExerciseSelector';
 import WorkoutExerciseCard from './WorkoutExerciseCard';
 import WorkoutFeedback from './WorkoutFeedback';
 import RestTimer from './RestTimer';
+import SplitDaySelector from './SplitDaySelector';
 import ToastContainer from '../common/ToastContainer';
 import ConfirmDialog from '../common/ConfirmDialog';
 import TemplateSelector from '../templates/TemplateSelector';
@@ -28,6 +37,7 @@ export default function WorkoutSession() {
     workout,
     isActive,
     startWorkout,
+    startWorkoutFromSplit,
     endWorkout,
     cancelWorkout,
     addExercise,
@@ -41,17 +51,21 @@ export default function WorkoutSession() {
 
   const exercises = useExercises();
   const activeMesocycle = useActiveMesocycle();
+  const completedWorkouts = useCompletedWorkouts();
   const { toasts, showToast, removeToast } = useToast();
   const [showExerciseSelector, setShowExerciseSelector] = useState(false);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [showRestTimer, setShowRestTimer] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [showSplitSelector, setShowSplitSelector] = useState(false);
   const [selectedTemplate, setSelectedTemplate] =
     useState<ProgramTemplate | null>(null);
   const [activeWorkoutTemplate, setActiveWorkoutTemplate] =
     useState<ProgramTemplate | null>(null);
   const [templateDayIndex, setTemplateDayIndex] = useState(0);
+  const [recommendedSplit, setRecommendedSplit] =
+    useState<MesocycleSplitDay | null>(null);
 
   // Memoize mesocycle context to avoid recalculation on every render
   const mesocycleContext = useMemo(() => {
@@ -59,6 +73,17 @@ export default function WorkoutSession() {
       ? `${activeMesocycle.name} - ${getMesocycleWeekDescription(activeMesocycle, activeMesocycle.currentWeek)}`
       : null;
   }, [activeMesocycle]);
+
+  // Calculate recommended split when mesocycle or completed workouts change
+  useEffect(() => {
+    if (activeMesocycle && completedWorkouts) {
+      getNextSplitDay(activeMesocycle, completedWorkouts).then(
+        setRecommendedSplit
+      );
+    } else {
+      setRecommendedSplit(null);
+    }
+  }, [activeMesocycle, completedWorkouts]);
 
   // Get all unique muscle groups from workout exercises
   const workoutMuscleGroups = useMemo(() => {
@@ -76,12 +101,56 @@ export default function WorkoutSession() {
   }, [workout, exercises]);
 
   const handleStartWorkout = () => {
-    startWorkout();
-    // If a template is selected, activate it for the workout
-    if (selectedTemplate) {
-      setActiveWorkoutTemplate(selectedTemplate);
-      setTemplateDayIndex(0);
+    // If mesocycle has split days configured, show split selector
+    if (
+      activeMesocycle &&
+      activeMesocycle.splitDays &&
+      activeMesocycle.splitDays.length > 0
+    ) {
+      setShowSplitSelector(true);
+    } else {
+      // No mesocycle or no splits configured, start empty workout
+      startWorkout();
+      // If a template is selected, activate it for the workout
+      if (selectedTemplate) {
+        setActiveWorkoutTemplate(selectedTemplate);
+        setTemplateDayIndex(0);
+      }
     }
+  };
+
+  const handleSplitSelect = async (splitDayId: string) => {
+    setShowSplitSelector(false);
+    if (!activeMesocycle) return;
+
+    try {
+      await startWorkoutFromSplit(activeMesocycle.id, splitDayId);
+
+      // Find the selected split to show its name
+      const selectedSplit = activeMesocycle.splitDays.find(
+        (s) => s.id === splitDayId
+      );
+      if (selectedSplit) {
+        showToast(
+          `Starting ${selectedSplit.name} with ${selectedSplit.exercises?.length || 0} exercises`,
+          'success'
+        );
+      }
+    } catch (error) {
+      showToast(
+        'Failed to start workout from split. Starting empty workout instead.',
+        'error'
+      );
+      console.error('Error starting workout from split:', error);
+      // Fall back to empty workout
+      startWorkout();
+    }
+  };
+
+  const handleCancelSplitSelection = () => {
+    setShowSplitSelector(false);
+    // Start empty workout if user cancels split selection
+    startWorkout();
   };
 
   const handleEndWorkout = async () => {
@@ -218,6 +287,19 @@ export default function WorkoutSession() {
           />
         )}
 
+        {showSplitSelector &&
+          activeMesocycle &&
+          completedWorkouts &&
+          recommendedSplit && (
+            <SplitDaySelector
+              mesocycle={activeMesocycle}
+              completedWorkouts={completedWorkouts}
+              recommendedSplit={recommendedSplit}
+              onSelect={handleSplitSelect}
+              onCancel={handleCancelSplitSelection}
+            />
+          )}
+
         <ToastContainer toasts={toasts} onRemove={removeToast} />
       </div>
     );
@@ -231,12 +313,27 @@ export default function WorkoutSession() {
     (new Date().getTime() - workout.date.getTime()) / 60000
   );
 
+  // Get the split day name if this workout is from a split
+  const splitDayName = useMemo(() => {
+    if (!workout.splitDayId || !activeMesocycle) return null;
+    const split = activeMesocycle.splitDays.find(
+      (s) => s.id === workout.splitDayId
+    );
+    return split?.name || null;
+  }, [workout.splitDayId, activeMesocycle]);
+
   return (
     <div className="workout-session-container">
       {mesocycleContext && (
         <div className="mesocycle-context-banner active-workout">
           <span className="banner-icon">📅</span>
           <span className="banner-text">{mesocycleContext}</span>
+        </div>
+      )}
+      {splitDayName && (
+        <div className="split-day-banner">
+          <span className="banner-icon">🎯</span>
+          <span className="banner-text">Training: {splitDayName}</span>
         </div>
       )}
       <div className="workout-header">

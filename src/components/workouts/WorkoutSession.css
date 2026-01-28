@@ -21,6 +21,18 @@
   max-width: none;
 }
 
+/* Split Day Banner */
+.split-day-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #dcfce7 0%, #dbeafe 100%);
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  margin: 0 1rem 1rem 1rem;
+}
+
 .banner-icon {
   font-size: 1.5rem;
   flex-shrink: 0;

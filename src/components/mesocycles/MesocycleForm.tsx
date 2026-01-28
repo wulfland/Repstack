@@ -300,12 +300,18 @@ export default function MesocycleForm({
               </>
             )}
 
-            {step === 'exercises' && exercises && (
-              <MesocycleExerciseConfig
-                splitDays={splitDays}
-                exercises={exercises}
-                onChange={setSplitDays}
-              />
+            {step === 'exercises' && (
+              exercises ? (
+                <MesocycleExerciseConfig
+                  splitDays={splitDays}
+                  exercises={exercises}
+                  onChange={setSplitDays}
+                />
+              ) : (
+                <div className="loading-state">
+                  <p>Loading exercises...</p>
+                </div>
+              )
             )}
           </div>
 

@@ -348,7 +348,7 @@ export default function MesocycleForm({
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !exercises}
                 >
                   {isSubmitting ? 'Creating...' : 'Create Mesocycle'}
                 </button>

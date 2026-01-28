@@ -76,13 +76,24 @@ export default function WorkoutSession() {
 
   // Calculate recommended split when mesocycle or completed workouts change
   useEffect(() => {
-    if (activeMesocycle && completedWorkouts) {
-      getNextSplitDay(activeMesocycle, completedWorkouts).then(
-        setRecommendedSplit
-      );
-    } else {
-      setRecommendedSplit(null);
-    }
+    let cancelled = false;
+    
+    const fetchRecommendedSplit = async () => {
+      if (activeMesocycle && completedWorkouts) {
+        const split = await getNextSplitDay(activeMesocycle, completedWorkouts);
+        if (!cancelled) {
+          setRecommendedSplit(split);
+        }
+      } else if (!cancelled) {
+        setRecommendedSplit(null);
+      }
+    };
+    
+    fetchRecommendedSplit();
+    
+    return () => {
+      cancelled = true;
+    };
   }, [activeMesocycle, completedWorkouts]);
 
   // Get all unique muscle groups from workout exercises
@@ -107,7 +118,7 @@ export default function WorkoutSession() {
       (s) => s.id === workout.splitDayId
     );
     return split?.name || null;
-  }, [workout?.splitDayId, activeMesocycle]);
+  }, [workout, activeMesocycle]);
 
   const handleStartWorkout = () => {
     // If mesocycle has split days configured, show split selector

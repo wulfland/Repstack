@@ -9,6 +9,7 @@ import type {
   WorkoutExercise,
   WorkoutSet,
   WorkoutFeedback,
+  MesocycleSplitDay,
 } from '../types/models';
 import {
   createWorkout,
@@ -19,6 +20,7 @@ import {
   createEmptySet,
   getPreviousPerformance,
   startWorkoutFromSplit as startWorkoutFromSplitService,
+  getActiveMesocycle,
 } from '../db/service';
 
 interface UseWorkoutSessionReturn {
@@ -83,10 +85,31 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     };
   }, [workout, isActive]);
 
-  const startWorkout = useCallback(() => {
+  const startWorkout = useCallback(async () => {
+    // Check if there's a selected split day from the dashboard
+    const selectedSplitDayId = localStorage.getItem('selectedSplitDayId');
+    let splitDayId: string | undefined;
+    let splitDay: MesocycleSplitDay | undefined;
+
+    if (selectedSplitDayId) {
+      // Get the active mesocycle to find the split day
+      const activeMesocycle = await getActiveMesocycle();
+      if (activeMesocycle) {
+        splitDay = activeMesocycle.splitDays.find(
+          (sd: MesocycleSplitDay) => sd.id === selectedSplitDayId
+        );
+        if (splitDay) {
+          splitDayId = selectedSplitDayId;
+        }
+      }
+      // Clear the selected split day from localStorage
+      localStorage.removeItem('selectedSplitDayId');
+    }
+
     const newWorkout: Workout = {
       id: 'temp-workout-' + crypto.randomUUID(), // Temporary ID until saved to DB
       date: new Date(),
+      splitDayId,
       exercises: [],
       notes: undefined,
       completed: false,
@@ -94,9 +117,45 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
     setWorkout(newWorkout);
     setIsActive(true);
     setCurrentExerciseIndex(0);
+
+    // If we have a split day, auto-load its exercises
+    if (splitDay && splitDay.exercises.length > 0) {
+      // We'll load exercises asynchronously after the workout is created
+      const exercisesWithSets: WorkoutExercise[] = [];
+
+      for (const mesocycleExercise of splitDay.exercises) {
+        // Get previous performance for this exercise
+        const previousPerformance = await getPreviousPerformance(
+          mesocycleExercise.exerciseId
+        );
+
+        // Create sets based on mesocycle configuration
+        const sets: WorkoutSet[] = [];
+        for (let i = 0; i < mesocycleExercise.targetSets; i++) {
+          const previousSet =
+            previousPerformance?.sets && previousPerformance.sets[i];
+          sets.push(
+            createEmptySet(mesocycleExercise.exerciseId, i + 1, previousSet)
+          );
+        }
+
+        exercisesWithSets.push({
+          exerciseId: mesocycleExercise.exerciseId,
+          sets,
+          notes: mesocycleExercise.notes,
+        });
+      }
+
+      // Update workout with exercises
+      setWorkout({
+        ...newWorkout,
+        exercises: exercisesWithSets,
+      });
+    }
   }, []);
 
   const startWorkoutFromSplit = useCallback(
@@ -138,6 +197,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
         // Create new workout
         const id = await createWorkout({
           date: completedWorkout.date,
+          splitDayId: completedWorkout.splitDayId,
           exercises: completedWorkout.exercises,
           notes: completedWorkout.notes,
           completed: true,

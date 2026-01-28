@@ -1,0 +1,263 @@
+.split-progress-tracker {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.split-progress-tracker.deload-week {
+  border-color: #fbbf24;
+  background: linear-gradient(to bottom, #fffbeb 0%, #ffffff 100%);
+}
+
+.split-progress-tracker.loading,
+.split-progress-tracker.empty {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+/* Header */
+.tracker-header {
+  margin-bottom: 1rem;
+}
+
+.tracker-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.deload-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 1rem;
+  background: #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  border-radius: 0.5rem;
+  transition: width 0.3s ease;
+}
+
+.progress-fill.deload {
+  background: linear-gradient(to right, #fbbf24, #f59e0b);
+}
+
+.progress-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  min-width: 3rem;
+  text-align: right;
+}
+
+/* Week Progress Section */
+.week-progress-section {
+  margin-top: 1.5rem;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 1rem 0;
+}
+
+/* Split Cards */
+.split-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.split-card {
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.split-card.completed {
+  background: #ecfdf5;
+  border-color: #10b981;
+}
+
+.split-card.next {
+  background: #dbeafe;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.split-card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.split-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.split-status {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #10b981;
+  min-height: 1.5rem;
+}
+
+.split-card.next .split-status {
+  color: #3b82f6;
+  font-size: 1rem;
+}
+
+.split-date {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+.split-info {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+/* Completion Message */
+.completion-message {
+  text-align: center;
+  padding: 1.5rem;
+  background: #f0fdf4;
+  border: 2px solid #10b981;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+.completion-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.completion-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #065f46;
+  margin: 0 0 0.25rem 0;
+}
+
+.completion-subtext {
+  font-size: 0.875rem;
+  color: #047857;
+  margin: 0;
+}
+
+/* Start Workout Button */
+.start-workout-btn {
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Deload Message */
+.deload-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fffbeb;
+  border: 1px solid #fbbf24;
+  border-radius: 8px;
+}
+
+.deload-message p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #78350f;
+  line-height: 1.5;
+}
+
+.deload-message strong {
+  color: #92400e;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .split-progress-tracker {
+    padding: 1rem;
+  }
+
+  .tracker-title {
+    font-size: 1.125rem;
+  }
+
+  .split-cards {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .split-card {
+    padding: 0.75rem;
+  }
+
+  .split-name {
+    font-size: 0.875rem;
+  }
+
+  .split-status {
+    font-size: 1.25rem;
+  }
+
+  .progress-bar-container {
+    gap: 0.75rem;
+  }
+
+  .progress-label {
+    min-width: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .split-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .split-card {
+    padding: 1rem;
+  }
+}

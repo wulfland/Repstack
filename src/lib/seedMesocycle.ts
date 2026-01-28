@@ -71,9 +71,13 @@ export async function seedSampleMesocycle(): Promise<boolean> {
     .slice(0, 4);
 
   // Create split days with exercise configurations
+  const pushSplitId = crypto.randomUUID();
+  const pullSplitId = crypto.randomUUID();
+  const legSplitId = crypto.randomUUID();
+
   const splitDays: import('../types/models').MesocycleSplitDay[] = [
     {
-      id: crypto.randomUUID(),
+      id: pushSplitId,
       name: 'Push Day',
       dayOrder: 1,
       exercises: pushExercises.map((ex, idx) => ({
@@ -86,7 +90,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
       })),
     },
     {
-      id: crypto.randomUUID(),
+      id: pullSplitId,
       name: 'Pull Day',
       dayOrder: 2,
       exercises: pullExercises.map((ex, idx) => ({
@@ -99,7 +103,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
       })),
     },
     {
-      id: crypto.randomUUID(),
+      id: legSplitId,
       name: 'Leg Day',
       dayOrder: 3,
       exercises: legExercises.map((ex, idx) => ({
@@ -136,6 +140,9 @@ export async function seedSampleMesocycle(): Promise<boolean> {
 
     await createWorkout({
       date: pushDate,
+      mesocycleId,
+      weekNumber: 1,
+      splitDayId: pushSplitId,
       exercises: pushExercises.map((ex, index) => ({
         exerciseId: ex.id,
         sets: Array.from({ length: 3 }, (_, setIndex) => ({
@@ -162,6 +169,9 @@ export async function seedSampleMesocycle(): Promise<boolean> {
 
     await createWorkout({
       date: pullDate,
+      mesocycleId,
+      weekNumber: 1,
+      splitDayId: pullSplitId,
       exercises: pullExercises.map((ex, index) => ({
         exerciseId: ex.id,
         sets: Array.from({ length: 3 }, (_, setIndex) => ({
@@ -181,28 +191,8 @@ export async function seedSampleMesocycle(): Promise<boolean> {
     });
   }
 
-  // Create Leg workout (today)
-  if (legExercises.length > 0) {
-    await createWorkout({
-      date: new Date(),
-      exercises: legExercises.map((ex, index) => ({
-        exerciseId: ex.id,
-        sets: Array.from({ length: 4 }, (_, setIndex) => ({
-          id: crypto.randomUUID(),
-          exerciseId: ex.id,
-          setNumber: setIndex + 1,
-          targetReps: 12,
-          actualReps: setIndex < 3 ? 12 : 10, // Last set to failure
-          weight: 150 + index * 20,
-          rir: setIndex < 3 ? 2 : 0,
-          completed: true,
-        })),
-      })),
-      notes: 'Leg day - Quads, Hamstrings, Glutes, Calves',
-      completed: true,
-      duration: 90,
-    });
-  }
+  // Don't create the Leg workout yet - let the user test the tracker!
+  // This will show Push and Pull as completed, and Legs as "Next"
 
   console.log('Created sample workouts');
   return true;

@@ -216,10 +216,12 @@ export async function createWorkout(
     date: workout.date,
     mesocycleId,
     weekNumber,
+    splitDayId: workout.splitDayId,
     exercises: workout.exercises,
     notes: workout.notes ? sanitizeString(workout.notes) : undefined,
     completed: workout.completed,
     duration: workout.duration,
+    feedback: workout.feedback,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -615,6 +617,84 @@ export function recoverActiveWorkout():
  */
 export function clearAutoSavedWorkout(): void {
   localStorage.removeItem('activeWorkout');
+}
+
+// ===== Mesocycle Split Progression Helpers =====
+
+/**
+ * Get the start and end dates for a given week in a mesocycle
+ */
+function getMesocycleWeekBounds(
+  mesocycle: Mesocycle,
+  weekNumber: number
+): { startDate: Date; endDate: Date } | null {
+  if (weekNumber < 1 || weekNumber > mesocycle.durationWeeks) {
+    return null;
+  }
+
+  const startDate = new Date(mesocycle.startDate);
+  startDate.setHours(0, 0, 0, 0);
+
+  // Calculate the start of the given week
+  const weekStartDate = new Date(startDate);
+  weekStartDate.setDate(startDate.getDate() + (weekNumber - 1) * 7);
+
+  // Calculate the end of the given week
+  const weekEndDate = new Date(weekStartDate);
+  weekEndDate.setDate(weekStartDate.getDate() + 6);
+  weekEndDate.setHours(23, 59, 59, 999);
+
+  return {
+    startDate: weekStartDate,
+    endDate: weekEndDate,
+  };
+}
+
+/**
+ * Get split completion status for current week
+ * Returns which splits have been completed and when
+ */
+export async function getSplitCompletionStatus(mesocycleId: string): Promise<
+  {
+    splitDay: import('../types/models').MesocycleSplitDay;
+    completed: boolean;
+    completedDate?: Date;
+  }[]
+> {
+  const mesocycle = await db.mesocycles.get(mesocycleId);
+  if (!mesocycle) {
+    return [];
+  }
+
+  const weekBounds = getMesocycleWeekBounds(mesocycle, mesocycle.currentWeek);
+  if (!weekBounds) {
+    return [];
+  }
+
+  // Get all completed workouts for this mesocycle in the current week
+  const completedWorkouts = await db.workouts
+    .filter(
+      (workout) =>
+        workout.mesocycleId === mesocycleId &&
+        workout.completed &&
+        workout.date >= weekBounds.startDate &&
+        workout.date <= weekBounds.endDate
+    )
+    .toArray();
+
+  // Map split days to completion status
+  return mesocycle.splitDays.map((splitDay) => {
+    // Find the most recent completed workout for this split day
+    const workout = completedWorkouts
+      .filter((w) => w.splitDayId === splitDay.id)
+      .sort((a, b) => b.date.getTime() - a.date.getTime())[0];
+
+    return {
+      splitDay,
+      completed: !!workout,
+      completedDate: workout?.date,
+    };
+  });
 }
 
 export async function exportData(): Promise<string> {

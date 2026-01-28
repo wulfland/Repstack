@@ -70,10 +70,71 @@ export async function seedSampleMesocycle(): Promise<boolean> {
   ];
   const mesocycleName = `Hypertrophy Block - ${monthNames[startDate.getMonth()]} ${startDate.getFullYear()}`;
 
-  // Create split days
-  const pushSplitId = crypto.randomUUID();
-  const pullSplitId = crypto.randomUUID();
-  const legsSplitId = crypto.randomUUID();
+  // Prepare split day exercises
+  const pushExercises = exercises
+    .filter((ex) =>
+      ex.muscleGroups.some((mg) =>
+        ['chest', 'shoulders', 'triceps'].includes(mg)
+      )
+    )
+    .slice(0, 4);
+
+  const pullExercises = exercises
+    .filter((ex) =>
+      ex.muscleGroups.some((mg) => ['back', 'biceps'].includes(mg))
+    )
+    .slice(0, 4);
+
+  const legExercises = exercises
+    .filter((ex) =>
+      ex.muscleGroups.some((mg) =>
+        ['quads', 'hamstrings', 'glutes', 'calves'].includes(mg)
+      )
+    )
+    .slice(0, 4);
+
+  // Create split days with exercise configurations
+  const splitDays: import('../types/models').MesocycleSplitDay[] = [
+    {
+      id: crypto.randomUUID(),
+      name: 'Push Day',
+      dayOrder: 1,
+      exercises: pushExercises.map((ex, idx) => ({
+        exerciseId: ex.id,
+        order: idx,
+        targetSets: 3,
+        targetRepsMin: 8,
+        targetRepsMax: 12,
+        restSeconds: 90,
+      })),
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Pull Day',
+      dayOrder: 2,
+      exercises: pullExercises.map((ex, idx) => ({
+        exerciseId: ex.id,
+        order: idx,
+        targetSets: 3,
+        targetRepsMin: 8,
+        targetRepsMax: 12,
+        restSeconds: 90,
+      })),
+    },
+    {
+      id: crypto.randomUUID(),
+      name: 'Leg Day',
+      dayOrder: 3,
+      exercises: legExercises.map((ex, idx) => ({
+        exerciseId: ex.id,
+        order: idx,
+        targetSets: 3,
+        targetRepsMin: 8,
+        targetRepsMax: 12,
+        restSeconds: 120,
+      })),
+    },
+  ];
 
   const mesocycleId = await createMesocycle({
     name: mesocycleName,
@@ -83,50 +144,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
     currentWeek: 1,
     deloadWeek: 6,
     trainingSplit: 'push_pull_legs',
-    splitDays: [
-      {
-        id: pushSplitId,
-        name: 'Push',
-        dayOrder: 1,
-        exercises: pushExercises.map((ex, index) => ({
-          exerciseId: ex.id,
-          order: index,
-          targetSets: 3,
-          targetRepsMin: 8,
-          targetRepsMax: 12,
-          restSeconds: 90,
-          notes: undefined,
-        })),
-      },
-      {
-        id: pullSplitId,
-        name: 'Pull',
-        dayOrder: 2,
-        exercises: pullExercises.map((ex, index) => ({
-          exerciseId: ex.id,
-          order: index,
-          targetSets: 3,
-          targetRepsMin: 8,
-          targetRepsMax: 12,
-          restSeconds: 90,
-          notes: undefined,
-        })),
-      },
-      {
-        id: legsSplitId,
-        name: 'Legs',
-        dayOrder: 3,
-        exercises: legExercises.map((ex, index) => ({
-          exerciseId: ex.id,
-          order: index,
-          targetSets: 4,
-          targetRepsMin: 10,
-          targetRepsMax: 15,
-          restSeconds: 120,
-          notes: undefined,
-        })),
-      },
-    ],
+    splitDays,
     status: 'active',
     notes: 'Focus on progressive overload and muscle building',
   });
@@ -134,6 +152,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
   console.log('Created sample mesocycle:', mesocycleId);
 
   // Create a few sample workouts with exercises
+  // Create Push workout
   if (pushExercises.length > 0) {
     const pushDate = new Date(startDate);
     pushDate.setDate(pushDate.getDate() - 2); // 2 days ago

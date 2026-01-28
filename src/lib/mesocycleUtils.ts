@@ -2,7 +2,7 @@
  * Utility functions for mesocycle operations
  */
 
-import type { Mesocycle } from '../types/models';
+import type { Mesocycle, Workout, MesocycleSplitDay } from '../types/models';
 import { db } from '../db';
 import { updateMesocycle } from '../db/service';
 
@@ -157,4 +157,38 @@ export function getMesocycleWeekDescription(
   }
 
   return `Week ${weekNumber}`;
+}
+
+/**
+ * Determine the next split day to perform based on completed workouts
+ * Returns the next uncompleted split in order, or cycles back to first if all are complete
+ */
+export async function getNextSplitDay(
+  mesocycle: Mesocycle,
+  completedWorkouts: Workout[]
+): Promise<MesocycleSplitDay | null> {
+  if (!mesocycle.splitDays || mesocycle.splitDays.length === 0) {
+    return null;
+  }
+
+  // Get workouts from current week
+  const currentWeekWorkouts = completedWorkouts.filter(
+    (w) =>
+      w.mesocycleId === mesocycle.id &&
+      w.weekNumber === mesocycle.currentWeek &&
+      w.completed
+  );
+
+  // Get completed split day IDs this week
+  const completedSplitIds = new Set(
+    currentWeekWorkouts.map((w) => w.splitDayId).filter(Boolean)
+  );
+
+  // Find next uncompleted split in order
+  const nextSplit = mesocycle.splitDays.find(
+    (split) => !completedSplitIds.has(split.id)
+  );
+
+  // If all splits completed, cycle back to first
+  return nextSplit || mesocycle.splitDays[0] || null;
 }

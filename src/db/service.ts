@@ -22,6 +22,7 @@ import {
 import {
   getWorkoutMesocycleInfo,
   updateMesocycleProgress,
+  getNextSplitDay as getNextSplitDayUtil,
 } from '../lib/mesocycleUtils';
 
 // ===== UserProfile CRUD =====
@@ -782,4 +783,122 @@ export async function importData(jsonData: string): Promise<void> {
   if (safeMesocycles.length > 0) {
     await db.mesocycles.bulkAdd(safeMesocycles);
   }
+}
+
+// ===== Mesocycle Workout Integration Functions =====
+
+/**
+ * Get the next recommended split day for a mesocycle
+ * Returns null if no splits configured or mesocycle not found
+ */
+export async function getNextSplitDay(
+  mesocycleId: string
+): Promise<import('../types/models').MesocycleSplitDay | null> {
+  const mesocycle = await db.mesocycles.get(mesocycleId);
+  if (!mesocycle) {
+    return null;
+  }
+
+  // Get all completed workouts for this mesocycle
+  const completedWorkouts = await db.workouts
+    .filter((w) => w.mesocycleId === mesocycleId && w.completed)
+    .toArray();
+
+  return getNextSplitDayUtil(mesocycle, completedWorkouts);
+}
+
+/**
+ * Start a workout with pre-loaded exercises from a split day
+ * Returns a workout object with exercises configured from the mesocycle split
+ */
+export async function startWorkoutFromSplit(
+  mesocycleId: string,
+  splitDayId: string
+): Promise<import('../types/models').Workout> {
+  const mesocycle = await db.mesocycles.get(mesocycleId);
+  if (!mesocycle) {
+    throw new Error(`Mesocycle with id ${mesocycleId} not found`);
+  }
+
+  const splitDay = mesocycle.splitDays.find((s) => s.id === splitDayId);
+  if (!splitDay) {
+    throw new Error(
+      `Split day with id ${splitDayId} not found in mesocycle ${mesocycleId}`
+    );
+  }
+
+  // Get mesocycle info for this workout
+  const workoutDate = new Date();
+  const mesocycleInfo = await getWorkoutMesocycleInfo(workoutDate);
+
+  // Create workout exercises from split day configuration
+  const workoutExercises: import('../types/models').WorkoutExercise[] = [];
+
+  for (const mesocycleExercise of splitDay.exercises) {
+    // Check if exercise exists
+    const exercise = await db.exercises.get(mesocycleExercise.exerciseId);
+    if (!exercise) {
+      // Skip missing exercises - they may have been deleted
+      console.warn(
+        `Exercise ${mesocycleExercise.exerciseId} not found, skipping`
+      );
+      continue;
+    }
+
+    // Get previous performance for progressive overload
+    const previousPerformance = await getPreviousPerformance(
+      mesocycleExercise.exerciseId
+    );
+    const previousSet =
+      previousPerformance?.sets[previousPerformance.sets.length - 1];
+
+    // Create sets based on mesocycle configuration
+    const sets: import('../types/models').WorkoutSet[] = [];
+    const isDeloadWeek = mesocycleInfo?.weekNumber === mesocycle.deloadWeek;
+    const targetSets = isDeloadWeek
+      ? Math.max(1, Math.floor(mesocycleExercise.targetSets * 0.6)) // Reduce sets by ~40% on deload
+      : mesocycleExercise.targetSets;
+
+    for (let i = 0; i < targetSets; i++) {
+      const targetReps =
+        Math.floor(
+          (mesocycleExercise.targetRepsMin + mesocycleExercise.targetRepsMax) /
+            2
+        ) || 10;
+
+      sets.push({
+        id: crypto.randomUUID(),
+        exerciseId: mesocycleExercise.exerciseId,
+        setNumber: i + 1,
+        targetReps: targetReps,
+        actualReps: undefined,
+        weight: previousSet?.weight ?? 0,
+        rir: undefined,
+        completed: false,
+      });
+    }
+
+    workoutExercises.push({
+      exerciseId: mesocycleExercise.exerciseId,
+      sets,
+      notes: mesocycleExercise.notes,
+    });
+  }
+
+  // Create the workout object
+  const workout: import('../types/models').Workout = {
+    id: 'temp-workout-' + crypto.randomUUID(),
+    date: workoutDate,
+    mesocycleId: mesocycleInfo?.mesocycleId || mesocycleId,
+    weekNumber: mesocycleInfo?.weekNumber,
+    splitDayId: splitDayId,
+    exercises: workoutExercises,
+    notes: undefined,
+    completed: false,
+    duration: undefined,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  return workout;
 }

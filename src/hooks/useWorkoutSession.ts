@@ -19,13 +19,17 @@ import {
   clearAutoSavedWorkout,
   createEmptySet,
   getPreviousPerformance,
-  getActiveMesocycle,
+  startWorkoutFromSplit as startWorkoutFromSplitService,
 } from '../db/service';
 
 interface UseWorkoutSessionReturn {
   workout: Workout | null;
   isActive: boolean;
-  startWorkout: () => Promise<void>;
+  startWorkout: () => void;
+  startWorkoutFromSplit: (
+    mesocycleId: string,
+    splitDayId: string
+  ) => Promise<void>;
   endWorkout: (feedback?: WorkoutFeedback) => Promise<void>;
   cancelWorkout: () => void;
   addExercise: (exerciseId: string) => Promise<void>;
@@ -152,6 +156,24 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
       });
     }
   }, []);
+
+  const startWorkoutFromSplit = useCallback(
+    async (mesocycleId: string, splitDayId: string) => {
+      try {
+        const newWorkout = await startWorkoutFromSplitService(
+          mesocycleId,
+          splitDayId
+        );
+        setWorkout(newWorkout);
+        setIsActive(true);
+        setCurrentExerciseIndex(0);
+      } catch (error) {
+        console.error('Failed to start workout from split:', error);
+        throw error;
+      }
+    },
+    []
+  );
 
   const endWorkout = useCallback(
     async (feedback?: WorkoutFeedback) => {
@@ -374,6 +396,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     workout,
     isActive,
     startWorkout,
+    startWorkoutFromSplit,
     endWorkout,
     cancelWorkout,
     addExercise,

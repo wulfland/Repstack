@@ -12,6 +12,7 @@ import {
 import type { Mesocycle } from '../../types/models';
 import MesocycleCard from './MesocycleCard';
 import MesocycleForm from './MesocycleForm';
+import SplitProgressTracker from './SplitProgressTracker';
 import './MesocycleDashboard.css';
 
 export default function MesocycleDashboard() {
@@ -85,6 +86,17 @@ export default function MesocycleDashboard() {
     setShowForm(true);
   };
 
+  const handleStartWorkout = (splitDayId: string) => {
+    // Store the selected split day ID in localStorage for the workout session to pick up
+    localStorage.setItem('selectedSplitDayId', splitDayId);
+    // In a real app with routing, we would navigate to /workout
+    // For now, we'll just alert (the parent App component would handle navigation)
+    alert(
+      'Navigate to workout session with split day: ' + splitDayId + '\n\n' +
+      'Note: Full integration requires navigation support in the parent component.'
+    );
+  };
+
   return (
     <div className="mesocycle-dashboard">
       <div className="dashboard-header">
@@ -98,6 +110,14 @@ export default function MesocycleDashboard() {
           + Create Mesocycle
         </button>
       </div>
+
+      {/* Active Mesocycle Split Progress */}
+      {activeMesocycle && filter === 'active' && (
+        <SplitProgressTracker
+          mesocycle={activeMesocycle}
+          onStartWorkout={handleStartWorkout}
+        />
+      )}
 
       {/* Filter Tabs */}
       <div className="filter-tabs">

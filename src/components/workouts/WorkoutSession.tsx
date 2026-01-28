@@ -100,6 +100,15 @@ export default function WorkoutSession() {
     return Array.from(muscleGroupSet);
   }, [workout, exercises]);
 
+  // Get the split day name if this workout is from a split
+  const splitDayName = useMemo(() => {
+    if (!workout?.splitDayId || !activeMesocycle) return null;
+    const split = activeMesocycle.splitDays.find(
+      (s) => s.id === workout.splitDayId
+    );
+    return split?.name || null;
+  }, [workout?.splitDayId, activeMesocycle]);
+
   const handleStartWorkout = () => {
     // If mesocycle has split days configured, show split selector
     if (
@@ -312,15 +321,6 @@ export default function WorkoutSession() {
   const workoutDuration = Math.round(
     (new Date().getTime() - workout.date.getTime()) / 60000
   );
-
-  // Get the split day name if this workout is from a split
-  const splitDayName = useMemo(() => {
-    if (!workout.splitDayId || !activeMesocycle) return null;
-    const split = activeMesocycle.splitDays.find(
-      (s) => s.id === workout.splitDayId
-    );
-    return split?.name || null;
-  }, [workout.splitDayId, activeMesocycle]);
 
   return (
     <div className="workout-session-container">

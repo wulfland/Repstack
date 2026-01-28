@@ -776,8 +776,7 @@ export async function startWorkoutFromSplit(
 
     // Create sets based on mesocycle configuration
     const sets: import('../types/models').WorkoutSet[] = [];
-    const isDeloadWeek =
-      mesocycleInfo?.weekNumber === mesocycle.deloadWeek;
+    const isDeloadWeek = mesocycleInfo?.weekNumber === mesocycle.deloadWeek;
     const targetSets = isDeloadWeek
       ? Math.max(1, Math.floor(mesocycleExercise.targetSets * 0.6)) // Reduce sets by ~40% on deload
       : mesocycleExercise.targetSets;

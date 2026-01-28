@@ -102,8 +102,10 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
   const startWorkoutFromSplit = useCallback(
     async (mesocycleId: string, splitDayId: string) => {
       try {
-        const newWorkout =
-          await startWorkoutFromSplitService(mesocycleId, splitDayId);
+        const newWorkout = await startWorkoutFromSplitService(
+          mesocycleId,
+          splitDayId
+        );
         setWorkout(newWorkout);
         setIsActive(true);
         setCurrentExerciseIndex(0);

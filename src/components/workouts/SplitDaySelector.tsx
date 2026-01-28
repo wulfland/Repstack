@@ -33,8 +33,13 @@ export default function SplitDaySelector({
     currentWeekWorkouts.map((w) => w.splitDayId).filter(Boolean)
   );
 
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onCancel();
+  };
+
   return (
-    <div className="split-day-selector-overlay" onClick={onCancel}>
+    <div className="split-day-selector-overlay" onClick={handleOverlayClick}>
       <div
         className="split-day-selector-dialog"
         onClick={(e) => e.stopPropagation()}

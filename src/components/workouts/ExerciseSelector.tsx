@@ -56,8 +56,13 @@ export default function ExerciseSelector({
     return icons[category];
   };
 
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  };
+
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Add Exercise</h2>

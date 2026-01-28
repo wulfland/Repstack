@@ -3,10 +3,7 @@
  */
 
 import { useState } from 'react';
-import type {
-  Exercise,
-  MesocycleSplitDay,
-} from '../../types/models';
+import type { Exercise, MesocycleSplitDay } from '../../types/models';
 import SplitDayEditor from './SplitDayEditor';
 import './MesocycleExerciseConfig.css';
 
@@ -37,10 +34,7 @@ export default function MesocycleExerciseConfig({
   };
 
   const getTotalExercisesAcrossAllDays = (): number => {
-    return splitDays.reduce(
-      (total, day) => total + day.exercises.length,
-      0
-    );
+    return splitDays.reduce((total, day) => total + day.exercises.length, 0);
   };
 
   return (
@@ -93,8 +87,8 @@ export default function MesocycleExerciseConfig({
       {getTotalExercisesAcrossAllDays() === 0 && (
         <div className="config-hint">
           <p>
-            💡 <strong>Tip:</strong> Add exercises to each split day to
-            pre-plan your workouts throughout the mesocycle.
+            💡 <strong>Tip:</strong> Add exercises to each split day to pre-plan
+            your workouts throughout the mesocycle.
           </p>
           <p>
             You can set target sets, rep ranges, and rest times for each

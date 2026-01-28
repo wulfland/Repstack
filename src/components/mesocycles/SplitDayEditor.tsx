@@ -33,9 +33,7 @@ export default function SplitDayEditor({
     if (!exercise) return;
 
     // Validate muscle groups
-    if (
-      !isExerciseValidForSplitDay(exercise.muscleGroups, splitDay.name)
-    ) {
+    if (!isExerciseValidForSplitDay(exercise.muscleGroups, splitDay.name)) {
       alert(
         `Warning: ${exercise.name} may not be appropriate for ${splitDay.name}. The muscle groups don't match the split focus.`
       );

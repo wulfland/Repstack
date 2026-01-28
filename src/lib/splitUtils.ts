@@ -246,8 +246,7 @@ export function isExerciseValidForSplitDay(
   exerciseMuscleGroups: MuscleGroup[],
   splitDayName: string
 ): boolean {
-  const expectedMuscleGroups =
-    getExpectedMuscleGroupsForSplitDay(splitDayName);
+  const expectedMuscleGroups = getExpectedMuscleGroupsForSplitDay(splitDayName);
 
   // Check if at least one exercise muscle group is in the expected list
   return exerciseMuscleGroups.some((muscle) =>

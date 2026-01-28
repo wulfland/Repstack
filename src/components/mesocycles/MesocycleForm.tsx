@@ -211,9 +211,7 @@ export default function MesocycleForm({
                       id="durationWeeks"
                       className="form-select"
                       value={durationWeeks}
-                      onChange={(e) =>
-                        setDurationWeeks(Number(e.target.value))
-                      }
+                      onChange={(e) => setDurationWeeks(Number(e.target.value))}
                       required
                     >
                       <option value="4">4 weeks</option>
@@ -281,8 +279,8 @@ export default function MesocycleForm({
                     required
                   />
                   <div className="form-help">
-                    End date: {endDateObj.toLocaleDateString()} (
-                    {durationWeeks} weeks)
+                    End date: {endDateObj.toLocaleDateString()} ({durationWeeks}{' '}
+                    weeks)
                   </div>
                 </div>
 

@@ -125,7 +125,7 @@ export function useWorkoutSession(): UseWorkoutSessionReturn {
     if (splitDay && splitDay.exercises.length > 0) {
       // We'll load exercises asynchronously after the workout is created
       const exercisesWithSets: WorkoutExercise[] = [];
-      
+
       for (const mesocycleExercise of splitDay.exercises) {
         // Get previous performance for this exercise
         const previousPerformance = await getPreviousPerformance(

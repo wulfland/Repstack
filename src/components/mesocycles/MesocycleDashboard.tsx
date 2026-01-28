@@ -92,8 +92,10 @@ export default function MesocycleDashboard() {
     // In a real app with routing, we would navigate to /workout
     // For now, we'll just alert (the parent App component would handle navigation)
     alert(
-      'Navigate to workout session with split day: ' + splitDayId + '\n\n' +
-      'Note: Full integration requires navigation support in the parent component.'
+      'Navigate to workout session with split day: ' +
+        splitDayId +
+        '\n\n' +
+        'Note: Full integration requires navigation support in the parent component.'
     );
   };
 

@@ -657,7 +657,11 @@ function getMesocycleWeekBounds(
 export async function getSplitCompletionStatus(
   mesocycleId: string
 ): Promise<
-  { splitDay: import('../types/models').MesocycleSplitDay; completed: boolean; completedDate?: Date }[]
+  {
+    splitDay: import('../types/models').MesocycleSplitDay;
+    completed: boolean;
+    completedDate?: Date;
+  }[]
 > {
   const mesocycle = await db.mesocycles.get(mesocycleId);
   if (!mesocycle) {

@@ -40,7 +40,7 @@ export default function SplitProgressTracker({
     }
 
     loadSplitStatus();
-    
+
     // Reload every 30 seconds to catch updates
     const interval = setInterval(loadSplitStatus, 30000);
     return () => clearInterval(interval);
@@ -51,7 +51,8 @@ export default function SplitProgressTracker({
 
   // Find next recommended split
   const nextSplit = splitStatus.find((s) => !s.completed)?.splitDay;
-  const allCompleted = splitStatus.length > 0 && splitStatus.every((s) => s.completed);
+  const allCompleted =
+    splitStatus.length > 0 && splitStatus.every((s) => s.completed);
 
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleDateString('en-US', {
@@ -77,11 +78,14 @@ export default function SplitProgressTracker({
   }
 
   return (
-    <div className={`split-progress-tracker ${isDeloadWeek ? 'deload-week' : ''}`}>
+    <div
+      className={`split-progress-tracker ${isDeloadWeek ? 'deload-week' : ''}`}
+    >
       {/* Header with week info */}
       <div className="tracker-header">
         <h3 className="tracker-title">
-          {mesocycle.name} - Week {mesocycle.currentWeek} of {mesocycle.durationWeeks}
+          {mesocycle.name} - Week {mesocycle.currentWeek} of{' '}
+          {mesocycle.durationWeeks}
           {isDeloadWeek && <span className="deload-badge">🔄 Deload Week</span>}
         </h3>
       </div>
@@ -100,11 +104,11 @@ export default function SplitProgressTracker({
       {/* This Week's Progress */}
       <div className="week-progress-section">
         <h4 className="section-title">This Week&apos;s Progress:</h4>
-        
+
         <div className="split-cards">
           {splitStatus.map((info) => {
             const isNext = !allCompleted && info.splitDay.id === nextSplit?.id;
-            
+
             return (
               <div
                 key={info.splitDay.id}
@@ -117,11 +121,14 @@ export default function SplitProgressTracker({
                   </span>
                 </div>
                 {info.completedDate && (
-                  <div className="split-date">{formatDate(info.completedDate)}</div>
+                  <div className="split-date">
+                    {formatDate(info.completedDate)}
+                  </div>
                 )}
                 {!info.completed && info.splitDay.exercises.length > 0 && (
                   <div className="split-info">
-                    {info.splitDay.exercises.length} exercise{info.splitDay.exercises.length !== 1 ? 's' : ''}
+                    {info.splitDay.exercises.length} exercise
+                    {info.splitDay.exercises.length !== 1 ? 's' : ''}
                   </div>
                 )}
               </div>
@@ -152,8 +159,8 @@ export default function SplitProgressTracker({
       {isDeloadWeek && (
         <div className="deload-message">
           <p>
-            <strong>Deload Week:</strong> Reduce volume by 40-50% to facilitate recovery
-            and prepare for the next training block.
+            <strong>Deload Week:</strong> Reduce volume by 40-50% to facilitate
+            recovery and prepare for the next training block.
           </p>
         </div>
       )}

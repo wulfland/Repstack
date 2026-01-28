@@ -25,6 +25,29 @@ export async function seedSampleMesocycle(): Promise<boolean> {
     return false;
   }
 
+  // Categorize exercises by type
+  const pushExercises = exercises
+    .filter((ex) =>
+      ex.muscleGroups.some((mg) =>
+        ['chest', 'shoulders', 'triceps'].includes(mg)
+      )
+    )
+    .slice(0, 5);
+
+  const pullExercises = exercises
+    .filter((ex) =>
+      ex.muscleGroups.some((mg) => ['back', 'biceps'].includes(mg))
+    )
+    .slice(0, 5);
+
+  const legExercises = exercises
+    .filter((ex) =>
+      ex.muscleGroups.some((mg) =>
+        ['quads', 'hamstrings', 'glutes', 'calves'].includes(mg)
+      )
+    )
+    .slice(0, 5);
+
   // Create a mesocycle (6-week hypertrophy block)
   const startDate = new Date();
   const endDate = new Date();
@@ -47,6 +70,11 @@ export async function seedSampleMesocycle(): Promise<boolean> {
   ];
   const mesocycleName = `Hypertrophy Block - ${monthNames[startDate.getMonth()]} ${startDate.getFullYear()}`;
 
+  // Create split days
+  const pushSplitId = crypto.randomUUID();
+  const pullSplitId = crypto.randomUUID();
+  const legsSplitId = crypto.randomUUID();
+
   const mesocycleId = await createMesocycle({
     name: mesocycleName,
     startDate,
@@ -55,7 +83,50 @@ export async function seedSampleMesocycle(): Promise<boolean> {
     currentWeek: 1,
     deloadWeek: 6,
     trainingSplit: 'push_pull_legs',
-    splitDays: [],
+    splitDays: [
+      {
+        id: pushSplitId,
+        name: 'Push',
+        dayOrder: 1,
+        exercises: pushExercises.map((ex, index) => ({
+          exerciseId: ex.id,
+          order: index,
+          targetSets: 3,
+          targetRepsMin: 8,
+          targetRepsMax: 12,
+          restSeconds: 90,
+          notes: undefined,
+        })),
+      },
+      {
+        id: pullSplitId,
+        name: 'Pull',
+        dayOrder: 2,
+        exercises: pullExercises.map((ex, index) => ({
+          exerciseId: ex.id,
+          order: index,
+          targetSets: 3,
+          targetRepsMin: 8,
+          targetRepsMax: 12,
+          restSeconds: 90,
+          notes: undefined,
+        })),
+      },
+      {
+        id: legsSplitId,
+        name: 'Legs',
+        dayOrder: 3,
+        exercises: legExercises.map((ex, index) => ({
+          exerciseId: ex.id,
+          order: index,
+          targetSets: 4,
+          targetRepsMin: 10,
+          targetRepsMax: 15,
+          restSeconds: 120,
+          notes: undefined,
+        })),
+      },
+    ],
     status: 'active',
     notes: 'Focus on progressive overload and muscle building',
   });
@@ -63,35 +134,13 @@ export async function seedSampleMesocycle(): Promise<boolean> {
   console.log('Created sample mesocycle:', mesocycleId);
 
   // Create a few sample workouts with exercises
-  const pushExercises = exercises
-    .filter((ex) =>
-      ex.muscleGroups.some((mg) =>
-        ['chest', 'shoulders', 'triceps'].includes(mg)
-      )
-    )
-    .slice(0, 4);
-
-  const pullExercises = exercises
-    .filter((ex) =>
-      ex.muscleGroups.some((mg) => ['back', 'biceps'].includes(mg))
-    )
-    .slice(0, 4);
-
-  const legExercises = exercises
-    .filter((ex) =>
-      ex.muscleGroups.some((mg) =>
-        ['quads', 'hamstrings', 'glutes', 'calves'].includes(mg)
-      )
-    )
-    .slice(0, 4);
-
-  // Create Push workout
   if (pushExercises.length > 0) {
     const pushDate = new Date(startDate);
     pushDate.setDate(pushDate.getDate() - 2); // 2 days ago
 
     await createWorkout({
       date: pushDate,
+      splitDayId: pushSplitId,
       exercises: pushExercises.map((ex, index) => ({
         exerciseId: ex.id,
         sets: Array.from({ length: 3 }, (_, setIndex) => ({
@@ -118,6 +167,7 @@ export async function seedSampleMesocycle(): Promise<boolean> {
 
     await createWorkout({
       date: pullDate,
+      splitDayId: pullSplitId,
       exercises: pullExercises.map((ex, index) => ({
         exerciseId: ex.id,
         sets: Array.from({ length: 3 }, (_, setIndex) => ({
@@ -137,28 +187,8 @@ export async function seedSampleMesocycle(): Promise<boolean> {
     });
   }
 
-  // Create Leg workout (today)
-  if (legExercises.length > 0) {
-    await createWorkout({
-      date: new Date(),
-      exercises: legExercises.map((ex, index) => ({
-        exerciseId: ex.id,
-        sets: Array.from({ length: 4 }, (_, setIndex) => ({
-          id: crypto.randomUUID(),
-          exerciseId: ex.id,
-          setNumber: setIndex + 1,
-          targetReps: 12,
-          actualReps: setIndex < 3 ? 12 : 10, // Last set to failure
-          weight: 150 + index * 20,
-          rir: setIndex < 3 ? 2 : 0,
-          completed: true,
-        })),
-      })),
-      notes: 'Leg day - Quads, Hamstrings, Glutes, Calves',
-      completed: true,
-      duration: 90,
-    });
-  }
+  // Don't create the Leg workout yet - let the user test the tracker!
+  // This will show Push and Pull as completed, and Legs as "Next"
 
   console.log('Created sample workouts');
   return true;

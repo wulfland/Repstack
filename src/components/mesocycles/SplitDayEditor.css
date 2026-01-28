@@ -1,0 +1,177 @@
+.split-day-editor {
+  padding: 1rem;
+}
+
+.split-day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.split-day-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.empty-state p {
+  margin: 0.5rem 0;
+}
+
+.empty-state-hint {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+.exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.exercise-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  cursor: move;
+  transition: all 0.2s;
+}
+
+.exercise-item:hover {
+  background: #f3f4f6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.exercise-item.dragging {
+  opacity: 0.5;
+}
+
+.exercise-drag-handle {
+  display: flex;
+  align-items: center;
+  color: #9ca3af;
+  font-size: 1.25rem;
+  cursor: grab;
+  user-select: none;
+}
+
+.exercise-drag-handle:active {
+  cursor: grabbing;
+}
+
+.exercise-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.exercise-name {
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: #111827;
+}
+
+.exercise-config {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.config-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.config-group label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.config-input {
+  width: 4rem;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.config-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.rep-range {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rep-range span {
+  color: #6b7280;
+}
+
+.exercise-notes {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.btn-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 1.25rem;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.btn-remove:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 640px) {
+  .split-day-editor {
+    padding: 0.75rem;
+  }
+
+  .exercise-config {
+    gap: 0.75rem;
+  }
+
+  .config-input {
+    width: 3.5rem;
+  }
+
+  .exercise-item {
+    padding: 0.75rem;
+  }
+}

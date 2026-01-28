@@ -10,8 +10,18 @@
   color: #6b7280;
 }
 
+.mesocycle-form-dialog {
+  max-width: 56rem;
+  width: 90vw;
+}
+
 @media (max-width: 640px) {
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .mesocycle-form-dialog {
+    width: 95vw;
+    max-width: none;
   }
 }

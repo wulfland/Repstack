@@ -118,6 +118,25 @@ export interface TrainingSession {
   createdAt: Date;
 }
 
+// Exercise configuration within a mesocycle split day
+export interface MesocycleExercise {
+  exerciseId: string; // Reference to Exercise
+  order: number; // Order within the split day
+  targetSets: number; // Number of sets to perform (typically 2-5)
+  targetRepsMin: number; // Minimum target reps (e.g., 8)
+  targetRepsMax: number; // Maximum target reps (e.g., 12)
+  restSeconds?: number; // Optional custom rest time
+  notes?: string; // Exercise-specific notes
+}
+
+// Split day configuration within a mesocycle
+export interface MesocycleSplitDay {
+  id: string;
+  name: string; // e.g., "Push Day", "Upper A", "Full Body 1"
+  dayOrder: number; // Order in the split rotation (1, 2, 3...)
+  exercises: MesocycleExercise[];
+}
+
 // Mesocycle (training block)
 export interface Mesocycle {
   id: string;
@@ -133,6 +152,7 @@ export interface Mesocycle {
     | 'full_body'
     | 'bro_split'
     | 'custom';
+  splitDays: MesocycleSplitDay[]; // Exercise configuration for each split day
   status: 'planned' | 'active' | 'completed' | 'abandoned';
   notes?: string;
   createdAt: Date;

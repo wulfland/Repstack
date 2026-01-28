@@ -415,6 +415,7 @@ export async function createMesocycle(
     currentWeek: mesocycle.currentWeek,
     deloadWeek: mesocycle.deloadWeek,
     trainingSplit: mesocycle.trainingSplit,
+    splitDays: mesocycle.splitDays || [],
     status: mesocycle.status,
     notes: mesocycle.notes ? sanitizeString(mesocycle.notes) : undefined,
     createdAt: new Date(),

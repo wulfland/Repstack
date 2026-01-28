@@ -77,7 +77,7 @@ export default function WorkoutSession() {
   // Calculate recommended split when mesocycle or completed workouts change
   useEffect(() => {
     let cancelled = false;
-    
+
     const fetchRecommendedSplit = async () => {
       if (activeMesocycle && completedWorkouts) {
         const split = await getNextSplitDay(activeMesocycle, completedWorkouts);
@@ -88,9 +88,9 @@ export default function WorkoutSession() {
         setRecommendedSplit(null);
       }
     };
-    
+
     fetchRecommendedSplit();
-    
+
     return () => {
       cancelled = true;
     };

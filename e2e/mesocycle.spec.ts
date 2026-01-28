@@ -511,7 +511,8 @@ test.describe('Workout Flow', () => {
       const workoutSession = page.locator(
         '.workout-session, .workout-view, text=Add Exercise, text=Finish Workout'
       );
-      const sessionVisible = await workoutSession
+      // Attempt to check visibility - if element exists, workout started successfully
+      await workoutSession
         .first()
         .isVisible()
         .catch(() => false);

@@ -75,8 +75,8 @@ export default function WorkoutSession() {
     return Array.from(muscleGroupSet);
   }, [workout, exercises]);
 
-  const handleStartWorkout = () => {
-    startWorkout();
+  const handleStartWorkout = async () => {
+    await startWorkout();
     // If a template is selected, activate it for the workout
     if (selectedTemplate) {
       setActiveWorkoutTemplate(selectedTemplate);

@@ -140,6 +140,8 @@ export async function seedSampleMesocycle(): Promise<boolean> {
 
     await createWorkout({
       date: pushDate,
+      mesocycleId,
+      weekNumber: 1,
       splitDayId: pushSplitId,
       exercises: pushExercises.map((ex, index) => ({
         exerciseId: ex.id,
@@ -167,6 +169,8 @@ export async function seedSampleMesocycle(): Promise<boolean> {
 
     await createWorkout({
       date: pullDate,
+      mesocycleId,
+      weekNumber: 1,
       splitDayId: pullSplitId,
       exercises: pullExercises.map((ex, index) => ({
         exerciseId: ex.id,

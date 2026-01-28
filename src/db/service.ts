@@ -215,10 +215,12 @@ export async function createWorkout(
     date: workout.date,
     mesocycleId,
     weekNumber,
+    splitDayId: workout.splitDayId,
     exercises: workout.exercises,
     notes: workout.notes ? sanitizeString(workout.notes) : undefined,
     completed: workout.completed,
     duration: workout.duration,
+    feedback: workout.feedback,
     createdAt: new Date(),
     updatedAt: new Date(),
   };

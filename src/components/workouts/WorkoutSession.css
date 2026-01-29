@@ -175,6 +175,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  /* Ensure minimum touch target */
+  min-height: var(--touch-target-min, 44px);
 }
 
 .btn-add-exercise:hover {
@@ -216,6 +218,11 @@
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.2s ease;
+  /* Ensure minimum touch target */
+  min-height: var(--touch-target-min, 44px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary {
@@ -248,6 +255,7 @@
 .btn-large {
   padding: 1rem 2rem;
   font-size: 1.125rem;
+  min-height: 56px;
 }
 
 /* Dialog */

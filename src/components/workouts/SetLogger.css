@@ -82,7 +82,9 @@
   color: #6b7280;
   cursor: pointer;
   transition: all 0.15s ease;
-  min-width: 40px;
+  min-width: 44px;
+  /* Ensure touch target for mobile gym use */
+  min-height: 44px;
 }
 
 .weight-btn:hover:not(:disabled) {
@@ -102,6 +104,8 @@
   background: transparent;
   font-weight: 600;
   font-size: 1rem;
+  /* Ensure touch target */
+  min-height: 44px;
 }
 
 /* Reps Input */
@@ -120,6 +124,8 @@
   font-size: 1rem;
   background: white;
   transition: all 0.2s ease;
+  /* Ensure touch target */
+  min-height: 44px;
 }
 
 .reps-input:focus {
@@ -147,6 +153,8 @@
   font-weight: 600;
   font-size: 1rem;
   background: white;
+  /* Ensure touch target */
+  min-height: 44px;
 }
 
 .rir-input:focus {
@@ -169,6 +177,9 @@
   font-size: 1.125rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  /* Ensure minimum touch target on mobile */
+  min-width: var(--touch-target-min, 44px);
+  min-height: var(--touch-target-min, 44px);
 }
 
 .btn-add-rir:hover:not(:disabled) {
@@ -202,6 +213,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Ensure minimum touch target */
+  min-width: var(--touch-target-min, 44px);
+  min-height: var(--touch-target-min, 44px);
 }
 
 .btn-complete-set {
@@ -254,12 +268,12 @@
   .set-logger {
     grid-template-columns: 40px 70px 1fr 70px 50px 70px;
     gap: 0.25rem;
-    padding: 0.375rem;
+    padding: 0.5rem;
   }
 
   .set-number {
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 2rem;
+    height: 2rem;
     font-size: 0.8125rem;
   }
 
@@ -268,7 +282,9 @@
   }
 
   .weight-btn {
-    min-width: 35px;
+    /* Keep 44px minimum for proper touch targets */
+    min-width: 44px;
+    min-height: 44px;
     font-size: 0.6875rem;
     padding: 0.25rem 0.375rem;
   }
@@ -276,31 +292,34 @@
   .weight-input {
     width: 55px;
     font-size: 0.875rem;
+    min-height: 44px;
   }
 
   .reps-input {
     width: 50px;
     font-size: 0.875rem;
     padding: 0.375rem;
+    min-height: 44px;
   }
 
   .rir-input {
     width: 40px;
     font-size: 0.875rem;
     padding: 0.375rem;
+    min-height: 44px;
   }
 
   .btn-add-rir {
-    width: 1.75rem;
-    height: 1.75rem;
+    min-width: 44px;
+    min-height: 44px;
     font-size: 1rem;
   }
 
   .btn-complete-set,
   .btn-remove-set,
   .btn-uncomplete-set {
-    width: 1.75rem;
-    height: 1.75rem;
+    min-width: 44px;
+    min-height: 44px;
     font-size: 0.875rem;
   }
 }
@@ -309,6 +328,7 @@
 @media (min-width: 768px) {
   .set-logger {
     grid-template-columns: 60px 100px 1fr 100px 80px 100px;
+    padding: 0.75rem;
   }
 
   .weight-input {
@@ -321,5 +341,10 @@
 
   .rir-input {
     width: 60px;
+  }
+
+  .weight-btn {
+    min-width: 44px;
+    min-height: 44px;
   }
 }

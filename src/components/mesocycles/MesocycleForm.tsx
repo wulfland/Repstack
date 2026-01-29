@@ -90,7 +90,11 @@ export default function MesocycleForm({
     return end;
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = (e?: React.MouseEvent | React.FormEvent) => {
+    // Prevent form submission
+    e?.preventDefault();
+    e?.stopPropagation();
+
     setError(null);
 
     if (!name.trim()) {
@@ -106,7 +110,11 @@ export default function MesocycleForm({
     setStep('exercises');
   };
 
-  const handleBackStep = () => {
+  const handleBackStep = (e?: React.MouseEvent) => {
+    // Prevent form submission
+    e?.preventDefault();
+    e?.stopPropagation();
+
     setStep('basic');
   };
 
@@ -327,7 +335,10 @@ export default function MesocycleForm({
                 </button>
                 <button
                   type="button"
-                  onClick={handleNextStep}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNextStep(e);
+                  }}
                   className="btn btn-primary"
                   disabled={isSubmitting}
                 >
@@ -338,7 +349,10 @@ export default function MesocycleForm({
               <>
                 <button
                   type="button"
-                  onClick={handleBackStep}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleBackStep(e);
+                  }}
                   className="btn btn-secondary"
                   disabled={isSubmitting}
                 >

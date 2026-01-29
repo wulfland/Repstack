@@ -7,10 +7,12 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Mesocycle Management', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the app
-    await page.goto('/');
-    // Wait for the app to load - look for the app container or header
+    // Navigate to the app using empty string to respect baseURL path
+    // Using '/' would navigate to root domain, not the baseURL path
+    await page.goto('');
     await page.waitForLoadState('networkidle');
+    
+    // Wait for the app to load - look for the app container or header
     await page.waitForSelector('h1, .app-header, header', { timeout: 30000 });
   });
 
@@ -454,7 +456,8 @@ test.describe('Mesocycle Management', () => {
 
 test.describe('Exercise Management', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    // Navigate using empty string to respect baseURL path
+    await page.goto('');
     await page.waitForLoadState('networkidle');
   });
 
@@ -490,7 +493,8 @@ test.describe('Exercise Management', () => {
 
 test.describe('Workout Flow', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    // Navigate using empty string to respect baseURL path
+    await page.goto('');
     await page.waitForLoadState('networkidle');
   });
 

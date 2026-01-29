@@ -7,7 +7,7 @@
   justify-content: center;
   align-items: center;
   min-height: 400px;
-  font-size: 1.25rem;
+  font-size: var(--font-size-lg, 1.125rem);
   color: #6b7280;
 }
 
@@ -15,19 +15,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: var(--spacing-md, 1rem);
   background: #f7fafc;
   border-radius: 0.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-xl, 2rem);
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: var(--spacing-md, 1rem);
 }
 
 .status {
   font-weight: 600;
-  padding: 0.5rem 1rem;
+  padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 1rem);
   border-radius: 0.25rem;
   background: white;
+  /* Ensure minimum touch target */
+  min-height: var(--touch-target-min, 44px);
+  display: flex;
+  align-items: center;
 }
 
 .status.online {
@@ -47,6 +51,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s;
+  /* Ensure minimum touch target */
+  min-height: var(--touch-target-min, 44px);
 }
 
 .install-btn:hover {
@@ -56,7 +62,11 @@
 /* Mobile responsiveness */
 @media (max-width: 640px) {
   .status-bar {
-    padding: 0.75rem;
+    padding: var(--spacing-sm, 0.75rem);
+  }
+
+  .install-btn {
+    width: 100%;
   }
 }
 
@@ -67,16 +77,16 @@
   justify-content: center;
   min-height: 400px;
   text-align: center;
-  padding: 2rem;
+  padding: var(--spacing-xl, 2rem);
 }
 
 .coming-soon h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: var(--font-size-2xl, 2rem);
+  margin-bottom: var(--spacing-md, 1rem);
   color: #1f2937;
 }
 
 .coming-soon p {
-  font-size: 1.125rem;
+  font-size: var(--font-size-lg, 1.125rem);
   color: #6b7280;
 }

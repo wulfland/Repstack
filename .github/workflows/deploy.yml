@@ -85,6 +85,20 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
+      - name: Wait for GitHub Pages CDN propagation
+        run: |
+          echo "Waiting for GitHub Pages deployment to propagate..."
+          sleep 30
+          # Verify the site is accessible
+          for i in {1..5}; do
+            if curl -sf "${{ needs.deploy.outputs.page_url }}" > /dev/null; then
+              echo "Site is accessible!"
+              break
+            fi
+            echo "Attempt $i: Site not ready, waiting..."
+            sleep 10
+          done
+
       - name: Run E2E tests
         run: npm run test:e2e
         env:

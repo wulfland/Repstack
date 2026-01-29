@@ -210,14 +210,8 @@ test.describe('Offline Functionality', () => {
     }
   });
 
-  test('should support PWA installation', async ({ page, context }) => {
-    // Check if beforeinstallprompt event would be triggered
-    const canInstall = await page.evaluate(() => {
-      return 'BeforeInstallPromptEvent' in window || 
-             navigator.standalone !== undefined || 
-             window.matchMedia('(display-mode: standalone)').matches;
-    });
-    
+  test('should support PWA installation', async ({ page }) => {
+    // Verify the app has proper PWA manifest configuration
     // The test environment might not support all PWA features,
     // but we can verify the manifest is linked
     const manifestLink = await page.locator('link[rel="manifest"]').count();

@@ -300,13 +300,18 @@ export default function MesocycleForm({
               </>
             )}
 
-            {step === 'exercises' && exercises && (
-              <MesocycleExerciseConfig
-                splitDays={splitDays}
-                exercises={exercises}
-                onChange={setSplitDays}
-              />
-            )}
+            {step === 'exercises' &&
+              (exercises ? (
+                <MesocycleExerciseConfig
+                  splitDays={splitDays}
+                  exercises={exercises}
+                  onChange={setSplitDays}
+                />
+              ) : (
+                <div className="mesocycle-form-loading">
+                  <p>Loading exercises...</p>
+                </div>
+              ))}
           </div>
 
           <div className="dialog-footer">
@@ -342,7 +347,7 @@ export default function MesocycleForm({
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !exercises}
                 >
                   {isSubmitting ? 'Creating...' : 'Create Mesocycle'}
                 </button>

@@ -27,6 +27,12 @@ export async function runDatabaseTests() {
       preferences: {
         units: 'metric',
         theme: 'dark',
+        firstDayOfWeek: 1,
+        defaultRestTimerSeconds: 90,
+        restTimerSound: true,
+        restTimerVibration: true,
+        showRIRByDefault: true,
+        autoAdvanceSet: false,
       },
     });
     console.log('✅ User profile created with ID:', userId);

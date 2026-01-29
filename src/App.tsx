@@ -4,6 +4,7 @@ import ExerciseList from './components/exercises/ExerciseList';
 import WorkoutSession from './components/workouts/WorkoutSession';
 import MesocycleDashboard from './components/mesocycles/MesocycleDashboard';
 import ProgressTracker from './components/progress/ProgressTracker';
+import Settings from './components/settings/Settings';
 import {
   useExercises,
   createExercise,
@@ -17,7 +18,7 @@ import type { BeforeInstallPromptEvent } from './types/global';
 import type { Exercise } from './types/models';
 import './App.css';
 
-type Page = 'workout' | 'exercises' | 'mesocycles' | 'progress';
+type Page = 'workout' | 'exercises' | 'mesocycles' | 'progress' | 'settings';
 
 function App() {
   const exercises = useExercises();
@@ -152,6 +153,13 @@ function App() {
         )}
 
         {currentPage === 'progress' && <ProgressTracker />}
+
+        {currentPage === 'settings' && (
+          <Settings
+            installPrompt={installPrompt}
+            onInstallClick={handleInstallClick}
+          />
+        )}
       </div>
     </Layout>
   );

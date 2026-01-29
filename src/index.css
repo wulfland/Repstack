@@ -49,6 +49,9 @@
   --container-max-width: 1200px;
   --container-padding: 1rem;
 
+  /* Mobile navigation height */
+  --mobile-nav-height: 70px;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

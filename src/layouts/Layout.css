@@ -125,7 +125,7 @@
   flex: 1;
   padding: 2rem 0;
   /* Add bottom padding for mobile navigation */
-  padding-bottom: calc(2rem + 70px);
+  padding-bottom: calc(2rem + var(--mobile-nav-height, 70px));
 }
 
 .footer {

@@ -62,7 +62,7 @@
 /* Mobile responsiveness */
 @media (max-width: 640px) {
   .status-bar {
-    padding: var(--spacing-sm, 0.75rem);
+    padding: var(--spacing-sm, 0.5rem);
   }
 
   .install-btn {

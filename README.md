@@ -114,6 +114,8 @@ The app includes full Progressive Web App capabilities:
 - ✅ **Responsive** - Mobile-first design that works on all screen sizes
 - ✅ **Fast** - Optimized build with code splitting
 
+📖 **[Complete Offline Functionality Guide](docs/OFFLINE_FUNCTIONALITY.md)** - Learn how Repstack works 100% offline
+
 ### Testing PWA Features
 
 **Local Development:**

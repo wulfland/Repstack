@@ -308,7 +308,7 @@ export default function MesocycleForm({
                   onChange={setSplitDays}
                 />
               ) : (
-                <div className="loading-state">
+                <div className="mesocycle-form-loading">
                   <p>Loading exercises...</p>
                 </div>
               )

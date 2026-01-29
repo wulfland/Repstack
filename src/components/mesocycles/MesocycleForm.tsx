@@ -300,8 +300,8 @@ export default function MesocycleForm({
               </>
             )}
 
-            {step === 'exercises' && (
-              exercises ? (
+            {step === 'exercises' &&
+              (exercises ? (
                 <MesocycleExerciseConfig
                   splitDays={splitDays}
                   exercises={exercises}
@@ -311,8 +311,7 @@ export default function MesocycleForm({
                 <div className="mesocycle-form-loading">
                   <p>Loading exercises...</p>
                 </div>
-              )
-            )}
+              ))}
           </div>
 
           <div className="dialog-footer">

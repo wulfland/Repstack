@@ -335,10 +335,7 @@ export default function MesocycleForm({
                 </button>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNextStep(e);
-                  }}
+                  onClick={handleNextStep}
                   className="btn btn-primary"
                   disabled={isSubmitting}
                 >
@@ -349,10 +346,7 @@ export default function MesocycleForm({
               <>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleBackStep(e);
-                  }}
+                  onClick={handleBackStep}
                   className="btn btn-secondary"
                   disabled={isSubmitting}
                 >

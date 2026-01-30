@@ -64,25 +64,6 @@ export default function Settings({
     }
   }, [userProfiles]);
 
-  // Apply theme
-  useEffect(() => {
-    if (!profile) return;
-
-    const theme = profile.preferences.theme;
-    if (theme === 'system') {
-      // Use system preference
-      const prefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)'
-      ).matches;
-      document.documentElement.setAttribute(
-        'data-theme',
-        prefersDark ? 'dark' : 'light'
-      );
-    } else {
-      document.documentElement.setAttribute('data-theme', theme);
-    }
-  }, [profile]);
-
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
     setTimeout(() => setMessage(null), 3000);
@@ -190,8 +171,8 @@ export default function Settings({
           <input
             id="name"
             type="text"
-            value={profile.name}
-            onChange={(e) => handleUpdateProfile({ name: e.target.value })}
+            defaultValue={profile.name}
+            onBlur={(e) => handleUpdateProfile({ name: e.target.value })}
             placeholder="Your name"
           />
         </div>
@@ -221,8 +202,10 @@ export default function Settings({
             value={profile.defaultTrainingSplit || ''}
             onChange={(e) =>
               handleUpdateProfile({
-                defaultTrainingSplit: e.target
-                  .value as UserProfile['defaultTrainingSplit'],
+                defaultTrainingSplit:
+                  e.target.value === ''
+                    ? undefined
+                    : (e.target.value as UserProfile['defaultTrainingSplit']),
               })
             }
           >
@@ -284,14 +267,20 @@ export default function Settings({
           <select
             id="firstDayOfWeek"
             value={profile.preferences.firstDayOfWeek}
-            onChange={(e) =>
+            onChange={(e) => {
+              const parsed = Number.parseInt(e.target.value, 10);
+              const firstDayOfWeek: 0 | 1 | 6 =
+                parsed === 0 || parsed === 1 || parsed === 6
+                  ? (parsed as 0 | 1 | 6)
+                  : profile.preferences.firstDayOfWeek;
+
               handleUpdateProfile({
                 preferences: {
                   ...profile.preferences,
-                  firstDayOfWeek: parseInt(e.target.value) as 0 | 1 | 6,
+                  firstDayOfWeek,
                 },
-              })
-            }
+              });
+            }}
           >
             <option value="0">Sunday</option>
             <option value="1">Monday</option>
@@ -313,7 +302,10 @@ export default function Settings({
               min="30"
               max="300"
               step="15"
-              value={profile.preferences.defaultRestTimerSeconds}
+              value={Math.max(
+                30,
+                Math.min(300, profile.preferences.defaultRestTimerSeconds)
+              )}
               onChange={(e) =>
                 handleUpdateProfile({
                   preferences: {
@@ -322,10 +314,40 @@ export default function Settings({
                   },
                 })
               }
+              style={{
+                background: `linear-gradient(to right, var(--primary-color, #007bff) 0%, var(--primary-color, #007bff) ${
+                  ((Math.max(
+                    30,
+                    Math.min(300, profile.preferences.defaultRestTimerSeconds)
+                  ) -
+                    30) /
+                    (300 - 30)) *
+                  100
+                }%, #ddd ${
+                  ((Math.max(
+                    30,
+                    Math.min(300, profile.preferences.defaultRestTimerSeconds)
+                  ) -
+                    30) /
+                    (300 - 30)) *
+                  100
+                }%, #ddd 100%)`,
+              }}
             />
             <span className="rest-timer-value">
-              {Math.floor(profile.preferences.defaultRestTimerSeconds / 60)}:
-              {(profile.preferences.defaultRestTimerSeconds % 60)
+              {Math.floor(
+                Math.max(
+                  30,
+                  Math.min(300, profile.preferences.defaultRestTimerSeconds)
+                ) / 60
+              )}
+              :
+              {(
+                Math.max(
+                  30,
+                  Math.min(300, profile.preferences.defaultRestTimerSeconds)
+                ) % 60
+              )
                 .toString()
                 .padStart(2, '0')}
             </span>

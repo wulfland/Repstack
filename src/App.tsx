@@ -10,6 +10,7 @@ import {
   createExercise,
   updateExercise,
   deleteExercise,
+  useUserProfiles,
 } from './hooks/useDatabase';
 import { seedStarterExercises } from './lib/seedData';
 import { seedSampleMesocycle } from './lib/seedMesocycle';
@@ -22,11 +23,69 @@ type Page = 'workout' | 'exercises' | 'mesocycles' | 'progress' | 'settings';
 
 function App() {
   const exercises = useExercises();
+  const userProfiles = useUserProfiles();
   const [installPrompt, setInstallPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState<Page>('workout');
+
+  // Apply theme based on user profile
+  useEffect(() => {
+    const profile = userProfiles && userProfiles.length > 0 ? userProfiles[0] : null;
+    
+    if (!profile) return;
+
+    const theme = profile.preferences.theme;
+
+    const applyTheme = () => {
+      if (theme === 'system') {
+        // Use current system preference
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const prefersDark = mediaQuery.matches;
+        document.documentElement.setAttribute(
+          'data-theme',
+          prefersDark ? 'dark' : 'light'
+        );
+      } else {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    };
+
+    // Apply theme immediately based on current preference
+    applyTheme();
+
+    // When using system theme, listen for system theme changes
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+      const handleChange = (event: MediaQueryListEvent) => {
+        document.documentElement.setAttribute(
+          'data-theme',
+          event.matches ? 'dark' : 'light'
+        );
+      };
+
+      // Modern browsers
+      if (typeof mediaQuery.addEventListener === 'function') {
+        mediaQuery.addEventListener('change', handleChange);
+      } else if (typeof mediaQuery.addListener === 'function') {
+        // Backward compatibility
+        mediaQuery.addListener(handleChange);
+      }
+
+      return () => {
+        if (typeof mediaQuery.removeEventListener === 'function') {
+          mediaQuery.removeEventListener('change', handleChange);
+        } else if (typeof mediaQuery.removeListener === 'function') {
+          mediaQuery.removeListener(handleChange);
+        }
+      };
+    }
+
+    // If not using system theme, no listeners to clean up
+    return;
+  }, [userProfiles]);
 
   useEffect(() => {
     // Seed starter exercises on first load

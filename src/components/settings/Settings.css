@@ -154,13 +154,6 @@
   flex: 1;
   height: 6px;
   border-radius: 3px;
-  background: linear-gradient(
-    to right,
-    var(--primary-color, #007bff) 0%,
-    var(--primary-color, #007bff) 50%,
-    #ddd 50%,
-    #ddd 100%
-  );
   outline: none;
   -webkit-appearance: none;
 }

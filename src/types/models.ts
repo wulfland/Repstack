@@ -26,7 +26,19 @@ export interface UserProfile {
   preferences: {
     units: 'metric' | 'imperial';
     theme: 'light' | 'dark' | 'system';
+    firstDayOfWeek: 0 | 1 | 6; // 0 = Sunday, 1 = Monday, 6 = Saturday
+    defaultRestTimerSeconds: number; // 30-300 seconds
+    restTimerSound: boolean;
+    restTimerVibration: boolean;
+    showRIRByDefault: boolean;
+    autoAdvanceSet: boolean;
   };
+  defaultTrainingSplit?:
+    | 'upper_lower'
+    | 'push_pull_legs'
+    | 'full_body'
+    | 'bro_split'
+    | 'custom';
   createdAt: Date;
   updatedAt: Date;
 }

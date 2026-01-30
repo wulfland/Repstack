@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import './Layout.css';
 
-type Page = 'workout' | 'exercises' | 'mesocycles' | 'progress';
+type Page = 'workout' | 'exercises' | 'mesocycles' | 'progress' | 'settings';
 
 interface LayoutProps {
   children: ReactNode;
@@ -56,6 +56,13 @@ export default function Layout({
             >
               Progress
             </a>
+            <a
+              href="#settings"
+              className={`nav-link ${currentPage === 'settings' ? 'active' : ''}`}
+              onClick={handleNavClick('settings')}
+            >
+              Settings
+            </a>
           </nav>
         </div>
       </header>
@@ -95,6 +102,14 @@ export default function Layout({
         >
           <span className="nav-mobile-icon">📈</span>
           <span className="nav-mobile-label">Progress</span>
+        </a>
+        <a
+          href="#settings"
+          className={`nav-mobile-link ${currentPage === 'settings' ? 'active' : ''}`}
+          onClick={handleNavClick('settings')}
+        >
+          <span className="nav-mobile-icon">⚙️</span>
+          <span className="nav-mobile-label">Settings</span>
         </a>
       </nav>
       <footer className="footer">

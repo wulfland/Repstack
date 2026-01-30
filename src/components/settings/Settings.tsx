@@ -36,7 +36,8 @@ export default function Settings({
   } | null>(null);
 
   // Get the first user profile or null
-  const profile = userProfiles && userProfiles.length > 0 ? userProfiles[0] : null;
+  const profile =
+    userProfiles && userProfiles.length > 0 ? userProfiles[0] : null;
 
   // Create default profile if none exists
   useEffect(() => {
@@ -202,7 +203,8 @@ export default function Settings({
             value={profile.experienceLevel}
             onChange={(e) =>
               handleUpdateProfile({
-                experienceLevel: e.target.value as UserProfile['experienceLevel'],
+                experienceLevel: e.target
+                  .value as UserProfile['experienceLevel'],
               })
             }
           >
@@ -219,7 +221,8 @@ export default function Settings({
             value={profile.defaultTrainingSplit || ''}
             onChange={(e) =>
               handleUpdateProfile({
-                defaultTrainingSplit: e.target.value as UserProfile['defaultTrainingSplit'],
+                defaultTrainingSplit: e.target
+                  .value as UserProfile['defaultTrainingSplit'],
               })
             }
           >

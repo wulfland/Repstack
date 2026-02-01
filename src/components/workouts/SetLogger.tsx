@@ -61,12 +61,14 @@ export default function SetLogger({
   };
 
   return (
-    <div 
+    <div
       className={`set-logger ${set.completed ? 'completed' : ''}`}
       role="group"
       aria-label={`Set ${setNumber}${set.completed ? ' - completed' : ''}`}
     >
-      <div className="set-number" aria-hidden="true">{setNumber}</div>
+      <div className="set-number" aria-hidden="true">
+        {setNumber}
+      </div>
 
       <div className="set-previous" aria-label="Previous performance">
         {previousSet ? (

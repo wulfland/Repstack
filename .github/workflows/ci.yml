@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: Lint, Type Check & Build
+    name: Lint, Type Check, Test & Build
     runs-on: ubuntu-latest
 
     steps:
@@ -35,6 +35,23 @@ jobs:
       - name: Type check
         run: npm run type-check
 
+      - name: Run unit tests
+        run: npm run test:run
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: codecov-repstack
+          fail_ci_if_error: false
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Build application
         run: npm run build
 
@@ -44,3 +61,4 @@ jobs:
           name: dist
           path: dist/
           retention-days: 7
+

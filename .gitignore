@@ -24,7 +24,10 @@ dev-dist
 *.sln
 *.sw?
 
-# Playwright test artifacts
+# Test artifacts
 playwright-report/
 test-results/
 /playwright/.cache/
+coverage/
+.vitest/
+

@@ -4,7 +4,7 @@
  */
 
 import { useRestTimer } from '../../hooks/useRestTimer';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import './RestTimer.css';
 
 interface RestTimerProps {
@@ -38,10 +38,10 @@ export default function RestTimer({ onClose }: RestTimerProps) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleSkip = () => {
+  const handleSkip = useCallback(() => {
     stopTimer();
     onClose();
-  };
+  }, [stopTimer, onClose]);
 
   // Announce time remaining for screen readers
   useEffect(() => {

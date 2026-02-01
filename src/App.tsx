@@ -32,8 +32,9 @@ function App() {
 
   // Apply theme based on user profile
   useEffect(() => {
-    const profile = userProfiles && userProfiles.length > 0 ? userProfiles[0] : null;
-    
+    const profile =
+      userProfiles && userProfiles.length > 0 ? userProfiles[0] : null;
+
     if (!profile) return;
 
     const theme = profile.preferences.theme;

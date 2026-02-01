@@ -31,6 +31,18 @@ export default function RestTimer({ onClose }: RestTimerProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const announceRef = useRef<HTMLDivElement>(null);
 
+  // Helper functions - declared before useEffect hooks that use them
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleSkip = () => {
+    stopTimer();
+    onClose();
+  };
+
   // Announce time remaining for screen readers
   useEffect(() => {
     if (isRunning && timeRemaining > 0 && timeRemaining % 30 === 0) {
@@ -80,21 +92,10 @@ export default function RestTimer({ onClose }: RestTimerProps) {
       document.removeEventListener('keydown', handleEscapeKey);
       document.removeEventListener('keydown', handleTabKey);
     };
-  }, []);
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  }, [handleSkip]);
 
   const handleStart = (seconds: number) => {
     startTimer(seconds);
-  };
-
-  const handleSkip = () => {
-    stopTimer();
-    onClose();
   };
 
   const handleExtend = (seconds: number) => {

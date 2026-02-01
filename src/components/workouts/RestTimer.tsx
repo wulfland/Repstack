@@ -42,7 +42,8 @@ export default function RestTimer({ onClose }: RestTimerProps) {
 
   useEffect(() => {
     if (isComplete && announceRef.current) {
-      announceRef.current.textContent = 'Rest complete! Ready for your next set?';
+      announceRef.current.textContent =
+        'Rest complete! Ready for your next set?';
     }
   }, [isComplete]);
 
@@ -102,27 +103,23 @@ export default function RestTimer({ onClose }: RestTimerProps) {
 
   if (isComplete) {
     return (
-      <div 
+      <div
         className="rest-timer-modal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="rest-complete-title"
       >
         <div className="rest-timer-content complete" ref={dialogRef}>
-          <div 
-            ref={announceRef} 
-            className="sr-only" 
-            role="status" 
-            aria-live="polite" 
+          <div
+            ref={announceRef}
+            className="sr-only"
+            role="status"
+            aria-live="polite"
             aria-atomic="true"
           />
           <h2 id="rest-complete-title">Rest Complete! 💪</h2>
           <p>Ready for your next set?</p>
-          <button 
-            onClick={onClose} 
-            className="btn-primary btn-large"
-            autoFocus
-          >
+          <button onClick={onClose} className="btn-primary btn-large" autoFocus>
             Continue
           </button>
         </div>
@@ -132,8 +129,8 @@ export default function RestTimer({ onClose }: RestTimerProps) {
 
   if (!isRunning) {
     return (
-      <div 
-        className="rest-timer-modal" 
+      <div
+        className="rest-timer-modal"
         onClick={onClose}
         role="dialog"
         aria-modal="true"
@@ -144,11 +141,11 @@ export default function RestTimer({ onClose }: RestTimerProps) {
           onClick={(e) => e.stopPropagation()}
           ref={dialogRef}
         >
-          <div 
-            ref={announceRef} 
-            className="sr-only" 
-            role="status" 
-            aria-live="polite" 
+          <div
+            ref={announceRef}
+            className="sr-only"
+            role="status"
+            aria-live="polite"
             aria-atomic="true"
           />
           <h2 id="rest-timer-title">Rest Timer</h2>
@@ -192,24 +189,24 @@ export default function RestTimer({ onClose }: RestTimerProps) {
   }
 
   return (
-    <div 
+    <div
       className="rest-timer-modal"
       role="dialog"
       aria-modal="true"
       aria-labelledby="rest-timer-active-title"
     >
       <div className="rest-timer-content" ref={dialogRef}>
-        <div 
-          ref={announceRef} 
-          className="sr-only" 
-          role="status" 
-          aria-live="polite" 
+        <div
+          ref={announceRef}
+          className="sr-only"
+          role="status"
+          aria-live="polite"
           aria-atomic="true"
         />
         <h2 id="rest-timer-active-title">Rest Timer</h2>
         <div className="rest-timer-display">
           <div className="rest-timer-circle">
-            <span 
+            <span
               className="rest-timer-time"
               aria-label={`${formatTime(timeRemaining)} remaining`}
             >
@@ -220,16 +217,16 @@ export default function RestTimer({ onClose }: RestTimerProps) {
 
         <div className="rest-timer-controls">
           {!isPaused ? (
-            <button 
-              onClick={pauseTimer} 
+            <button
+              onClick={pauseTimer}
               className="btn-secondary"
               aria-label="Pause rest timer"
             >
               Pause
             </button>
           ) : (
-            <button 
-              onClick={resumeTimer} 
+            <button
+              onClick={resumeTimer}
               className="btn-primary"
               aria-label="Resume rest timer"
             >
@@ -247,15 +244,15 @@ export default function RestTimer({ onClose }: RestTimerProps) {
           >
             -15s
           </button>
-          <button 
-            onClick={() => handleExtend(15)} 
+          <button
+            onClick={() => handleExtend(15)}
             className="btn-extend"
             aria-label="Increase rest time by 15 seconds"
           >
             +15s
           </button>
-          <button 
-            onClick={() => handleExtend(30)} 
+          <button
+            onClick={() => handleExtend(30)}
             className="btn-extend"
             aria-label="Increase rest time by 30 seconds"
           >
@@ -263,8 +260,8 @@ export default function RestTimer({ onClose }: RestTimerProps) {
           </button>
         </div>
 
-        <button 
-          onClick={handleSkip} 
+        <button
+          onClick={handleSkip}
           className="btn-skip"
           aria-label="Skip rest timer and continue"
         >

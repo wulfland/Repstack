@@ -67,24 +67,24 @@ export default function ConfirmDialog({
   }, [onCancel]);
 
   return (
-    <div 
-      className="dialog-overlay" 
+    <div
+      className="dialog-overlay"
       onClick={onCancel}
       role="dialog"
       aria-modal="true"
       aria-labelledby="dialog-title"
       aria-describedby="dialog-message"
     >
-      <div 
-        className="dialog" 
+      <div
+        className="dialog"
         onClick={(e) => e.stopPropagation()}
         ref={dialogRef}
       >
         <h2 id="dialog-title">{title}</h2>
         <p id="dialog-message">{message}</p>
         <div className="dialog-actions">
-          <button 
-            onClick={onCancel} 
+          <button
+            onClick={onCancel}
             className="btn-secondary"
             ref={cancelButtonRef}
           >

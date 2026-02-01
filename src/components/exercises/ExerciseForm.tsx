@@ -87,9 +87,10 @@ export default function ExerciseForm({
       const handleTabKey = (event: KeyboardEvent) => {
         if (event.key !== 'Tab' || !dialogRef.current) return;
 
-        const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
+        const focusableElements =
+          dialogRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          );
         const firstElement = focusableElements[0];
         const lastElement = focusableElements[focusableElements.length - 1];
 
@@ -161,8 +162,8 @@ export default function ExerciseForm({
   if (!isOpen) return null;
 
   return (
-    <div 
-      className="dialog-overlay" 
+    <div
+      className="dialog-overlay"
       onClick={onCancel}
       role="dialog"
       aria-modal="true"
@@ -174,7 +175,9 @@ export default function ExerciseForm({
         ref={dialogRef}
       >
         <div className="dialog-header">
-          <h2 id="exercise-form-title">{exercise ? 'Edit Exercise' : 'Create Exercise'}</h2>
+          <h2 id="exercise-form-title">
+            {exercise ? 'Edit Exercise' : 'Create Exercise'}
+          </h2>
           <button
             className="dialog-close"
             onClick={onCancel}
@@ -245,7 +248,9 @@ export default function ExerciseForm({
                         type="checkbox"
                         checked={muscleGroups.includes(muscle)}
                         onChange={() => handleMuscleGroupToggle(muscle)}
-                        aria-label={muscle.charAt(0).toUpperCase() + muscle.slice(1)}
+                        aria-label={
+                          muscle.charAt(0).toUpperCase() + muscle.slice(1)
+                        }
                       />
                       <span className="checkbox-text">
                         {muscle.charAt(0).toUpperCase() + muscle.slice(1)}

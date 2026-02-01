@@ -86,7 +86,9 @@ export default function Layout({
           aria-current={currentPage === 'workout' ? 'page' : undefined}
           aria-label="Workouts"
         >
-          <span className="nav-mobile-icon" aria-hidden="true">💪</span>
+          <span className="nav-mobile-icon" aria-hidden="true">
+            💪
+          </span>
           <span className="nav-mobile-label">Workout</span>
         </a>
         <a
@@ -96,7 +98,9 @@ export default function Layout({
           aria-current={currentPage === 'mesocycles' ? 'page' : undefined}
           aria-label="Mesocycles"
         >
-          <span className="nav-mobile-icon" aria-hidden="true">📊</span>
+          <span className="nav-mobile-icon" aria-hidden="true">
+            📊
+          </span>
           <span className="nav-mobile-label">Meso</span>
         </a>
         <a
@@ -106,7 +110,9 @@ export default function Layout({
           aria-current={currentPage === 'exercises' ? 'page' : undefined}
           aria-label="Exercises"
         >
-          <span className="nav-mobile-icon" aria-hidden="true">🏋️</span>
+          <span className="nav-mobile-icon" aria-hidden="true">
+            🏋️
+          </span>
           <span className="nav-mobile-label">Exercises</span>
         </a>
         <a
@@ -116,7 +122,9 @@ export default function Layout({
           aria-current={currentPage === 'progress' ? 'page' : undefined}
           aria-label="Progress"
         >
-          <span className="nav-mobile-icon" aria-hidden="true">📈</span>
+          <span className="nav-mobile-icon" aria-hidden="true">
+            📈
+          </span>
           <span className="nav-mobile-label">Progress</span>
         </a>
         <a
@@ -126,7 +134,9 @@ export default function Layout({
           aria-current={currentPage === 'settings' ? 'page' : undefined}
           aria-label="Settings"
         >
-          <span className="nav-mobile-icon" aria-hidden="true">⚙️</span>
+          <span className="nav-mobile-icon" aria-hidden="true">
+            ⚙️
+          </span>
           <span className="nav-mobile-label">Settings</span>
         </a>
       </nav>

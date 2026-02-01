@@ -21,7 +21,7 @@ async function captureOnboardingScreenshots() {
   const screenshotsDir = join(__dirname, '../screenshots');
   try {
     mkdirSync(screenshotsDir, { recursive: true });
-  } catch (e) {
+  } catch {
     // Directory exists
   }
 

@@ -61,10 +61,16 @@ export default function SetLogger({
   };
 
   return (
-    <div className={`set-logger ${set.completed ? 'completed' : ''}`}>
-      <div className="set-number">{setNumber}</div>
+    <div
+      className={`set-logger ${set.completed ? 'completed' : ''}`}
+      role="group"
+      aria-label={`Set ${setNumber}${set.completed ? ' - completed' : ''}`}
+    >
+      <div className="set-number" aria-hidden="true">
+        {setNumber}
+      </div>
 
-      <div className="set-previous">
+      <div className="set-previous" aria-label="Previous performance">
         {previousSet ? (
           <span className="previous-data">
             {previousSet.weight} ×{' '}
@@ -81,6 +87,7 @@ export default function SetLogger({
             onClick={() => handleWeightIncrement(-2.5)}
             className="weight-btn weight-btn-decrement"
             disabled={set.completed}
+            aria-label="Decrease weight by 2.5"
           >
             -2.5
           </button>
@@ -93,11 +100,13 @@ export default function SetLogger({
             disabled={set.completed}
             inputMode="decimal"
             step="0.5"
+            aria-label={`Weight for set ${setNumber}`}
           />
           <button
             onClick={() => handleWeightIncrement(2.5)}
             className="weight-btn weight-btn-increment"
             disabled={set.completed}
+            aria-label="Increase weight by 2.5"
           >
             +2.5
           </button>
@@ -113,6 +122,7 @@ export default function SetLogger({
           className="set-input reps-input"
           disabled={set.completed}
           inputMode="numeric"
+          aria-label={`Reps for set ${setNumber}, target ${set.targetReps}`}
         />
       </div>
 
@@ -128,12 +138,14 @@ export default function SetLogger({
             min="0"
             max="10"
             inputMode="numeric"
+            aria-label={`Reps in reserve for set ${setNumber}`}
           />
         ) : (
           <button
             onClick={() => setShowRIR(true)}
             className="btn-add-rir"
             disabled={set.completed}
+            aria-label="Add reps in reserve"
           >
             +
           </button>
@@ -146,29 +158,30 @@ export default function SetLogger({
             <button
               onClick={handleComplete}
               className={`btn-complete-set ${canComplete ? 'ready' : ''}`}
-              title={
+              aria-label={
                 canComplete
-                  ? 'Complete set & start rest timer'
+                  ? 'Complete set and start rest timer'
                   : 'Enter reps to complete set'
               }
+              disabled={!canComplete}
             >
-              ✓
+              <span aria-hidden="true">✓</span>
             </button>
             <button
               onClick={onRemove}
               className="btn-remove-set"
-              title="Remove set"
+              aria-label={`Remove set ${setNumber}`}
             >
-              ✕
+              <span aria-hidden="true">✕</span>
             </button>
           </>
         ) : (
           <button
             onClick={handleUncomplete}
             className="btn-uncomplete-set"
-            title="Edit set"
+            aria-label={`Edit set ${setNumber}`}
           >
-            ✏️
+            <span aria-hidden="true">✏️</span>
           </button>
         )}
       </div>

@@ -215,12 +215,16 @@ export default function WorkoutFeedback({
 
           {/* Notes */}
           <div className="feedback-section">
-            <h3>Additional Notes (Optional)</h3>
+            <label htmlFor="feedback-notes">
+              <h3>Additional Notes (Optional)</h3>
+            </label>
             <textarea
+              id="feedback-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Any other feedback about this workout?"
               rows={3}
+              aria-label="Additional workout feedback notes"
             />
           </div>
         </div>

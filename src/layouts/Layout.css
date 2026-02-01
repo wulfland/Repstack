@@ -143,11 +143,12 @@
 }
 
 .footer a {
-  color: #667eea;
-  text-decoration: none;
+  color: #93c5fd; /* Lighter blue for better contrast against dark background */
+  text-decoration: underline; /* Add underline by default for link distinction */
 }
 
 .footer a:hover {
+  color: #bfdbfe; /* Even lighter on hover */
   text-decoration: underline;
 }
 

@@ -2,10 +2,13 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
+// Get base URL for GitHub Pages deployment
+const base = process.env.BASE_URL || '/';
+
 // https://vite.dev/config/
 export default defineConfig({
   // Use BASE_URL env var for GitHub Pages deployment, otherwise use root
-  base: process.env.BASE_URL || '/',
+  base,
   plugins: [
     react(),
     VitePWA({
@@ -20,8 +23,9 @@ export default defineConfig({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'any',
-        scope: '/',
-        start_url: '/',
+        // Use base path for scope and start_url to fix PWA on GitHub Pages
+        scope: base,
+        start_url: base,
         icons: [
           {
             src: 'pwa-192x192.png',

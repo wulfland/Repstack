@@ -5,12 +5,17 @@ import WorkoutSession from './components/workouts/WorkoutSession';
 import MesocycleDashboard from './components/mesocycles/MesocycleDashboard';
 import ProgressTracker from './components/progress/ProgressTracker';
 import Settings from './components/settings/Settings';
+import Onboarding, {
+  type OnboardingData,
+} from './components/onboarding/Onboarding';
 import {
   useExercises,
   createExercise,
   updateExercise,
   deleteExercise,
   useUserProfiles,
+  createUserProfile,
+  updateUserProfile,
 } from './hooks/useDatabase';
 import { seedStarterExercises } from './lib/seedData';
 import { seedSampleMesocycle } from './lib/seedMesocycle';
@@ -29,6 +34,21 @@ function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState<Page>('workout');
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  // Check if we should show onboarding
+  useEffect(() => {
+    if (userProfiles !== undefined) {
+      if (userProfiles.length === 0) {
+        // No profile exists, show onboarding
+        setShowOnboarding(true);
+      } else {
+        const profile = userProfiles[0];
+        // Show onboarding if user hasn't completed it
+        setShowOnboarding(!profile.onboardingCompleted);
+      }
+    }
+  }, [userProfiles]);
 
   // Apply theme based on user profile
   useEffect(() => {
@@ -172,6 +192,84 @@ function App() {
     return workoutsWithExercise > 0 || referencingTrainingSessionsCount > 0;
   };
 
+  const handleOnboardingComplete = async (data: OnboardingData) => {
+    try {
+      const profile =
+        userProfiles && userProfiles.length > 0 ? userProfiles[0] : null;
+
+      if (profile) {
+        // Update existing profile
+        await updateUserProfile(profile.id, {
+          name: data.name || 'User',
+          experienceLevel: data.experienceLevel,
+          preferences: {
+            ...profile.preferences,
+            units: data.units,
+          },
+          defaultTrainingSplit: data.trainingSplit,
+          onboardingCompleted: true,
+        });
+      } else {
+        // Create new profile
+        await createUserProfile({
+          name: data.name || 'User',
+          experienceLevel: data.experienceLevel,
+          preferences: {
+            units: data.units,
+            theme: 'system',
+            firstDayOfWeek: 1,
+            defaultRestTimerSeconds: 90,
+            restTimerSound: true,
+            restTimerVibration: true,
+            showRIRByDefault: true,
+            autoAdvanceSet: false,
+          },
+          defaultTrainingSplit: data.trainingSplit,
+          onboardingCompleted: true,
+        });
+      }
+
+      setShowOnboarding(false);
+    } catch (error) {
+      console.error('Failed to complete onboarding:', error);
+    }
+  };
+
+  const handleOnboardingSkip = async () => {
+    try {
+      const profile =
+        userProfiles && userProfiles.length > 0 ? userProfiles[0] : null;
+
+      if (profile) {
+        // Just mark onboarding as completed
+        await updateUserProfile(profile.id, {
+          onboardingCompleted: true,
+        });
+      } else {
+        // Create default profile
+        await createUserProfile({
+          name: 'User',
+          experienceLevel: 'beginner',
+          preferences: {
+            units: 'metric',
+            theme: 'system',
+            firstDayOfWeek: 1,
+            defaultRestTimerSeconds: 90,
+            restTimerSound: true,
+            restTimerVibration: true,
+            showRIRByDefault: true,
+            autoAdvanceSet: false,
+          },
+          onboardingCompleted: true,
+        });
+      }
+
+      setShowOnboarding(false);
+    } catch (error) {
+      console.error('Failed to skip onboarding:', error);
+    }
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -181,6 +279,16 @@ function App() {
           </div>
         </div>
       </Layout>
+    );
+  }
+
+  // Show onboarding if user hasn't completed it
+  if (showOnboarding) {
+    return (
+      <Onboarding
+        onComplete={handleOnboardingComplete}
+        onSkip={handleOnboardingSkip}
+      />
     );
   }
 

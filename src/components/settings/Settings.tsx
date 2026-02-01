@@ -3,10 +3,9 @@
  * Allows users to customize their Repstack experience
  */
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   useUserProfiles,
-  createUserProfile,
   updateUserProfile,
   exportData,
   importData,
@@ -39,30 +38,8 @@ export default function Settings({
   const profile =
     userProfiles && userProfiles.length > 0 ? userProfiles[0] : null;
 
-  // Create default profile if none exists
-  useEffect(() => {
-    if (userProfiles && userProfiles.length === 0) {
-      const createDefaultProfile = async () => {
-        const id = await createUserProfile({
-          name: 'User',
-          experienceLevel: 'beginner',
-          preferences: {
-            units: 'metric',
-            theme: 'system',
-            firstDayOfWeek: 1,
-            defaultRestTimerSeconds: 90,
-            restTimerSound: true,
-            restTimerVibration: true,
-            showRIRByDefault: true,
-            autoAdvanceSet: false,
-          },
-        });
-        // Refetch will happen automatically via useLiveQuery
-        console.log('Created default profile:', id);
-      };
-      createDefaultProfile();
-    }
-  }, [userProfiles]);
+  // NOTE: Don't auto-create profile here - let App.tsx handle it via onboarding
+  // The profile will be created when user completes or skips onboarding
 
   const showMessage = (type: 'success' | 'error', text: string) => {
     setMessage({ type, text });
@@ -483,6 +460,23 @@ export default function Settings({
       {/* About Section */}
       <section className="settings-section">
         <h2>About</h2>
+
+        <div className="settings-field">
+          <button
+            onClick={() =>
+              handleUpdateProfile({
+                onboardingCompleted: false,
+              })
+            }
+            className="btn-secondary"
+          >
+            🎓 Re-run Onboarding
+          </button>
+          <p className="field-description">
+            Go through the setup process again to review features and update
+            your preferences
+          </p>
+        </div>
 
         <div className="about-info">
           <div className="about-item">

@@ -12,14 +12,23 @@
   line-height: 1.5;
   font-weight: 400;
 
-  /* Color palette */
+  /* Color palette - WCAG AA compliant */
   --color-primary: #667eea;
   --color-primary-dark: #5568d3;
   --color-secondary: #764ba2;
   --color-background: #f7fafc;
   --color-surface: #ffffff;
   --color-text: #2d3748;
-  --color-text-light: #718096;
+  --color-text-light: #4a5568; /* Updated for better contrast (was #718096) */
+  --color-error: #e53e3e;
+  --color-success: #38a169;
+  --color-warning: #d69e2e;
+  --color-info: #3182ce;
+  
+  /* Focus indicator color */
+  --color-focus: #4299e1;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
 
   /* Breakpoints (for use in media queries) */
   --breakpoint-mobile: 640px;
@@ -109,16 +118,40 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Visible focus indicators for accessibility */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: 2px;
+}
+
+/* Remove default outline but keep focus-visible */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
 button {
   font-family: inherit;
   cursor: pointer;
   border: none;
   outline: none;
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
 }
 
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+button:focus-visible {
+  outline: var(--focus-ring-width) solid var(--color-focus);
+  outline-offset: var(--focus-ring-offset);
 }
 
 input,
@@ -139,6 +172,44 @@ select {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 100;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --color-text: #000000;
+    --color-text-light: #1a202c;
+    --color-focus: #000000;
+  }
 }
 
 /* Scrollbar styling */

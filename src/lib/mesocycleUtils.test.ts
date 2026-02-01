@@ -12,11 +12,7 @@ import {
   getNextSplitDay,
 } from '../lib/mesocycleUtils';
 import { db } from '../db';
-import {
-  createMesocycle,
-  createWorkout,
-  createExercise,
-} from '../db/service';
+import { createMesocycle, createWorkout, createExercise } from '../db/service';
 import type { Mesocycle, Workout } from '../types/models';
 
 describe('Mesocycle Utilities', () => {
@@ -37,10 +33,7 @@ describe('Mesocycle Utilities', () => {
         updatedAt: new Date(),
       };
 
-      const week = calculateMesocycleWeek(
-        mesocycle,
-        new Date('2024-01-01')
-      );
+      const week = calculateMesocycleWeek(mesocycle, new Date('2024-01-01'));
       expect(week).toBe(1);
     });
 
@@ -61,10 +54,7 @@ describe('Mesocycle Utilities', () => {
       };
 
       // Day 8 should be week 2
-      const week = calculateMesocycleWeek(
-        mesocycle,
-        new Date('2024-01-08')
-      );
+      const week = calculateMesocycleWeek(mesocycle, new Date('2024-01-08'));
       expect(week).toBe(2);
     });
 
@@ -85,10 +75,7 @@ describe('Mesocycle Utilities', () => {
       };
 
       // Day 22 should be week 4 (days 22-28)
-      const week = calculateMesocycleWeek(
-        mesocycle,
-        new Date('2024-01-22')
-      );
+      const week = calculateMesocycleWeek(mesocycle, new Date('2024-01-22'));
       expect(week).toBe(4);
     });
 
@@ -109,10 +96,7 @@ describe('Mesocycle Utilities', () => {
       };
 
       // Day 36 should be week 6
-      const week = calculateMesocycleWeek(
-        mesocycle,
-        new Date('2024-02-05')
-      );
+      const week = calculateMesocycleWeek(mesocycle, new Date('2024-02-05'));
       expect(week).toBe(6);
     });
 
@@ -132,10 +116,7 @@ describe('Mesocycle Utilities', () => {
         updatedAt: new Date(),
       };
 
-      const week = calculateMesocycleWeek(
-        mesocycle,
-        new Date('2023-12-31')
-      );
+      const week = calculateMesocycleWeek(mesocycle, new Date('2023-12-31'));
       expect(week).toBeNull();
     });
 
@@ -155,10 +136,7 @@ describe('Mesocycle Utilities', () => {
         updatedAt: new Date(),
       };
 
-      const week = calculateMesocycleWeek(
-        mesocycle,
-        new Date('2024-02-12')
-      );
+      const week = calculateMesocycleWeek(mesocycle, new Date('2024-02-12'));
       expect(week).toBeNull();
     });
 
@@ -209,10 +187,7 @@ describe('Mesocycle Utilities', () => {
       };
 
       // Last day should be week 4, not higher
-      const week = calculateMesocycleWeek(
-        mesocycle,
-        new Date('2024-01-28')
-      );
+      const week = calculateMesocycleWeek(mesocycle, new Date('2024-01-28'));
       expect(week).toBe(4);
     });
   });
@@ -712,4 +687,3 @@ describe('Mesocycle Utilities', () => {
     });
   });
 });
-

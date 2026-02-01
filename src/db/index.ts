@@ -87,6 +87,12 @@ class RepstackDatabase extends Dexie {
                     preferences: {
                       units: 'metric',
                       theme: 'system',
+                      firstDayOfWeek: 1, // Monday
+                      defaultRestTimerSeconds: 90,
+                      restTimerSound: true,
+                      restTimerVibration: true,
+                      showRIRByDefault: true,
+                      autoAdvanceSet: false,
                     },
                     createdAt: user.createdAt || new Date(),
                     updatedAt: user.updatedAt || new Date(),

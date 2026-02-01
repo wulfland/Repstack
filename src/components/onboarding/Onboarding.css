@@ -6,7 +6,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--background);
+  background: var(--color-background);
   overflow-y: auto;
 }
 
@@ -23,8 +23,8 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  background: var(--color-surface);
+  border-bottom: 1px solid #e5e7eb;
   padding: 1.5rem 1rem;
   text-align: center;
 }
@@ -41,7 +41,7 @@
   height: 12px;
   border-radius: 50%;
   background: transparent;
-  border: 2px solid var(--text-secondary);
+  border: 2px solid #a0aec0;
   padding: 0;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -54,13 +54,13 @@
 }
 
 .progress-dot.completed {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 .progress-dot.active {
-  background: var(--primary);
-  border-color: var(--primary);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   transform: scale(1.3);
 }
 
@@ -71,11 +71,11 @@
 
 .progress-label {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
 }
 
 .optional-badge {
-  color: var(--text-muted);
+  color: #a0aec0;
   font-style: italic;
 }
 
@@ -94,12 +94,12 @@
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  color: var(--color-text);
 }
 
 .step-description {
   font-size: 1rem;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
   margin-bottom: 2rem;
   line-height: 1.5;
 }
@@ -109,7 +109,7 @@
   gap: 1rem;
   margin-top: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid #e5e7eb;
 }
 
 .action-group {
@@ -127,7 +127,7 @@
 .logo-text {
   font-size: 3rem;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -136,7 +136,7 @@
 
 .tagline {
   font-size: 1rem;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
   font-weight: 500;
 }
 
@@ -152,7 +152,7 @@
 .value-proposition > p {
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
   margin-bottom: 1.5rem;
 }
 
@@ -167,9 +167,9 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: var(--surface);
+  background: var(--color-surface);
   border-radius: 8px;
-  border: 1px solid var(--border);
+  border: 1px solid #e5e7eb;
 }
 
 .feature-icon {
@@ -191,7 +191,7 @@
 
 .form-group label {
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--color-text);
   font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -199,30 +199,30 @@
 
 .optional-label {
   font-weight: 400;
-  color: var(--text-muted);
+  color: #a0aec0;
   text-transform: none;
   font-size: 0.75rem;
 }
 
 .field-description {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
   margin: 0;
 }
 
 .form-input {
   padding: 0.75rem;
-  border: 2px solid var(--border);
+  border: 2px solid #e5e7eb;
   border-radius: 8px;
   font-size: 1rem;
-  background: var(--surface);
-  color: var(--text-primary);
+  background: var(--color-surface);
+  color: var(--color-text);
   transition: border-color 0.2s ease;
 }
 
 .form-input:focus {
   outline: none;
-  border-color: var(--primary);
+  border-color: var(--color-primary);
 }
 
 .radio-group {
@@ -242,16 +242,16 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 1rem;
-  border: 2px solid var(--border);
+  border: 2px solid #e5e7eb;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  background: var(--surface);
+  background: var(--color-surface);
 }
 
 .radio-option:hover {
-  border-color: var(--primary);
-  background: var(--surface-hover);
+  border-color: var(--color-primary);
+  background: #f7f7fa;
 }
 
 .radio-option input[type='radio'] {
@@ -262,12 +262,12 @@
 }
 
 .radio-option input[type='radio']:checked ~ .radio-content {
-  color: var(--primary);
+  color: var(--color-primary);
 }
 
 .radio-option:has(input[type='radio']:checked) {
-  border-color: var(--primary);
-  background: var(--primary-bg);
+  border-color: var(--color-primary);
+  background: #ede9fe;
 }
 
 .radio-content {
@@ -284,7 +284,7 @@
 
 .radio-description {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
 }
 
 .radio-option-inline {
@@ -312,28 +312,28 @@
 
 .split-card {
   padding: 1.25rem;
-  border: 2px solid var(--border);
+  border: 2px solid #e5e7eb;
   border-radius: 8px;
-  background: var(--surface);
+  background: var(--color-surface);
   transition: all 0.2s ease;
   position: relative;
 }
 
 .split-option:hover .split-card {
-  border-color: var(--primary);
-  background: var(--surface-hover);
+  border-color: var(--color-primary);
+  background: #f7f7fa;
 }
 
 .split-option input[type='radio']:checked ~ .split-card {
-  border-color: var(--primary);
-  background: var(--primary-bg);
+  border-color: var(--color-primary);
+  background: #ede9fe;
 }
 
 .recommended-badge {
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  background: var(--primary);
+  background: var(--color-primary);
   color: white;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -346,12 +346,12 @@
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  color: var(--color-text);
 }
 
 .split-description {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
   margin-bottom: 0.75rem;
   line-height: 1.5;
 }
@@ -364,7 +364,7 @@
 
 .days-per-week {
   font-size: 0.75rem;
-  color: var(--text-muted);
+  color: #a0aec0;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -381,8 +381,8 @@
 }
 
 .example-box {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: var(--color-surface);
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 1.5rem;
   margin: 1.5rem 0;
@@ -392,7 +392,7 @@
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--text-primary);
+  color: var(--color-text);
 }
 
 .example-list {
@@ -406,20 +406,20 @@
 .example-list li {
   padding-left: 1.5rem;
   position: relative;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
 }
 
 .example-list li::before {
   content: '✓';
   position: absolute;
   left: 0;
-  color: var(--primary);
+  color: var(--color-primary);
   font-weight: bold;
 }
 
 .helper-text {
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: #a0aec0;
   font-style: italic;
   text-align: center;
   margin-top: 1rem;
@@ -445,12 +445,12 @@
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;
-  color: var(--text-primary);
+  color: var(--color-text);
 }
 
 .tour-slide p {
   font-size: 1rem;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
   line-height: 1.6;
   max-width: 500px;
 }
@@ -466,7 +466,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--border);
+  background: #e5e7eb;
   border: none;
   padding: 0;
   cursor: pointer;
@@ -474,18 +474,18 @@
 }
 
 .tour-dot.active {
-  background: var(--primary);
+  background: var(--color-primary);
   transform: scale(1.3);
 }
 
 .tour-dot:hover {
-  background: var(--primary);
+  background: var(--color-primary);
 }
 
 .slide-counter {
   text-align: center;
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: #a0aec0;
   margin-bottom: 1rem;
 }
 
@@ -509,35 +509,35 @@
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: var(--color-primary);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--primary-dark);
+  background: var(--color-primary-dark);
   transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: var(--surface);
-  color: var(--text-primary);
-  border: 2px solid var(--border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 2px solid #e5e7eb;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  border-color: var(--primary);
-  background: var(--surface-hover);
+  border-color: var(--color-primary);
+  background: #f7f7fa;
 }
 
 .btn-text {
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--color-text-light);
   padding: 0.75rem 1rem;
 }
 
 .btn-text:hover:not(:disabled) {
-  color: var(--text-primary);
-  background: var(--surface-hover);
+  color: var(--color-text);
+  background: #f7f7fa;
 }
 
 .btn-large {

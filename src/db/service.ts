@@ -40,6 +40,8 @@ export async function createUserProfile(
     name: sanitizeString(profile.name),
     experienceLevel: profile.experienceLevel,
     preferences: profile.preferences,
+    defaultTrainingSplit: profile.defaultTrainingSplit,
+    onboardingCompleted: profile.onboardingCompleted ?? false,
     createdAt: new Date(),
     updatedAt: new Date(),
   };

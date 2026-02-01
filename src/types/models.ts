@@ -39,6 +39,7 @@ export interface UserProfile {
     | 'full_body'
     | 'bro_split'
     | 'custom';
+  onboardingCompleted: boolean; // Track if user has completed onboarding
   createdAt: Date;
   updatedAt: Date;
 }

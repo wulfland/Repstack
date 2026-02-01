@@ -56,6 +56,7 @@ export default function Settings({
             showRIRByDefault: true,
             autoAdvanceSet: false,
           },
+          onboardingCompleted: false,
         });
         // Refetch will happen automatically via useLiveQuery
         console.log('Created default profile:', id);
@@ -483,6 +484,23 @@ export default function Settings({
       {/* About Section */}
       <section className="settings-section">
         <h2>About</h2>
+
+        <div className="settings-field">
+          <button
+            onClick={() =>
+              handleUpdateProfile({
+                onboardingCompleted: false,
+              })
+            }
+            className="btn-secondary"
+          >
+            🎓 Re-run Onboarding
+          </button>
+          <p className="field-description">
+            Go through the setup process again to review features and update your
+            preferences
+          </p>
+        </div>
 
         <div className="about-info">
           <div className="about-item">

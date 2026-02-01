@@ -34,6 +34,7 @@ export async function runDatabaseTests() {
         showRIRByDefault: true,
         autoAdvanceSet: false,
       },
+      onboardingCompleted: true,
     });
     console.log('✅ User profile created with ID:', userId);
 

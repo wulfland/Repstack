@@ -94,6 +94,7 @@ class RepstackDatabase extends Dexie {
                       showRIRByDefault: true,
                       autoAdvanceSet: false,
                     },
+                    onboardingCompleted: false, // Default to false for migrated users
                     createdAt: user.createdAt || new Date(),
                     updatedAt: user.updatedAt || new Date(),
                   };

@@ -226,12 +226,12 @@
 }
 
 .btn-primary {
-  background: #3b82f6;
+  background: #2563eb; /* Darker blue for better contrast (was #3b82f6) */
   color: white;
 }
 
 .btn-primary:hover {
-  background: #2563eb;
+  background: #1d4ed8; /* Even darker on hover */
 }
 
 .btn-secondary {

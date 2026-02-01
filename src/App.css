@@ -35,11 +35,13 @@
 }
 
 .status.online {
-  color: #16a34a; /* Darker green for better contrast (was #22c55e) */
+  color: #15803d; /* Even darker green for WCAG AA compliance (was #16a34a) */
+  font-weight: 600; /* Bold helps with readability */
 }
 
 .status.offline {
-  color: #dc2626; /* Darker red for better contrast (was #ef4444) */
+  color: #b91c1c; /* Darker red for better contrast (was #dc2626) */
+  font-weight: 600; /* Bold helps with readability */
 }
 
 .install-btn {

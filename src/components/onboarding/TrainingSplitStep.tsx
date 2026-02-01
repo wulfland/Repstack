@@ -88,13 +88,14 @@ export default function TrainingSplitStep({
       <div className="step-content">
         <h2>Choose Your Training Split</h2>
         <p className="step-description">
-          Select a training program structure that fits your schedule and goals. You can
-          change this later.
+          Select a training program structure that fits your schedule and goals.
+          You can change this later.
         </p>
 
         <div className="split-options">
           {splitOptions.map((option) => {
-            const isRecommended = option.recommendedFor.includes(experienceLevel);
+            const isRecommended =
+              option.recommendedFor.includes(experienceLevel);
             return (
               <label key={option.id} className="split-option">
                 <input

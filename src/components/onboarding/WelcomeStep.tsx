@@ -19,9 +19,9 @@ export default function WelcomeStep({ onNext, onSkip }: WelcomeStepProps) {
         <div className="value-proposition">
           <h2>Build Muscle with Science</h2>
           <p>
-            Repstack helps you apply proven hypertrophy training principles to maximize
-            muscle growth through progressive overload, auto-regulation, and structured
-            mesocycles.
+            Repstack helps you apply proven hypertrophy training principles to
+            maximize muscle growth through progressive overload,
+            auto-regulation, and structured mesocycles.
           </p>
 
           <div className="features-list">

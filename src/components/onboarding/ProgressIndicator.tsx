@@ -20,7 +20,11 @@ export default function ProgressIndicator({
   onStepClick,
 }: ProgressIndicatorProps) {
   return (
-    <div className="progress-indicator" role="navigation" aria-label="Onboarding progress">
+    <div
+      className="progress-indicator"
+      role="navigation"
+      aria-label="Onboarding progress"
+    >
       <div className="progress-dots">
         {steps.map((step, index) => (
           <button
@@ -28,7 +32,9 @@ export default function ProgressIndicator({
             className={`progress-dot ${index === currentStep ? 'active' : ''} ${
               index < currentStep ? 'completed' : ''
             }`}
-            onClick={() => onStepClick && index < currentStep && onStepClick(index)}
+            onClick={() =>
+              onStepClick && index < currentStep && onStepClick(index)
+            }
             disabled={index > currentStep}
             aria-label={`${step.title}${step.optional ? ' (optional)' : ''}${
               index === currentStep ? ' - current step' : ''
@@ -41,7 +47,9 @@ export default function ProgressIndicator({
       </div>
       <div className="progress-label">
         Step {currentStep + 1} of {steps.length}
-        {steps[currentStep].optional && <span className="optional-badge"> (optional)</span>}
+        {steps[currentStep].optional && (
+          <span className="optional-badge"> (optional)</span>
+        )}
       </div>
     </div>
   );

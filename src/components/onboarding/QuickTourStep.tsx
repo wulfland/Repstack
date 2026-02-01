@@ -116,7 +116,11 @@ export default function QuickTourStep({
             <button type="button" className="btn btn-text" onClick={onSkip}>
               Skip Tour
             </button>
-            <button type="button" className="btn btn-primary" onClick={handleNext}>
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleNext}
+            >
               {currentSlide < tourSlides.length - 1 ? 'Next' : 'Get Started'}
             </button>
           </div>

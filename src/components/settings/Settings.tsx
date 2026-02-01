@@ -473,8 +473,8 @@ export default function Settings({
             🎓 Re-run Onboarding
           </button>
           <p className="field-description">
-            Go through the setup process again to review features and update your
-            preferences
+            Go through the setup process again to review features and update
+            your preferences
           </p>
         </div>
 

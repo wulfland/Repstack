@@ -22,9 +22,9 @@ export default function FirstExerciseStep({
 
         <h2>Add Your First Exercise</h2>
         <p className="step-description">
-          Get started by adding an exercise you'll be doing in your workouts. You can
-          create exercises with custom names and categories (machine, barbell, dumbbell,
-          etc.).
+          Get started by adding an exercise you'll be doing in your workouts.
+          You can create exercises with custom names and categories (machine,
+          barbell, dumbbell, etc.).
         </p>
 
         <div className="example-box">
@@ -38,8 +38,8 @@ export default function FirstExerciseStep({
         </div>
 
         <p className="helper-text">
-          Don't worry - starter exercises have already been added to get you going, but
-          you can create custom ones anytime!
+          Don't worry - starter exercises have already been added to get you
+          going, but you can create custom ones anytime!
         </p>
 
         <div className="step-actions">

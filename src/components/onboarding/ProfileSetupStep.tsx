@@ -134,7 +134,9 @@ export default function ProfileSetupStep({
                   name="units"
                   value="metric"
                   checked={units === 'metric'}
-                  onChange={(e) => setUnits(e.target.value as 'metric' | 'imperial')}
+                  onChange={(e) =>
+                    setUnits(e.target.value as 'metric' | 'imperial')
+                  }
                 />
                 <div className="radio-content">
                   <span className="radio-title">Metric</span>
@@ -148,7 +150,9 @@ export default function ProfileSetupStep({
                   name="units"
                   value="imperial"
                   checked={units === 'imperial'}
-                  onChange={(e) => setUnits(e.target.value as 'metric' | 'imperial')}
+                  onChange={(e) =>
+                    setUnits(e.target.value as 'metric' | 'imperial')
+                  }
                 />
                 <div className="radio-content">
                   <span className="radio-title">Imperial</span>
@@ -159,7 +163,11 @@ export default function ProfileSetupStep({
           </div>
 
           <div className="step-actions">
-            <button type="button" className="btn btn-secondary" onClick={onBack}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={onBack}
+            >
               Back
             </button>
             <button type="submit" className="btn btn-primary">

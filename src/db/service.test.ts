@@ -25,12 +25,6 @@ import {
   updateMesocycle,
   deleteMesocycle,
 } from '../db/service';
-import type {
-  UserProfile,
-  Exercise,
-  Workout,
-  Mesocycle,
-} from '../types/models';
 
 describe('Database Service - User Profiles', () => {
   beforeEach(async () => {

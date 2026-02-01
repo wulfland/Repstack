@@ -159,7 +159,8 @@ describe('validateUserProfile', () => {
   it('should reject profile with invalid experience level', () => {
     const profile: Partial<UserProfile> = {
       name: 'John',
-      experienceLevel: 'expert' as any,
+      // @ts-expect-error Testing invalid value
+      experienceLevel: 'expert',
     };
 
     const result = validateUserProfile(profile);
@@ -170,9 +171,10 @@ describe('validateUserProfile', () => {
   it('should reject profile with invalid units', () => {
     const profile: Partial<UserProfile> = {
       name: 'John',
+      // @ts-expect-error Testing invalid preferences
       preferences: {
-        units: 'pounds' as any,
-      } as any,
+        units: 'pounds',
+      },
     };
 
     const result = validateUserProfile(profile);
@@ -183,9 +185,10 @@ describe('validateUserProfile', () => {
   it('should reject profile with invalid theme', () => {
     const profile: Partial<UserProfile> = {
       name: 'John',
+      // @ts-expect-error Testing invalid preferences
       preferences: {
-        theme: 'auto' as any,
-      } as any,
+        theme: 'auto',
+      },
     };
 
     const result = validateUserProfile(profile);
@@ -236,7 +239,8 @@ describe('validateExercise', () => {
   it('should reject exercise with invalid category', () => {
     const exercise: Partial<Exercise> = {
       name: 'Test',
-      category: 'kettlebell' as any,
+      // @ts-expect-error Testing invalid category
+      category: 'kettlebell',
       muscleGroups: ['chest'],
     };
 
@@ -261,7 +265,8 @@ describe('validateExercise', () => {
     const exercise: Partial<Exercise> = {
       name: 'Test',
       category: 'barbell',
-      muscleGroups: ['chest', 'invalid' as any],
+      // @ts-expect-error Testing invalid muscle group
+      muscleGroups: ['chest', 'invalid'],
     };
 
     const result = validateExercise(exercise);
@@ -599,7 +604,8 @@ describe('validateTrainingSession', () => {
       workoutId: 'workout-123',
       exerciseId: 'ex-123',
       date: new Date(),
-      performance: 'amazing' as any,
+      // @ts-expect-error Testing invalid performance value
+      performance: 'amazing',
     };
 
     const result = validateTrainingSession(session);
@@ -739,7 +745,8 @@ describe('validateMesocycle', () => {
       name: 'Test',
       startDate: new Date(),
       endDate: new Date(),
-      trainingSplit: 'invalid' as any,
+      // @ts-expect-error Testing invalid training split
+      trainingSplit: 'invalid',
       splitDays: [],
     };
 
@@ -753,7 +760,8 @@ describe('validateMesocycle', () => {
       name: 'Test',
       startDate: new Date(),
       endDate: new Date(),
-      status: 'invalid' as any,
+      // @ts-expect-error Testing invalid status
+      status: 'invalid',
       splitDays: [],
     };
 

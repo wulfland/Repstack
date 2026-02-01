@@ -38,10 +38,15 @@ function App() {
 
   // Check if we should show onboarding
   useEffect(() => {
-    if (userProfiles && userProfiles.length > 0) {
-      const profile = userProfiles[0];
-      // Show onboarding if user hasn't completed it
-      setShowOnboarding(!profile.onboardingCompleted);
+    if (userProfiles !== undefined) {
+      if (userProfiles.length === 0) {
+        // No profile exists, show onboarding
+        setShowOnboarding(true);
+      } else {
+        const profile = userProfiles[0];
+        // Show onboarding if user hasn't completed it
+        setShowOnboarding(!profile.onboardingCompleted);
+      }
     }
   }, [userProfiles]);
 

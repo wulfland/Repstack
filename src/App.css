@@ -35,11 +35,11 @@
 }
 
 .status.online {
-  color: #22c55e;
+  color: #16a34a; /* Darker green for better contrast (was #22c55e) */
 }
 
 .status.offline {
-  color: #ef4444;
+  color: #dc2626; /* Darker red for better contrast (was #ef4444) */
 }
 
 .install-btn {

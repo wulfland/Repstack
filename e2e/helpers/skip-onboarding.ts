@@ -6,29 +6,38 @@ import { Page } from '@playwright/test';
  */
 export async function skipOnboarding(page: Page): Promise<void> {
   // Wait for the page to be ready
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
   
-  // Check if we're on the onboarding screen by looking for the welcome message
-  const isOnboarding = await page.locator('text=Build Muscle with Science').isVisible({ timeout: 3000 }).catch(() => false);
+  // Wait a bit for React to render
+  await page.waitForTimeout(500);
   
-  if (isOnboarding) {
-    // Click "Skip Setup" to bypass onboarding entirely
-    const skipButton = page.locator('button:has-text("Skip Setup")');
-    await skipButton.click();
+  // Check if we're on the onboarding screen
+  const skipButton = page.locator('button:has-text("Skip Setup")');
+  
+  // Try to find and click the skip button with retries
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const isSkipVisible = await skipButton.isVisible({ timeout: 3000 }).catch(() => false);
     
-    // Wait for the main app to load - look for the main header or navigation
-    // The main app shows "Ready to Train?" or navigation elements
-    await page.waitForSelector('nav, .nav-desktop, header', { timeout: 10000 });
-    await page.waitForLoadState('networkidle');
+    if (isSkipVisible) {
+      await skipButton.click();
+      // Wait for navigation to complete
+      await page.waitForLoadState('networkidle');
+      break;
+    }
+    
+    // If no skip button, check if we're already past onboarding
+    const navVisible = await page.locator('nav, .nav-desktop, .layout').first().isVisible({ timeout: 1000 }).catch(() => false);
+    if (navVisible) {
+      break; // Already past onboarding
+    }
+    
+    // Wait and retry
+    await page.waitForTimeout(500);
   }
   
-  // Also check if we're at a later onboarding step
-  const skipSetupVisible = await page.locator('button:has-text("Skip Setup")').isVisible({ timeout: 1000 }).catch(() => false);
-  if (skipSetupVisible) {
-    await page.locator('button:has-text("Skip Setup")').click();
-    await page.waitForSelector('nav, .nav-desktop, header', { timeout: 10000 });
-    await page.waitForLoadState('networkidle');
-  }
+  // Final wait for the main app to be ready
+  await page.waitForSelector('nav, .nav-desktop, header, .layout', { timeout: 15000 });
+  await page.waitForLoadState('networkidle');
 }
 
 /**

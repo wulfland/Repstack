@@ -12,8 +12,8 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
     await page.goto('/');
     // Skip onboarding to get to the main app
     await skipOnboarding(page);
-    // Wait for app to load
-    await page.waitForLoadState('networkidle');
+    // Wait for main app to render
+    await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
   });
 
   test('should not have any automatically detectable accessibility issues', async ({ page }) => {
@@ -47,12 +47,15 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
   });
 
   test('should support full keyboard navigation in header', async ({ page }) => {
+    // Wait for nav to be ready
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
+    
     // Tab through navigation links
     await page.keyboard.press('Tab'); // Skip link
     await page.keyboard.press('Tab'); // First nav link
     
     const firstNavLink = page.locator('.nav-desktop .nav-link').first();
-    await expect(firstNavLink).toBeFocused();
+    await expect(firstNavLink).toBeFocused({ timeout: 3000 });
     
     // Navigate through all nav links
     for (let i = 0; i < 4; i++) {
@@ -62,10 +65,12 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
     // Verify we can navigate backwards
     await page.keyboard.press('Shift+Tab');
     const lastNavLink = page.locator('.nav-desktop .nav-link').nth(3);
-    await expect(lastNavLink).toBeFocused();
+    await expect(lastNavLink).toBeFocused({ timeout: 3000 });
   });
 
   test('should indicate current page with aria-current', async ({ page }) => {
+    // Wait for nav to be ready
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
     // Check that current page has aria-current="page"
     const activeLink = page.locator('.nav-link.active').first();
     await expect(activeLink).toHaveAttribute('aria-current', 'page');
@@ -91,6 +96,12 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
   });
 
   test('should have proper ARIA labels on mobile navigation', async ({ page }) => {
+    // Resize to mobile viewport to see mobile nav
+    await page.setViewportSize({ width: 375, height: 667 });
+    
+    // Wait for mobile nav to appear after viewport change
+    await page.locator('.nav-mobile').waitFor({ state: 'visible', timeout: 5000 });
+    
     // Check mobile nav has proper label
     const mobileNav = page.locator('.nav-mobile');
     await expect(mobileNav).toHaveAttribute('aria-label', 'Mobile navigation');
@@ -108,6 +119,12 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
   });
 
   test('should have aria-hidden on decorative icons', async ({ page }) => {
+    // Resize to mobile viewport to see mobile nav icons
+    await page.setViewportSize({ width: 375, height: 667 });
+    
+    // Wait for mobile nav to appear after viewport change  
+    await page.locator('.nav-mobile').waitFor({ state: 'visible', timeout: 5000 });
+    
     const decorativeIcons = page.locator('.nav-mobile-icon');
     const count = await decorativeIcons.count();
     
@@ -118,8 +135,10 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
 
   test('exercises page should be accessible', async ({ page }) => {
     // Navigate to exercises
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
     await page.click('text=Exercises');
-    await page.waitForLoadState('networkidle');
+    // Wait for exercises page to load
+    await page.locator('.exercise-list-container, h1:has-text("Exercises")').first().waitFor({ state: 'visible', timeout: 5000 });
     
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])
@@ -130,8 +149,10 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
 
   test('settings page should be accessible', async ({ page }) => {
     // Navigate to settings
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
     await page.click('text=Settings');
-    await page.waitForLoadState('networkidle');
+    // Wait for settings page to load
+    await page.locator('.settings-container, h1:has-text("Settings")').first().waitFor({ state: 'visible', timeout: 5000 });
     
     const accessibilityScanResults = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa'])
@@ -145,80 +166,77 @@ test.describe('Dialog/Modal Accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await skipOnboarding(page);
-    await page.waitForLoadState('networkidle');
+    // Wait for main app to render
+    await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
   });
 
   test('exercise form dialog should have proper ARIA attributes', async ({ page }) => {
     // Navigate to exercises page
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
     await page.click('text=Exercises');
-    await page.waitForTimeout(500);
+    await page.locator('.exercise-list-container, h1:has-text("Exercises")').first().waitFor({ state: 'visible', timeout: 5000 });
     
     // Open create exercise dialog
     const createButton = page.locator('button:has-text("Create Exercise")').first();
-    if (await createButton.isVisible()) {
-      await createButton.click();
-      await page.waitForTimeout(300);
-      
-      // Check dialog has proper ARIA attributes
-      const dialog = page.locator('[role="dialog"]');
-      await expect(dialog).toBeVisible();
-      await expect(dialog).toHaveAttribute('aria-modal', 'true');
-      
-      // Check dialog is labeled
-      const ariaLabelledBy = await dialog.getAttribute('aria-labelledby');
-      expect(ariaLabelledBy).toBeTruthy();
-    }
+    await createButton.waitFor({ state: 'visible', timeout: 3000 });
+    await createButton.click();
+    
+    // Check dialog has proper ARIA attributes
+    const dialog = page.locator('[role="dialog"]');
+    await expect(dialog).toBeVisible({ timeout: 3000 });
+    await expect(dialog).toHaveAttribute('aria-modal', 'true');
+    
+    // Check dialog is labeled
+    const ariaLabelledBy = await dialog.getAttribute('aria-labelledby');
+    expect(ariaLabelledBy).toBeTruthy();
   });
 
   test('dialog should trap focus', async ({ page }) => {
     // Navigate to exercises
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
     await page.click('text=Exercises');
-    await page.waitForTimeout(500);
+    await page.locator('.exercise-list-container, h1:has-text("Exercises")').first().waitFor({ state: 'visible', timeout: 5000 });
     
     const createButton = page.locator('button:has-text("Create Exercise")').first();
-    if (await createButton.isVisible()) {
-      await createButton.click();
-      await page.waitForTimeout(300);
-      
-      // Get all focusable elements in dialog
-      const dialog = page.locator('[role="dialog"]');
-      await expect(dialog).toBeVisible();
-      
-      // Verify dialog has focusable elements and focus is within dialog
-      const focusableElements = dialog.locator('button, input, select, textarea');
-      const count = await focusableElements.count();
-      expect(count).toBeGreaterThan(0);
-      
-      // Tab through elements and verify focus stays within dialog
-      for (let i = 0; i < count + 2; i++) {
-        await page.keyboard.press('Tab');
-        // Get currently focused element
-        const focusedInDialog = await dialog.locator(':focus').count();
-        expect(focusedInDialog).toBe(1); // Focus should always be within dialog
-      }
+    await createButton.waitFor({ state: 'visible', timeout: 3000 });
+    await createButton.click();
+    
+    // Get all focusable elements in dialog
+    const dialog = page.locator('[role="dialog"]');
+    await expect(dialog).toBeVisible({ timeout: 3000 });
+    
+    // Verify dialog has focusable elements and focus is within dialog
+    const focusableElements = dialog.locator('button, input, select, textarea');
+    const count = await focusableElements.count();
+    expect(count).toBeGreaterThan(0);
+    
+    // Tab through elements and verify focus stays within dialog
+    for (let i = 0; i < count + 2; i++) {
+      await page.keyboard.press('Tab');
+      // Get currently focused element
+      const focusedInDialog = await dialog.locator(':focus').count();
+      expect(focusedInDialog).toBe(1); // Focus should always be within dialog
     }
   });
 
   test('dialog should close on ESC key', async ({ page }) => {
     // Navigate to exercises
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
     await page.click('text=Exercises');
-    await page.waitForTimeout(500);
+    await page.locator('.exercise-list-container, h1:has-text("Exercises")').first().waitFor({ state: 'visible', timeout: 5000 });
     
     const createButton = page.locator('button:has-text("Create Exercise")').first();
-    if (await createButton.isVisible()) {
-      await createButton.click();
-      await page.waitForTimeout(300);
-      
-      const dialog = page.locator('[role="dialog"]');
-      await expect(dialog).toBeVisible();
-      
-      // Press ESC
-      await page.keyboard.press('Escape');
-      await page.waitForTimeout(200);
-      
-      // Dialog should be closed
-      await expect(dialog).not.toBeVisible();
-    }
+    await createButton.waitFor({ state: 'visible', timeout: 3000 });
+    await createButton.click();
+    
+    const dialog = page.locator('[role="dialog"]');
+    await expect(dialog).toBeVisible({ timeout: 3000 });
+    
+    // Press ESC
+    await page.keyboard.press('Escape');
+    
+    // Dialog should be closed
+    await expect(dialog).not.toBeVisible({ timeout: 3000 });
   });
 });
 
@@ -226,78 +244,84 @@ test.describe('Form Accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await skipOnboarding(page);
-    await page.waitForLoadState('networkidle');
+    // Wait for main app to render
+    await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
   });
 
   test('form inputs should have associated labels', async ({ page }) => {
     // Navigate to exercises
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
     await page.click('text=Exercises');
-    await page.waitForTimeout(500);
+    await page.locator('.exercise-list-container, h1:has-text("Exercises")').first().waitFor({ state: 'visible', timeout: 5000 });
     
     const createButton = page.locator('button:has-text("Create Exercise")').first();
-    if (await createButton.isVisible()) {
-      await createButton.click();
-      await page.waitForTimeout(300);
+    await createButton.waitFor({ state: 'visible', timeout: 3000 });
+    await createButton.click();
+    
+    // Check that all inputs have labels
+    const dialog = page.locator('[role="dialog"]');
+    await expect(dialog).toBeVisible({ timeout: 3000 });
+    
+    const inputs = dialog.locator('input[type="text"], select, textarea');
+    const count = await inputs.count();
+    
+    for (let i = 0; i < count; i++) {
+      const input = inputs.nth(i);
+      const id = await input.getAttribute('id');
       
-      // Check that all inputs have labels
-      const inputs = page.locator('input[type="text"], select, textarea');
-      const count = await inputs.count();
-      
-      for (let i = 0; i < count; i++) {
-        const input = inputs.nth(i);
-        const id = await input.getAttribute('id');
-        
-        if (id) {
-          const label = page.locator(`label[for="${id}"]`);
-          await expect(label).toBeVisible();
-        }
+      if (id) {
+        const label = page.locator(`label[for="${id}"]`);
+        await expect(label).toBeVisible();
       }
     }
   });
 
   test('required fields should be marked with aria-required', async ({ page }) => {
     // Navigate to exercises
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
     await page.click('text=Exercises');
-    await page.waitForTimeout(500);
+    await page.locator('.exercise-list-container, h1:has-text("Exercises")').first().waitFor({ state: 'visible', timeout: 5000 });
     
     const createButton = page.locator('button:has-text("Create Exercise")').first();
-    if (await createButton.isVisible()) {
-      await createButton.click();
-      await page.waitForTimeout(300);
-      
-      // Check required inputs have aria-required
-      const requiredInputs = page.locator('input[required]');
-      const count = await requiredInputs.count();
-      
-      for (let i = 0; i < count; i++) {
-        const input = requiredInputs.nth(i);
-        const ariaRequired = await input.getAttribute('aria-required');
-        expect(ariaRequired).toBe('true');
-      }
+    await createButton.waitFor({ state: 'visible', timeout: 3000 });
+    await createButton.click();
+    
+    const dialog = page.locator('[role="dialog"]');
+    await expect(dialog).toBeVisible({ timeout: 3000 });
+    
+    // Check required inputs have aria-required
+    const requiredInputs = dialog.locator('input[required]');
+    const count = await requiredInputs.count();
+    
+    for (let i = 0; i < count; i++) {
+      const input = requiredInputs.nth(i);
+      const ariaRequired = await input.getAttribute('aria-required');
+      expect(ariaRequired).toBe('true');
     }
   });
 
   test('form errors should be announced to screen readers', async ({ page }) => {
     // Navigate to exercises
+    await page.locator('.nav-desktop').waitFor({ state: 'visible', timeout: 5000 });
     await page.click('text=Exercises');
-    await page.waitForTimeout(500);
+    await page.locator('.exercise-list-container, h1:has-text("Exercises")').first().waitFor({ state: 'visible', timeout: 5000 });
     
     const createButton = page.locator('button:has-text("Create Exercise")').first();
-    if (await createButton.isVisible()) {
-      await createButton.click();
-      await page.waitForTimeout(300);
-      
-      // Try to submit empty form
-      const submitButton = page.locator('button[type="submit"]');
-      await submitButton.click();
-      await page.waitForTimeout(300);
-      
-      // Check if error message has proper ARIA attributes
-      const errorMessage = page.locator('.form-error');
-      if (await errorMessage.isVisible()) {
-        await expect(errorMessage).toHaveAttribute('role', 'alert');
-        await expect(errorMessage).toHaveAttribute('aria-live', 'polite');
-      }
+    await createButton.waitFor({ state: 'visible', timeout: 3000 });
+    await createButton.click();
+    
+    const dialog = page.locator('[role="dialog"]');
+    await expect(dialog).toBeVisible({ timeout: 3000 });
+    
+    // Try to submit empty form
+    const submitButton = dialog.locator('button[type="submit"]');
+    await submitButton.click();
+    
+    // Check if error message has proper ARIA attributes
+    const errorMessage = dialog.locator('.form-error');
+    if (await errorMessage.isVisible({ timeout: 1000 }).catch(() => false)) {
+      await expect(errorMessage).toHaveAttribute('role', 'alert');
+      await expect(errorMessage).toHaveAttribute('aria-live', 'polite');
     }
   });
 });
@@ -306,7 +330,8 @@ test.describe('Color Contrast', () => {
   test('should meet minimum color contrast ratios', async ({ page }) => {
     await page.goto('/');
     await skipOnboarding(page);
-    await page.waitForLoadState('networkidle');
+    // Wait for main app to render
+    await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
     
     // Run axe with color-contrast rule
     const accessibilityScanResults = await new AxeBuilder({ page })
@@ -338,7 +363,8 @@ test.describe('Reduced Motion Support', () => {
     
     await page.goto('/');
     await skipOnboarding(page);
-    await page.waitForLoadState('networkidle');
+    // Wait for main app to render
+    await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
     
     // Verify reduced motion CSS is applied
     const animationDuration = await page.evaluate(() => {

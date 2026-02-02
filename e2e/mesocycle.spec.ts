@@ -8,17 +8,14 @@ import { skipOnboarding } from './helpers/skip-onboarding';
 
 test.describe('Mesocycle Management', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the app using empty string to respect baseURL path
-    // Using '/' would navigate to root domain, not the baseURL path
-    await page.goto('');
+    // Navigate to the app
+    await page.goto('/');
     
     // Skip onboarding to get to the main app
     await skipOnboarding(page);
     
-    await page.waitForLoadState('networkidle');
-    
-    // Wait for the app to load - look for the app container or header
-    await page.waitForSelector('h1, .app-header, header', { timeout: 30000 });
+    // Wait for the main app to render (status-bar indicates main app is loaded)
+    await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
   });
 
   test('should display the home page', async ({ page }) => {
@@ -49,7 +46,7 @@ test.describe('Mesocycle Management', () => {
 
     if (await mesocyclesLink.isVisible()) {
       await mesocyclesLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(200);
 
       // Should be on mesocycles page
       const url = page.url();
@@ -68,7 +65,7 @@ test.describe('Mesocycle Management', () => {
 
     if (await mesocyclesLink.isVisible()) {
       await mesocyclesLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(200);
       await page.waitForTimeout(500);
     }
 
@@ -466,7 +463,7 @@ test.describe('Exercise Management', () => {
     await page.goto('');
     // Skip onboarding to get to the main app
     await skipOnboarding(page);
-    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(200);
   });
 
   test('should navigate to exercises page', async ({ page }) => {
@@ -474,7 +471,7 @@ test.describe('Exercise Management', () => {
 
     if (await exercisesLink.isVisible()) {
       await exercisesLink.click();
-      await page.waitForLoadState('networkidle');
+      await page.waitForTimeout(200);
 
       // Should see exercise-related content
       const content = await page.content();
@@ -505,7 +502,7 @@ test.describe('Workout Flow', () => {
     await page.goto('');
     // Skip onboarding to get to the main app
     await skipOnboarding(page);
-    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(200);
   });
 
   test('should be able to start a workout', async ({ page }) => {

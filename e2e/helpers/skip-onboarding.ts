@@ -5,39 +5,34 @@ import { Page } from '@playwright/test';
  * This should be called after page.goto() when testing main app functionality
  */
 export async function skipOnboarding(page: Page): Promise<void> {
-  // Wait for the page to be ready
+  // Wait for initial DOM and React to render
   await page.waitForLoadState('domcontentloaded');
   
-  // Wait a bit for React to render
+  // Give React time to hydrate and render
   await page.waitForTimeout(500);
   
-  // Check if we're on the onboarding screen
+  // Check if we're on the onboarding page
   const skipButton = page.locator('button:has-text("Skip Setup")');
   
-  // Try to find and click the skip button with retries
-  for (let attempt = 0; attempt < 3; attempt++) {
-    const isSkipVisible = await skipButton.isVisible({ timeout: 3000 }).catch(() => false);
+  // Try to click the skip button if it exists
+  try {
+    // Wait for skip button with shorter timeout
+    await skipButton.waitFor({ state: 'visible', timeout: 3000 });
+    await skipButton.click();
     
-    if (isSkipVisible) {
-      await skipButton.click();
-      // Wait for navigation to complete
-      await page.waitForLoadState('networkidle');
-      break;
+    // After clicking, wait for main nav to appear
+    await page.locator('.nav-desktop, nav.nav, .layout').first().waitFor({ state: 'visible', timeout: 10000 });
+  } catch {
+    // Skip button not found - might already be past onboarding or on different page
+    // Check if main app is already visible
+    const mainNav = page.locator('.nav-desktop, nav.nav, .layout').first();
+    try {
+      await mainNav.waitFor({ state: 'visible', timeout: 5000 });
+    } catch {
+      // Neither onboarding nor main app visible - throw clear error
+      throw new Error('Could not skip onboarding: neither Skip button nor main app visible');
     }
-    
-    // If no skip button, check if we're already past onboarding
-    const navVisible = await page.locator('nav, .nav-desktop, .layout').first().isVisible({ timeout: 1000 }).catch(() => false);
-    if (navVisible) {
-      break; // Already past onboarding
-    }
-    
-    // Wait and retry
-    await page.waitForTimeout(500);
   }
-  
-  // Final wait for the main app to be ready
-  await page.waitForSelector('nav, .nav-desktop, header, .layout', { timeout: 15000 });
-  await page.waitForLoadState('networkidle');
 }
 
 /**
@@ -57,10 +52,10 @@ export async function completeOnboarding(page: Page, options?: {
     trainingSplit = 'push_pull_legs'
   } = options || {};
   
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState('domcontentloaded');
   
   // Check if we're on onboarding
-  const isOnboarding = await page.locator('text=Build Muscle with Science').isVisible({ timeout: 3000 }).catch(() => false);
+  const isOnboarding = await page.locator('text=Build Muscle with Science').isVisible({ timeout: 2000 }).catch(() => false);
   
   if (!isOnboarding) {
     return; // Already past onboarding
@@ -70,14 +65,14 @@ export async function completeOnboarding(page: Page, options?: {
   await page.click('button:has-text("Get Started")');
   
   // Step 2: Profile Setup
-  await page.waitForSelector('text=Set Up Your Profile', { timeout: 5000 });
+  await page.locator('text=Set Up Your Profile').waitFor({ timeout: 3000 });
   await page.fill('input#name', name);
   await page.click(`input[value="${experienceLevel}"]`);
   await page.click(`input[value="${unitSystem}"]`);
   await page.click('button:has-text("Continue")');
   
   // Step 3: Training Split (optional - skip it)
-  await page.waitForSelector('text=Choose Your Training Split', { timeout: 5000 });
+  await page.locator('text=Choose Your Training Split').waitFor({ timeout: 3000 });
   if (trainingSplit) {
     await page.click(`label:has(input[value="${trainingSplit}"])`);
     await page.click('button:has-text("Continue")');
@@ -86,16 +81,15 @@ export async function completeOnboarding(page: Page, options?: {
   }
   
   // Step 4: First Exercise (optional - skip it)
-  await page.waitForSelector('text=Add Your First Exercise', { timeout: 5000 });
+  await page.locator('text=Add Your First Exercise').waitFor({ timeout: 3000 });
   await page.click('button:has-text("Skip for now")');
   
   // Step 5: Quick Tour - Skip it
-  await page.waitForSelector('text=Quick Tour', { timeout: 5000 });
+  await page.locator('text=Quick Tour').waitFor({ timeout: 3000 });
   await page.click('button:has-text("Skip Tour")');
   
-  // Wait for main app - look for the main header or navigation
-  await page.waitForSelector('nav, .nav-desktop, header', { timeout: 10000 });
-  await page.waitForLoadState('networkidle');
+  // Wait for main app
+  await page.locator('nav, .nav-desktop, header').first().waitFor({ timeout: 5000 });
 }
 
 /**

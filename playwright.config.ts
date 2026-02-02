@@ -6,14 +6,14 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './e2e',
-  fullyParallel: true,
+  fullyParallel: false, // Disable parallel execution for test stability
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  retries: process.env.CI ? 1 : 0,
+  workers: 1, // Use single worker for stable test execution
   reporter: [['html', { open: 'never' }], ['list']],
-  timeout: 60000,
+  timeout: 30000,
   expect: {
-    timeout: 10000,
+    timeout: 5000,
   },
   use: {
     baseURL: process.env.BASE_URL || 'http://localhost:4173',

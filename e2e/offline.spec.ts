@@ -9,18 +9,16 @@ import { skipOnboarding } from './helpers/skip-onboarding';
 test.describe('Offline Functionality', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app and wait for it to load
-    await page.goto('');
+    await page.goto('/');
     
     // Skip onboarding to get to the main app
     await skipOnboarding(page);
     
-    await page.waitForLoadState('networkidle');
-    
-    // Wait for the app to load and service worker to register
-    await page.waitForSelector('h1, .app-header, header', { timeout: 30000 });
+    // Wait for the main app content to render (status-bar indicates main app is loaded)
+    await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
     
     // Give service worker time to cache assets
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
   });
 
   test('should display the app when online', async ({ page }) => {
@@ -28,9 +26,10 @@ test.describe('Offline Functionality', () => {
     const content = await page.content();
     expect(content.toLowerCase()).toContain('repstack');
     
-    // Check for online status indicator
-    const onlineStatus = page.locator('.status.online, .status:has-text("Online")');
-    await expect(onlineStatus).toBeVisible({ timeout: 5000 });
+    // Check for online status indicator (already waited for status-bar in beforeEach)
+    const status = page.locator('.status');
+    await expect(status).toBeVisible({ timeout: 5000 });
+    await expect(status).toHaveClass(/online/);
   });
 
   test('should show service worker is registered', async ({ page }) => {
@@ -48,23 +47,23 @@ test.describe('Offline Functionality', () => {
 
   test('should work offline after initial load', async ({ page, context }) => {
     // First, ensure the app loads and service worker caches everything
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(2000);
     
     // Go offline
     await context.setOffline(true);
     
     // Wait a bit for offline mode to register
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
     
     // Check for offline status indicator
-    const offlineStatus = page.locator('.status.offline, .status:has-text("Offline")');
-    await expect(offlineStatus).toBeVisible({ timeout: 5000 });
+    const status = page.locator('.status');
+    await expect(status).toHaveClass(/offline/, { timeout: 5000 });
     
     // Navigate to different pages to test they load from cache
     const exercisesLink = page.locator('a[href*="exercise"]').first();
     if (await exercisesLink.isVisible()) {
       await exercisesLink.click();
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
       
       // Should still see content
       const content = await page.content();
@@ -75,7 +74,7 @@ test.describe('Offline Functionality', () => {
     const mesocyclesLink = page.locator('a[href*="mesocycle"]').first();
     if (await mesocyclesLink.isVisible()) {
       await mesocyclesLink.click();
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
       
       // Should still see content
       const content = await page.content();
@@ -86,7 +85,7 @@ test.describe('Offline Functionality', () => {
     const workoutLink = page.locator('a[href*="workout"], a:has-text("Workout")').first();
     if (await workoutLink.isVisible()) {
       await workoutLink.click();
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
     }
     
     // App should still be functional
@@ -142,38 +141,39 @@ test.describe('Offline Functionality', () => {
 
   test('should handle app restart while offline', async ({ page, context }) => {
     // Load app while online
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
     
     // Go offline
     await context.setOffline(true);
     
     // Reload the page (simulating app restart)
     await page.reload();
-    await page.waitForTimeout(2000);
+    
+    // Wait for app to load from cache
+    await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
     
     // App should load from cache
     const content = await page.content();
     expect(content.toLowerCase()).toContain('repstack');
     
     // Offline indicator should be visible
-    const offlineStatus = page.locator('.status.offline, .status:has-text("Offline")');
-    await expect(offlineStatus).toBeVisible({ timeout: 5000 });
+    const status = page.locator('.status');
+    await expect(status).toHaveClass(/offline/, { timeout: 5000 });
   });
 
   test('should handle transition from online to offline gracefully', async ({ page, context }) => {
     // Verify we start online
-    let onlineStatus = page.locator('.status.online, .status:has-text("Online")');
-    await expect(onlineStatus).toBeVisible({ timeout: 5000 });
+    const status = page.locator('.status');
+    await expect(status).toHaveClass(/online/, { timeout: 5000 });
     
     // Go offline
     await context.setOffline(true);
     
     // Wait for transition
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
     
     // Should show offline indicator
-    const offlineStatus = page.locator('.status.offline, .status:has-text("Offline")');
-    await expect(offlineStatus).toBeVisible({ timeout: 5000 });
+    await expect(status).toHaveClass(/offline/, { timeout: 5000 });
     
     // App should still be functional
     const content = await page.content();
@@ -181,11 +181,10 @@ test.describe('Offline Functionality', () => {
     
     // Go back online
     await context.setOffline(false);
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(500);
     
     // Should show online indicator again
-    onlineStatus = page.locator('.status.online, .status:has-text("Online")');
-    await expect(onlineStatus).toBeVisible({ timeout: 5000 });
+    await expect(status).toHaveClass(/online/, { timeout: 5000 });
   });
 
   test('should not show error messages when offline', async ({ page, context }) => {
@@ -245,7 +244,7 @@ test.describe('Offline Functionality', () => {
 test.describe('Offline Data Operations', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('');
-    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(200);
     await page.waitForTimeout(2000);
   });
 

@@ -20,7 +20,7 @@ test.describe('User Onboarding', () => {
     await page.waitForTimeout(500);
     // Reload page to trigger fresh onboarding
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(200);
   });
 
   test('should display welcome screen on first launch', async ({ page }) => {
@@ -185,7 +185,7 @@ test.describe('User Onboarding', () => {
 
     // Reload page
     await page.reload();
-    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(200);
 
     // Should not show onboarding again - check for main header or navigation
     await expect(page.locator('nav.nav-desktop')).toBeVisible({

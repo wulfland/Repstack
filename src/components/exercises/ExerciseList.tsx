@@ -184,6 +184,7 @@ export default function ExerciseList({
           <select
             className="filter-select"
             value={categoryFilter}
+            aria-label="Filter by category"
             onChange={(e) =>
               setCategoryFilter(e.target.value as Exercise['category'] | 'all')
             }
@@ -199,6 +200,7 @@ export default function ExerciseList({
           <select
             className="filter-select"
             value={muscleFilter}
+            aria-label="Filter by muscle group"
             onChange={(e) =>
               setMuscleFilter(e.target.value as MuscleGroup | 'all')
             }
@@ -214,6 +216,7 @@ export default function ExerciseList({
           <select
             className="filter-select"
             value={sortBy}
+            aria-label="Sort exercises by"
             onChange={(e) => setSortBy(e.target.value as SortOption)}
           >
             <option value="alphabetical">Alphabetical</option>

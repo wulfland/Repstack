@@ -63,8 +63,8 @@
 }
 
 .template-days {
-  background: var(--primary-light, #dbeafe);
-  color: var(--primary-color, #3b82f6);
+  background: var(--primary-light, #e0e7ff);
+  color: var(--primary-dark, #3730a3);
 }
 
 .template-level {

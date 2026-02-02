@@ -182,18 +182,19 @@ test.describe('Dialog/Modal Accessibility', () => {
       
       // Get all focusable elements in dialog
       const dialog = page.locator('[role="dialog"]');
+      await expect(dialog).toBeVisible();
+      
+      // Verify dialog has focusable elements and focus is within dialog
       const focusableElements = dialog.locator('button, input, select, textarea');
       const count = await focusableElements.count();
+      expect(count).toBeGreaterThan(0);
       
-      if (count > 0) {
-        // Tab through all elements
-        for (let i = 0; i < count + 1; i++) {
-          await page.keyboard.press('Tab');
-        }
-        
-        // Focus should wrap back to first element
-        const firstElement = focusableElements.first();
-        await expect(firstElement).toBeFocused();
+      // Tab through elements and verify focus stays within dialog
+      for (let i = 0; i < count + 2; i++) {
+        await page.keyboard.press('Tab');
+        // Get currently focused element
+        const focusedInDialog = await dialog.locator(':focus').count();
+        expect(focusedInDialog).toBe(1); // Focus should always be within dialog
       }
     }
   });
@@ -345,7 +346,8 @@ test.describe('Reduced Motion Support', () => {
       return style.transitionDuration;
     });
     
-    // With reduced motion, animations should be nearly instant
-    expect(animationDuration).toMatch(/^0\.0+1ms$/);
+    // With reduced motion, animations should be instant or nearly instant
+    // CSS may report either '0s' or '0.01ms' depending on browser
+    expect(['0s', '0.01ms', '0.001ms']).toContain(animationDuration);
   });
 });

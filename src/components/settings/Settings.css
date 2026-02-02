@@ -184,7 +184,7 @@
   font-size: 1.125rem;
   min-width: 60px;
   text-align: center;
-  color: var(--primary-color, #007bff);
+  color: var(--primary-dark, #0056b3);
 }
 
 .field-description {
@@ -258,7 +258,7 @@
 }
 
 .about-item a {
-  color: var(--primary-color, #007bff);
+  color: var(--primary-dark, #0056b3);
   text-decoration: none;
 }
 

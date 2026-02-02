@@ -107,11 +107,11 @@
   gap: 0.5rem;
 }
 
-.muscle-tag {
+.template-preview-modal .muscle-tag {
   display: inline-block;
   padding: 0.25rem 0.625rem;
-  background: var(--primary-light, #dbeafe);
-  color: var(--primary-color, #3b82f6);
+  background: var(--primary-light, #e0e7ff);
+  color: var(--primary-dark, #3730a3);
   border-radius: 12px;
   font-size: 0.8125rem;
   font-weight: 500;

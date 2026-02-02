@@ -9,7 +9,7 @@ import { skipOnboarding } from './helpers/skip-onboarding';
 test.describe('Mesocycle Management', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app
-    await page.goto('/');
+    await page.goto('');
     
     // Skip onboarding to get to the main app
     await skipOnboarding(page);

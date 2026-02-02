@@ -8,7 +8,7 @@ import AxeBuilder from '@axe-core/playwright';
 test.describe('User Onboarding', () => {
   test.beforeEach(async ({ page }) => {
     // Clear IndexedDB before each test to ensure fresh onboarding
-    await page.goto('/');
+    await page.goto('');
     await page.evaluate(() => {
       return new Promise<void>((resolve) => {
         const request = indexedDB.deleteDatabase('RepstackDB');

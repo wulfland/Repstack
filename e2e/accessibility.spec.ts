@@ -9,7 +9,7 @@ import { skipOnboarding } from './helpers/skip-onboarding';
 
 test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('');
     // Skip onboarding to get to the main app
     await skipOnboarding(page);
     // Wait for main app to render
@@ -164,7 +164,7 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
 
 test.describe('Dialog/Modal Accessibility', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('');
     await skipOnboarding(page);
     // Wait for main app to render
     await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
@@ -242,7 +242,7 @@ test.describe('Dialog/Modal Accessibility', () => {
 
 test.describe('Form Accessibility', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('');
     await skipOnboarding(page);
     // Wait for main app to render
     await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
@@ -328,7 +328,7 @@ test.describe('Form Accessibility', () => {
 
 test.describe('Color Contrast', () => {
   test('should meet minimum color contrast ratios', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('');
     await skipOnboarding(page);
     // Wait for main app to render
     await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });
@@ -361,7 +361,7 @@ test.describe('Reduced Motion Support', () => {
       });
     });
     
-    await page.goto('/');
+    await page.goto('');
     await skipOnboarding(page);
     // Wait for main app to render
     await page.locator('.status-bar').waitFor({ state: 'visible', timeout: 10000 });

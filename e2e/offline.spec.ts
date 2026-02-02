@@ -9,7 +9,7 @@ import { skipOnboarding } from './helpers/skip-onboarding';
 test.describe('Offline Functionality', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app and wait for it to load
-    await page.goto('/');
+    await page.goto('');
     
     // Skip onboarding to get to the main app
     await skipOnboarding(page);

@@ -16,8 +16,9 @@ export async function skipOnboarding(page: Page): Promise<void> {
     const skipButton = page.locator('button:has-text("Skip Setup")');
     await skipButton.click();
     
-    // Wait for the main app to load
-    await page.waitForSelector('text=Workout Session', { timeout: 10000 });
+    // Wait for the main app to load - look for the main header or navigation
+    // The main app shows "Ready to Train?" or navigation elements
+    await page.waitForSelector('nav, .nav-desktop, header', { timeout: 10000 });
     await page.waitForLoadState('networkidle');
   }
   
@@ -25,7 +26,7 @@ export async function skipOnboarding(page: Page): Promise<void> {
   const skipSetupVisible = await page.locator('button:has-text("Skip Setup")').isVisible({ timeout: 1000 }).catch(() => false);
   if (skipSetupVisible) {
     await page.locator('button:has-text("Skip Setup")').click();
-    await page.waitForSelector('text=Workout Session', { timeout: 10000 });
+    await page.waitForSelector('nav, .nav-desktop, header', { timeout: 10000 });
     await page.waitForLoadState('networkidle');
   }
 }
@@ -69,7 +70,7 @@ export async function completeOnboarding(page: Page, options?: {
   // Step 3: Training Split (optional - skip it)
   await page.waitForSelector('text=Choose Your Training Split', { timeout: 5000 });
   if (trainingSplit) {
-    await page.click(`input[value="${trainingSplit}"]`);
+    await page.click(`label:has(input[value="${trainingSplit}"])`);
     await page.click('button:has-text("Continue")');
   } else {
     await page.click('button:has-text("Skip for now")');
@@ -83,8 +84,8 @@ export async function completeOnboarding(page: Page, options?: {
   await page.waitForSelector('text=Quick Tour', { timeout: 5000 });
   await page.click('button:has-text("Skip Tour")');
   
-  // Wait for main app
-  await page.waitForSelector('text=Workout Session', { timeout: 10000 });
+  // Wait for main app - look for the main header or navigation
+  await page.waitForSelector('nav, .nav-desktop, header', { timeout: 10000 });
   await page.waitForLoadState('networkidle');
 }
 

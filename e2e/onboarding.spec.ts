@@ -82,8 +82,8 @@ test.describe('User Onboarding', () => {
     // Complete onboarding
     await page.click('button:has-text("Get Started")');
 
-    // Should now be on the main app
-    await expect(page.locator('text=Workout Session')).toBeVisible({
+    // Should now be on the main app - check for main header or navigation
+    await expect(page.locator('nav.nav-desktop')).toBeVisible({
       timeout: 5000,
     });
   });
@@ -97,8 +97,8 @@ test.describe('User Onboarding', () => {
     // Click skip
     await page.click('button:has-text("Skip Setup")');
 
-    // Should go directly to main app
-    await expect(page.locator('text=Workout Session')).toBeVisible({
+    // Should go directly to main app - check for main header or navigation
+    await expect(page.locator('nav.nav-desktop')).toBeVisible({
       timeout: 5000,
     });
   });
@@ -126,8 +126,8 @@ test.describe('User Onboarding', () => {
     await expect(page.locator('text=Quick Tour')).toBeVisible();
     await page.click('button:has-text("Skip Tour")');
 
-    // Should be on main app
-    await expect(page.locator('text=Workout Session')).toBeVisible({
+    // Should be on main app - check for main header or navigation
+    await expect(page.locator('nav.nav-desktop')).toBeVisible({
       timeout: 5000,
     });
   });
@@ -178,8 +178,8 @@ test.describe('User Onboarding', () => {
     await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
     await page.click('button:has-text("Skip Setup")');
 
-    // Wait for main app
-    await expect(page.locator('text=Workout Session')).toBeVisible({
+    // Wait for main app - check for main header or navigation
+    await expect(page.locator('nav.nav-desktop')).toBeVisible({
       timeout: 5000,
     });
 
@@ -187,8 +187,8 @@ test.describe('User Onboarding', () => {
     await page.reload();
     await page.waitForLoadState('networkidle');
 
-    // Should not show onboarding again
-    await expect(page.locator('text=Workout Session')).toBeVisible({
+    // Should not show onboarding again - check for main header or navigation
+    await expect(page.locator('nav.nav-desktop')).toBeVisible({
       timeout: 5000,
     });
     await expect(
@@ -201,8 +201,8 @@ test.describe('User Onboarding', () => {
     await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
     await page.click('button:has-text("Skip Setup")');
 
-    // Wait for main app
-    await expect(page.locator('text=Workout Session')).toBeVisible({
+    // Wait for main app - check for main header or navigation
+    await expect(page.locator('nav.nav-desktop')).toBeVisible({
       timeout: 5000,
     });
 

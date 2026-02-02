@@ -16,13 +16,16 @@ test.describe('User Onboarding', () => {
         request.onerror = () => resolve();
       });
     });
+    // Wait a moment for the database to be fully deleted
+    await page.waitForTimeout(500);
     // Reload page to trigger fresh onboarding
     await page.reload();
+    await page.waitForLoadState('networkidle');
   });
 
   test('should display welcome screen on first launch', async ({ page }) => {
-    // Wait for onboarding to load
-    await expect(page.locator('text=Repstack')).toBeVisible({ timeout: 10000 });
+    // Wait for onboarding to load - use the heading specifically
+    await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
     await expect(
       page.locator('text=Evidence-Based Hypertrophy Training')
     ).toBeVisible();
@@ -34,8 +37,8 @@ test.describe('User Onboarding', () => {
   });
 
   test('should complete full onboarding flow', async ({ page }) => {
-    // Wait for welcome screen
-    await expect(page.locator('text=Repstack')).toBeVisible({ timeout: 10000 });
+    // Wait for welcome screen - use the heading specifically
+    await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
 
     // Step 1: Welcome screen - Click Get Started
     await page.click('button:has-text("Get Started")');
@@ -51,7 +54,8 @@ test.describe('User Onboarding', () => {
 
     // Step 3: Training Split (optional)
     await expect(page.locator('text=Choose Your Training Split')).toBeVisible();
-    await page.click('input[value="upper_lower"]');
+    // Click the label containing the Upper/Lower option to select it
+    await page.click('label:has(input[value="upper_lower"])');
     await page.click('button:has-text("Continue")');
 
     // Step 4: First Exercise (optional)
@@ -88,7 +92,7 @@ test.describe('User Onboarding', () => {
     page,
   }) => {
     // Wait for welcome screen
-    await expect(page.locator('text=Repstack')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
 
     // Click skip
     await page.click('button:has-text("Skip Setup")');
@@ -101,7 +105,7 @@ test.describe('User Onboarding', () => {
 
   test('should allow skipping optional steps', async ({ page }) => {
     // Wait for welcome screen
-    await expect(page.locator('text=Repstack')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
 
     // Complete required steps
     await page.click('button:has-text("Get Started")');
@@ -132,7 +136,7 @@ test.describe('User Onboarding', () => {
     page,
   }) => {
     // Wait for welcome screen
-    await expect(page.locator('text=Repstack')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
 
     // Go to profile setup
     await page.click('button:has-text("Get Started")');
@@ -155,7 +159,7 @@ test.describe('User Onboarding', () => {
     page,
   }) => {
     // Wait for welcome screen
-    await expect(page.locator('text=Repstack')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
 
     // Check progress indicator on first step
     await expect(page.locator('text=Step 1 of 5')).toBeVisible();
@@ -171,7 +175,7 @@ test.describe('User Onboarding', () => {
 
   test('should persist onboarding completion', async ({ page }) => {
     // Complete onboarding
-    await expect(page.locator('text=Repstack')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
     await page.click('button:has-text("Skip Setup")');
 
     // Wait for main app
@@ -194,7 +198,7 @@ test.describe('User Onboarding', () => {
 
   test('should allow re-running onboarding from settings', async ({ page }) => {
     // Skip onboarding first
-    await expect(page.locator('text=Repstack')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
     await page.click('button:has-text("Skip Setup")');
 
     // Wait for main app
@@ -202,8 +206,8 @@ test.describe('User Onboarding', () => {
       timeout: 5000,
     });
 
-    // Go to settings
-    await page.click('button[aria-label="Settings"]');
+    // Go to settings - click text link (works for both mobile and desktop)
+    await page.click('a:has-text("Settings")');
     await expect(page.locator('h1:has-text("Settings")')).toBeVisible();
 
     // Click re-run onboarding
@@ -217,7 +221,7 @@ test.describe('User Onboarding', () => {
 
   test('should be accessible', async ({ page }) => {
     // Wait for welcome screen
-    await expect(page.locator('text=Repstack')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
 
     // Run accessibility tests on welcome screen
     const accessibilityScanResults = await new AxeBuilder({ page })

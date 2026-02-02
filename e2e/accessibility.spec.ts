@@ -5,10 +5,13 @@
 
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { skipOnboarding } from './helpers/skip-onboarding';
 
 test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    // Skip onboarding to get to the main app
+    await skipOnboarding(page);
     // Wait for app to load
     await page.waitForLoadState('networkidle');
   });
@@ -141,6 +144,7 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
 test.describe('Dialog/Modal Accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    await skipOnboarding(page);
     await page.waitForLoadState('networkidle');
   });
 
@@ -220,6 +224,7 @@ test.describe('Dialog/Modal Accessibility', () => {
 test.describe('Form Accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    await skipOnboarding(page);
     await page.waitForLoadState('networkidle');
   });
 
@@ -299,6 +304,7 @@ test.describe('Form Accessibility', () => {
 test.describe('Color Contrast', () => {
   test('should meet minimum color contrast ratios', async ({ page }) => {
     await page.goto('/');
+    await skipOnboarding(page);
     await page.waitForLoadState('networkidle');
     
     // Run axe with color-contrast rule
@@ -330,6 +336,7 @@ test.describe('Reduced Motion Support', () => {
     });
     
     await page.goto('/');
+    await skipOnboarding(page);
     await page.waitForLoadState('networkidle');
     
     // Verify reduced motion CSS is applied

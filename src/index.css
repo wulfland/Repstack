@@ -13,8 +13,10 @@
   font-weight: 400;
 
   /* Color palette - WCAG AA compliant */
-  --color-primary: #667eea;
-  --color-primary-dark: #5568d3;
+  /* Primary color updated for WCAG AA contrast (4.5:1 minimum with white text) */
+  --color-primary: #5a67d8;
+  --color-primary-dark: #4c51bf;
+  --color-primary-light: #667eea;
   --color-secondary: #764ba2;
   --color-background: #f7fafc;
   --color-surface: #ffffff;

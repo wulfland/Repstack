@@ -203,7 +203,7 @@
 
 .optional-label {
   font-weight: 400;
-  color: #a0aec0;
+  color: #5a6270; /* Darker gray for WCAG AA contrast on light backgrounds */
   text-transform: none;
   font-size: 0.75rem;
 }
@@ -266,12 +266,12 @@
 }
 
 .radio-option input[type='radio']:checked ~ .radio-content {
-  color: var(--color-primary);
+  color: var(--color-primary-dark); /* Use darker variant for better contrast */
 }
 
 .radio-option:has(input[type='radio']:checked) {
   border-color: var(--color-primary);
-  background: #ede9fe;
+  background: #f5f3ff; /* Lighter background for better contrast with text */
 }
 
 .radio-content {
@@ -330,7 +330,7 @@
 
 .split-option input[type='radio']:checked ~ .split-card {
   border-color: var(--color-primary);
-  background: #ede9fe;
+  background: #f5f3ff; /* Lighter background for better contrast with text */
 }
 
 .recommended-badge {

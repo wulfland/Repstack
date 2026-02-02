@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { skipOnboarding } from './helpers/skip-onboarding';
 
 /**
  * E2E tests for Mesocycle functionality
@@ -10,6 +11,10 @@ test.describe('Mesocycle Management', () => {
     // Navigate to the app using empty string to respect baseURL path
     // Using '/' would navigate to root domain, not the baseURL path
     await page.goto('');
+    
+    // Skip onboarding to get to the main app
+    await skipOnboarding(page);
+    
     await page.waitForLoadState('networkidle');
     
     // Wait for the app to load - look for the app container or header
@@ -459,6 +464,8 @@ test.describe('Exercise Management', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate using empty string to respect baseURL path
     await page.goto('');
+    // Skip onboarding to get to the main app
+    await skipOnboarding(page);
     await page.waitForLoadState('networkidle');
   });
 
@@ -496,6 +503,8 @@ test.describe('Workout Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate using empty string to respect baseURL path
     await page.goto('');
+    // Skip onboarding to get to the main app
+    await skipOnboarding(page);
     await page.waitForLoadState('networkidle');
   });
 

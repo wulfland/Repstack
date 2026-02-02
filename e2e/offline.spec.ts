@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { skipOnboarding } from './helpers/skip-onboarding';
 
 /**
  * E2E tests for offline functionality
@@ -9,6 +10,10 @@ test.describe('Offline Functionality', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the app and wait for it to load
     await page.goto('');
+    
+    // Skip onboarding to get to the main app
+    await skipOnboarding(page);
+    
     await page.waitForLoadState('networkidle');
     
     // Wait for the app to load and service worker to register

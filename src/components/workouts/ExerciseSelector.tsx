@@ -87,7 +87,11 @@ export default function ExerciseSelector({
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setFilterCategory(category)}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setFilterCategory(category);
+                }}
                 className={`category-filter-btn ${
                   filterCategory === category ? 'active' : ''
                 }`}

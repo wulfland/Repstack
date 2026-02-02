@@ -332,7 +332,9 @@ function App() {
 
         {currentPage === 'mesocycles' && <MesocycleDashboard />}
 
-        {currentPage === 'workout' && <WorkoutSession />}
+        {currentPage === 'workout' && (
+          <WorkoutSession onNavigate={setCurrentPage} />
+        )}
 
         {currentPage === 'exercises' && (
           <ExerciseList

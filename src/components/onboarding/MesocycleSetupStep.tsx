@@ -105,8 +105,9 @@ export default function MesocycleSetupStep({
             <p>
               <strong>📋 Note:</strong> You'll configure exercises and volume
               progression after completing onboarding. For now, we'll create a
-              basic structure using your {initialData.trainingSplit ? 'selected' : 'default'}{' '}
-              training split.
+              basic structure using your{' '}
+              {initialData.trainingSplit ? 'selected' : 'default'} training
+              split.
             </p>
           </div>
 

@@ -32,7 +32,11 @@ import TemplateSelector from '../templates/TemplateSelector';
 import TemplateGuide from '../templates/TemplateGuide';
 import './WorkoutSession.css';
 
-export default function WorkoutSession() {
+interface WorkoutSessionProps {
+  onNavigate?: (page: 'mesocycles' | 'workout' | 'exercises' | 'progress' | 'settings') => void;
+}
+
+export default function WorkoutSession({ onNavigate }: WorkoutSessionProps = {}) {
   const {
     workout,
     isActive,
@@ -266,11 +270,8 @@ export default function WorkoutSession() {
                 </ul>
                 <button
                   onClick={() => {
-                    if (window.confirm('Navigate to Mesocycles page to create your first mesocycle?')) {
-                      // This would need the onNavigate prop passed down
-                      // For now, we'll use a workaround
-                      const mesoLink = document.querySelector('a[href="#mesocycles"]') as HTMLAnchorElement;
-                      if (mesoLink) mesoLink.click();
+                    if (onNavigate) {
+                      onNavigate('mesocycles');
                     }
                   }}
                   className="btn-primary btn-large"

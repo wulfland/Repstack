@@ -58,8 +58,12 @@ test.describe('User Onboarding', () => {
     await page.click('label:has(input[value="upper_lower"])');
     await page.click('button:has-text("Continue")');
 
-    // Step 4: Mesocycle Setup (required)
+    // Step 4: Mesocycle Setup (required - two sub-steps)
     await expect(page.locator('text=Set Up Your First Mesocycle')).toBeVisible();
+    await page.click('button:has-text("Next: Configure Exercises")');
+    
+    // Configure exercises sub-step
+    await expect(page.getByRole('heading', { name: 'Configure Exercises' }).first()).toBeVisible();
     await page.click('button:has-text("Create Mesocycle & Continue")');
 
     // Step 5: First Exercise (optional)
@@ -122,8 +126,12 @@ test.describe('User Onboarding', () => {
     await expect(page.locator('text=Choose Your Training Split')).toBeVisible();
     await page.click('button:has-text("Continue")');
 
-    // Mesocycle setup (required)
+    // Mesocycle setup (required - two sub-steps)
     await expect(page.locator('text=Set Up Your First Mesocycle')).toBeVisible();
+    await page.click('button:has-text("Next: Configure Exercises")');
+    
+    // Configure exercises sub-step
+    await expect(page.getByRole('heading', { name: 'Configure Exercises' }).first()).toBeVisible();
     await page.click('button:has-text("Create Mesocycle & Continue")');
 
     // Skip first exercise

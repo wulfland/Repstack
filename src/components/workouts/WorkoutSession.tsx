@@ -36,7 +36,7 @@ interface WorkoutSessionProps {
   onNavigate?: (page: 'mesocycles' | 'workout' | 'exercises' | 'progress' | 'settings') => void;
 }
 
-export default function WorkoutSession({ onNavigate }: WorkoutSessionProps = {}) {
+export default function WorkoutSession({ onNavigate }: WorkoutSessionProps) {
   const {
     workout,
     isActive,

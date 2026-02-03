@@ -85,9 +85,7 @@ export default function MesocycleForm({
   }, [isOpen, isEditMode, existingMesocycle]);
 
   // Handle training split change with warning in edit mode
-  const handleTrainingSplitChange = (
-    newSplit: Mesocycle['trainingSplit']
-  ) => {
+  const handleTrainingSplitChange = (newSplit: Mesocycle['trainingSplit']) => {
     if (isEditMode && trainingSplit !== newSplit) {
       if (
         !confirm(

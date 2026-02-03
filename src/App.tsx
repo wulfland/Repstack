@@ -238,7 +238,9 @@ function App() {
           const endDate = new Date();
           endDate.setDate(endDate.getDate() + data.mesocycleWeeks * 7);
 
-          const splitDays = generateSplitDays(data.trainingSplit);
+          // Use configured split days from onboarding if available, otherwise generate default
+          const splitDays =
+            data.splitDays || generateSplitDays(data.trainingSplit);
 
           await createMesocycle({
             name: data.mesocycleName || 'My First Mesocycle',

@@ -10,6 +10,7 @@ import type {
 } from '../../types/models';
 import ExerciseSelector from '../workouts/ExerciseSelector';
 import { isExerciseValidForSplitDay } from '../../lib/splitUtils';
+import { getExerciseWorkoutCount } from '../../db/service';
 import './SplitDayEditor.css';
 
 const DEFAULT_REST_SECONDS = 90;
@@ -18,12 +19,14 @@ interface SplitDayEditorProps {
   splitDay: MesocycleSplitDay;
   exercises: Exercise[];
   onChange: (updatedSplitDay: MesocycleSplitDay) => void;
+  mesocycleId?: string; // Optional: if provided, check for exercise history in this mesocycle
 }
 
 export default function SplitDayEditor({
   splitDay,
   exercises,
   onChange,
+  mesocycleId,
 }: SplitDayEditorProps) {
   const [showExerciseSelector, setShowExerciseSelector] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -55,7 +58,28 @@ export default function SplitDayEditor({
     setShowExerciseSelector(false);
   };
 
-  const handleRemoveExercise = (index: number) => {
+  const handleRemoveExercise = async (index: number) => {
+    const exercise = splitDay.exercises[index];
+
+    // Check if this exercise has workout history
+    if (mesocycleId) {
+      const workoutCount = await getExerciseWorkoutCount(
+        exercise.exerciseId,
+        mesocycleId
+      );
+
+      if (workoutCount > 0) {
+        const exerciseName = getExerciseName(exercise.exerciseId);
+        if (
+          !confirm(
+            `Warning: "${exerciseName}" has ${workoutCount} logged workout(s) in this mesocycle.\n\nRemoving this exercise will not delete the workout history, but it will no longer be part of this mesocycle's plan.\n\nContinue?`
+          )
+        ) {
+          return;
+        }
+      }
+    }
+
     const updatedExercises = splitDay.exercises.filter((_, i) => i !== index);
     // Update order values
     updatedExercises.forEach((ex, i) => {

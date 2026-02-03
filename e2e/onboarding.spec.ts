@@ -52,17 +52,21 @@ test.describe('User Onboarding', () => {
     await page.click('input[value="imperial"]');
     await page.click('button:has-text("Continue")');
 
-    // Step 3: Training Split (optional)
+    // Step 3: Training Split (required)
     await expect(page.locator('text=Choose Your Training Split')).toBeVisible();
     // Click the label containing the Upper/Lower option to select it
     await page.click('label:has(input[value="upper_lower"])');
     await page.click('button:has-text("Continue")');
 
-    // Step 4: First Exercise (optional)
+    // Step 4: Mesocycle Setup (required)
+    await expect(page.locator('text=Set Up Your First Mesocycle')).toBeVisible();
+    await page.click('button:has-text("Create Mesocycle & Continue")');
+
+    // Step 5: First Exercise (optional)
     await expect(page.locator('text=Add Your First Exercise')).toBeVisible();
     await page.click('button:has-text("Continue")');
 
-    // Step 5: Quick Tour
+    // Step 6: Quick Tour
     await expect(page.locator('text=Quick Tour')).toBeVisible();
     await expect(page.locator('text=Log Workouts')).toBeVisible();
 
@@ -114,9 +118,13 @@ test.describe('User Onboarding', () => {
     await expect(page.locator('text=Set Up Your Profile')).toBeVisible();
     await page.click('button:has-text("Continue")');
 
-    // Skip training split
+    // Training split (required - has a default selection)
     await expect(page.locator('text=Choose Your Training Split')).toBeVisible();
-    await page.click('button:has-text("Skip for now")');
+    await page.click('button:has-text("Continue")');
+
+    // Mesocycle setup (required)
+    await expect(page.locator('text=Set Up Your First Mesocycle')).toBeVisible();
+    await page.click('button:has-text("Create Mesocycle & Continue")');
 
     // Skip first exercise
     await expect(page.locator('text=Add Your First Exercise')).toBeVisible();
@@ -162,15 +170,15 @@ test.describe('User Onboarding', () => {
     await expect(page.locator('h1.logo-text')).toBeVisible({ timeout: 10000 });
 
     // Check progress indicator on first step
-    await expect(page.locator('text=Step 1 of 5')).toBeVisible();
+    await expect(page.locator('text=Step 1 of 6')).toBeVisible();
 
     // Go to next step
     await page.click('button:has-text("Get Started")');
-    await expect(page.locator('text=Step 2 of 5')).toBeVisible();
+    await expect(page.locator('text=Step 2 of 6')).toBeVisible();
 
     // Check progress dots
     const progressDots = page.locator('.progress-dot');
-    await expect(progressDots).toHaveCount(5);
+    await expect(progressDots).toHaveCount(6);
   });
 
   test('should persist onboarding completion', async ({ page }) => {

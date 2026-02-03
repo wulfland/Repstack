@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import './Layout.css';
 
-type Page = 'workout' | 'exercises' | 'mesocycles' | 'progress' | 'settings';
+type Page = 'mesocycles' | 'workout' | 'exercises' | 'progress' | 'settings';
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,7 +11,7 @@ interface LayoutProps {
 
 export default function Layout({
   children,
-  currentPage = 'workout',
+  currentPage = 'mesocycles',
   onNavigate,
 }: LayoutProps) {
   const handleNavClick = (page: Page) => (e: React.MouseEvent) => {
@@ -32,20 +32,20 @@ export default function Layout({
           {/* Desktop navigation - hidden on mobile */}
           <nav className="nav nav-desktop" aria-label="Main navigation">
             <a
-              href="#workouts"
-              className={`nav-link ${currentPage === 'workout' ? 'active' : ''}`}
-              onClick={handleNavClick('workout')}
-              aria-current={currentPage === 'workout' ? 'page' : undefined}
-            >
-              Workouts
-            </a>
-            <a
               href="#mesocycles"
               className={`nav-link ${currentPage === 'mesocycles' ? 'active' : ''}`}
               onClick={handleNavClick('mesocycles')}
               aria-current={currentPage === 'mesocycles' ? 'page' : undefined}
             >
               Mesocycles
+            </a>
+            <a
+              href="#workouts"
+              className={`nav-link ${currentPage === 'workout' ? 'active' : ''}`}
+              onClick={handleNavClick('workout')}
+              aria-current={currentPage === 'workout' ? 'page' : undefined}
+            >
+              Workouts
             </a>
             <a
               href="#exercises"
@@ -80,18 +80,6 @@ export default function Layout({
       {/* Mobile bottom navigation - hidden on desktop */}
       <nav className="nav-mobile" aria-label="Mobile navigation">
         <a
-          href="#workouts"
-          className={`nav-mobile-link ${currentPage === 'workout' ? 'active' : ''}`}
-          onClick={handleNavClick('workout')}
-          aria-current={currentPage === 'workout' ? 'page' : undefined}
-          aria-label="Workouts"
-        >
-          <span className="nav-mobile-icon" aria-hidden="true">
-            💪
-          </span>
-          <span className="nav-mobile-label">Workout</span>
-        </a>
-        <a
           href="#mesocycles"
           className={`nav-mobile-link ${currentPage === 'mesocycles' ? 'active' : ''}`}
           onClick={handleNavClick('mesocycles')}
@@ -102,6 +90,18 @@ export default function Layout({
             📊
           </span>
           <span className="nav-mobile-label">Meso</span>
+        </a>
+        <a
+          href="#workouts"
+          className={`nav-mobile-link ${currentPage === 'workout' ? 'active' : ''}`}
+          onClick={handleNavClick('workout')}
+          aria-current={currentPage === 'workout' ? 'page' : undefined}
+          aria-label="Workouts"
+        >
+          <span className="nav-mobile-icon" aria-hidden="true">
+            💪
+          </span>
+          <span className="nav-mobile-label">Workout</span>
         </a>
         <a
           href="#exercises"

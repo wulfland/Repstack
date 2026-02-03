@@ -10,7 +10,7 @@ interface TrainingSplitStepProps {
   experienceLevel: 'beginner' | 'intermediate' | 'advanced';
   onNext: (data: Partial<OnboardingData>) => void;
   onBack: () => void;
-  onSkip: () => void;
+  onSkip?: () => void; // Make optional since we won't use it
 }
 
 type TrainingSplit =
@@ -68,19 +68,16 @@ export default function TrainingSplitStep({
   experienceLevel,
   onNext,
   onBack,
-  onSkip,
 }: TrainingSplitStepProps) {
-  const [selectedSplit, setSelectedSplit] = useState<TrainingSplit | undefined>(
-    initialSplit
+  // Default to full_body for beginners, upper_lower for intermediate/advanced
+  const defaultSplit =
+    experienceLevel === 'beginner' ? 'full_body' : 'upper_lower';
+  const [selectedSplit, setSelectedSplit] = useState<TrainingSplit>(
+    initialSplit || defaultSplit
   );
 
   const handleContinue = () => {
     onNext({ trainingSplit: selectedSplit });
-  };
-
-  const handleSkip = () => {
-    onNext({ trainingSplit: undefined });
-    onSkip();
   };
 
   return (
@@ -140,19 +137,13 @@ export default function TrainingSplitStep({
           <button type="button" className="btn btn-secondary" onClick={onBack}>
             Back
           </button>
-          <div className="action-group">
-            <button type="button" className="btn btn-text" onClick={handleSkip}>
-              Skip for now
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleContinue}
-              disabled={!selectedSplit}
-            >
-              Continue
-            </button>
-          </div>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleContinue}
+          >
+            Continue
+          </button>
         </div>
       </div>
     </div>

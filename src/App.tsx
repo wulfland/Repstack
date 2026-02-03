@@ -16,15 +16,17 @@ import {
   useUserProfiles,
   createUserProfile,
   updateUserProfile,
+  createMesocycle,
 } from './hooks/useDatabase';
 import { seedStarterExercises } from './lib/seedData';
 import { seedSampleMesocycle } from './lib/seedMesocycle';
+import { generateSplitDays } from './lib/generateSplitDays';
 import { db } from './db';
 import type { BeforeInstallPromptEvent } from './types/global';
 import type { Exercise } from './types/models';
 import './App.css';
 
-type Page = 'workout' | 'exercises' | 'mesocycles' | 'progress' | 'settings';
+type Page = 'mesocycles' | 'workout' | 'exercises' | 'progress' | 'settings';
 
 function App() {
   const exercises = useExercises();
@@ -33,7 +35,7 @@ function App() {
     useState<BeforeInstallPromptEvent | null>(null);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState<Page>('workout');
+  const [currentPage, setCurrentPage] = useState<Page>('mesocycles');
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Check if we should show onboarding
@@ -229,6 +231,45 @@ function App() {
         });
       }
 
+      // Create mesocycle if requested
+      if (data.createMesocycle && data.trainingSplit && data.mesocycleWeeks) {
+        try {
+          const startDate = new Date();
+          const endDate = new Date();
+          endDate.setDate(endDate.getDate() + data.mesocycleWeeks * 7);
+
+          const splitDays = generateSplitDays(data.trainingSplit);
+
+          await createMesocycle({
+            name: data.mesocycleName || 'My First Mesocycle',
+            startDate,
+            endDate,
+            durationWeeks: data.mesocycleWeeks,
+            currentWeek: 1,
+            deloadWeek: data.mesocycleWeeks, // Last week is deload
+            trainingSplit: data.trainingSplit,
+            splitDays,
+            status: 'active',
+            notes: 'Created during onboarding',
+          });
+        } catch (err) {
+          // Handle the case where an active mesocycle already exists gracefully
+          if (
+            err instanceof Error &&
+            err.message.includes(
+              'Cannot create active mesocycle: another mesocycle is already active'
+            )
+          ) {
+            console.warn(
+              'Skipping mesocycle creation during onboarding because an active mesocycle already exists.'
+            );
+          } else {
+            // Re-throw unexpected errors to be handled by the outer catch
+            throw err;
+          }
+        }
+      }
+
       setShowOnboarding(false);
     } catch (error) {
       console.error('Failed to complete onboarding:', error);
@@ -306,9 +347,11 @@ function App() {
           )}
         </div>
 
-        {currentPage === 'workout' && <WorkoutSession />}
-
         {currentPage === 'mesocycles' && <MesocycleDashboard />}
+
+        {currentPage === 'workout' && (
+          <WorkoutSession onNavigate={setCurrentPage} />
+        )}
 
         {currentPage === 'exercises' && (
           <ExerciseList

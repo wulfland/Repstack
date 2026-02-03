@@ -32,7 +32,13 @@ import TemplateSelector from '../templates/TemplateSelector';
 import TemplateGuide from '../templates/TemplateGuide';
 import './WorkoutSession.css';
 
-export default function WorkoutSession() {
+interface WorkoutSessionProps {
+  onNavigate?: (
+    page: 'mesocycles' | 'workout' | 'exercises' | 'progress' | 'settings'
+  ) => void;
+}
+
+export default function WorkoutSession({ onNavigate }: WorkoutSessionProps) {
   const {
     workout,
     isActive,
@@ -246,56 +252,103 @@ export default function WorkoutSession() {
       <div className="workout-session-container">
         <div className="workout-start-screen">
           <h1>Ready to Train?</h1>
-          <p>Start a new workout session to log your training.</p>
-          {activeMesocycle && (
-            <div className="mesocycle-context-banner">
-              <span className="banner-icon">📅</span>
-              <div>
-                <div className="banner-title">{activeMesocycle.name}</div>
-                <div className="banner-subtitle">
-                  {getMesocycleWeekDescription(
-                    activeMesocycle,
-                    activeMesocycle.currentWeek
-                  )}
-                </div>
+
+          {!activeMesocycle ? (
+            <div className="no-mesocycle-prompt">
+              <div className="info-box info-box-warning">
+                <h3>⚠️ No Active Mesocycle</h3>
+                <p>
+                  For best results, you should create a mesocycle before
+                  starting your workouts. Mesocycles provide structured
+                  progression, planned deloads, and volume management.
+                </p>
+                <p>
+                  <strong>Benefits of mesocycle-based training:</strong>
+                </p>
+                <ul>
+                  <li>Progressive overload tracking</li>
+                  <li>Planned recovery weeks</li>
+                  <li>Auto-regulation based on feedback</li>
+                  <li>Better long-term results</li>
+                </ul>
+                <button
+                  onClick={() => {
+                    if (onNavigate) {
+                      onNavigate('mesocycles');
+                    }
+                  }}
+                  className="btn-primary btn-large"
+                  style={{ marginTop: '1rem' }}
+                >
+                  📊 Create Your First Mesocycle
+                </button>
+              </div>
+              <div style={{ marginTop: '1.5rem' }}>
+                <p className="text-muted">
+                  Or continue without a mesocycle (not recommended for optimal
+                  progress):
+                </p>
+                <button
+                  onClick={handleStartWorkout}
+                  className="btn-secondary"
+                  style={{ marginTop: '0.5rem' }}
+                >
+                  Start Workout Without Mesocycle
+                </button>
               </div>
             </div>
-          )}
-          {selectedTemplate && (
-            <div className="template-selected-banner">
-              <span className="banner-icon">📋</span>
-              <div>
-                <div className="banner-title">
-                  Template: {selectedTemplate.name}
-                </div>
-                <div className="banner-subtitle">
-                  {selectedTemplate.daysPerWeek} days/week •{' '}
-                  {selectedTemplate.targetLevel}
+          ) : (
+            <>
+              <p>Start a new workout session to log your training.</p>
+              <div className="mesocycle-context-banner">
+                <span className="banner-icon">📅</span>
+                <div>
+                  <div className="banner-title">{activeMesocycle.name}</div>
+                  <div className="banner-subtitle">
+                    {getMesocycleWeekDescription(
+                      activeMesocycle,
+                      activeMesocycle.currentWeek
+                    )}
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={() => setSelectedTemplate(null)}
-                className="banner-clear-btn"
-                aria-label="Clear template"
-              >
-                ×
-              </button>
-            </div>
+              {selectedTemplate && (
+                <div className="template-selected-banner">
+                  <span className="banner-icon">📋</span>
+                  <div>
+                    <div className="banner-title">
+                      Template: {selectedTemplate.name}
+                    </div>
+                    <div className="banner-subtitle">
+                      {selectedTemplate.daysPerWeek} days/week •{' '}
+                      {selectedTemplate.targetLevel}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedTemplate(null)}
+                    className="banner-clear-btn"
+                    aria-label="Clear template"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              <div className="workout-start-actions">
+                <button
+                  onClick={handleStartWorkout}
+                  className="btn-primary btn-large"
+                >
+                  🏋️ Start Workout
+                </button>
+                <button
+                  onClick={() => setShowTemplateSelector(true)}
+                  className="btn-secondary btn-large"
+                >
+                  📋 Browse Templates
+                </button>
+              </div>
+            </>
           )}
-          <div className="workout-start-actions">
-            <button
-              onClick={handleStartWorkout}
-              className="btn-primary btn-large"
-            >
-              🏋️ Start Workout
-            </button>
-            <button
-              onClick={() => setShowTemplateSelector(true)}
-              className="btn-secondary btn-large"
-            >
-              📋 Browse Templates
-            </button>
-          </div>
         </div>
 
         {showTemplateSelector && (

@@ -11,6 +11,7 @@ import MesocycleSetupStep from './MesocycleSetupStep';
 import FirstExerciseStep from './FirstExerciseStep';
 import QuickTourStep from './QuickTourStep';
 import ProgressIndicator from './ProgressIndicator';
+import type { MesocycleSplitDay } from '../../types/models';
 import './Onboarding.css';
 
 export interface OnboardingData {
@@ -26,6 +27,7 @@ export interface OnboardingData {
   mesocycleName?: string;
   mesocycleWeeks?: number;
   createMesocycle?: boolean;
+  splitDays?: MesocycleSplitDay[];
   skipFirstExercise?: boolean;
   skipTour?: boolean;
 }

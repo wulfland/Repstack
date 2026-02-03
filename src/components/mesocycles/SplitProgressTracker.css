@@ -117,7 +117,7 @@
 
 .split-card.next {
   background: #dbeafe;
-  border-color: #3b82f6;
+  border-color: #1d4ed8;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -142,7 +142,7 @@
 }
 
 .split-card.next .split-status {
-  color: #3b82f6;
+  color: #1d4ed8; /* Darker blue for WCAG AA contrast on #dbeafe */
   font-size: 1rem;
 }
 
@@ -154,8 +154,12 @@
 
 .split-info {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #4b5563; /* Darker gray for better contrast */
   margin-top: 0.5rem;
+}
+
+.split-card.next .split-info {
+  color: #1e3a5f; /* Darker blue-gray for WCAG AA contrast on #dbeafe */
 }
 
 /* Completion Message */

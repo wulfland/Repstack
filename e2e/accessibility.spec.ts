@@ -21,6 +21,11 @@ test.describe('Accessibility - WCAG 2.1 AA Compliance', () => {
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
       .analyze();
 
+    // Log violations for debugging in CI
+    if (accessibilityScanResults.violations.length > 0) {
+      console.log('Accessibility violations:', JSON.stringify(accessibilityScanResults.violations, null, 2));
+    }
+
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 
@@ -338,6 +343,11 @@ test.describe('Color Contrast', () => {
       .withRules(['color-contrast'])
       .analyze();
     
+    // Log violations for debugging in CI
+    if (accessibilityScanResults.violations.length > 0) {
+      console.log('Color contrast violations:', JSON.stringify(accessibilityScanResults.violations, null, 2));
+    }
+
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 });

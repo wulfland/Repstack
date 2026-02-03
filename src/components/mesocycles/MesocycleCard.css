@@ -233,12 +233,12 @@
 }
 
 .btn-success {
-  background-color: #10b981;
+  background-color: #047857; /* Darker green for WCAG AA contrast with white text */
   color: white;
 }
 
 .btn-success:hover {
-  background-color: #059669;
+  background-color: #065f46;
 }
 
 @media (max-width: 640px) {

@@ -19,6 +19,9 @@ export default function MesocycleDashboard() {
   const allMesocycles = useMesocycles();
   const activeMesocycle = useActiveMesocycle();
   const [showForm, setShowForm] = useState(false);
+  const [editingMesocycle, setEditingMesocycle] = useState<Mesocycle | null>(
+    null
+  );
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>(
     'active'
   );
@@ -35,10 +38,17 @@ export default function MesocycleDashboard() {
     mesocycle: Omit<Mesocycle, 'id' | 'createdAt' | 'updatedAt'>
   ) => {
     try {
-      await createMesocycle(mesocycle);
+      if (editingMesocycle) {
+        // Update existing mesocycle
+        await updateMesocycle(editingMesocycle.id, mesocycle);
+        setEditingMesocycle(null);
+      } else {
+        // Create new mesocycle
+        await createMesocycle(mesocycle);
+      }
       setShowForm(false);
     } catch (error) {
-      console.error('Failed to create mesocycle:', error);
+      console.error('Failed to save mesocycle:', error);
       throw error;
     }
   };
@@ -69,6 +79,19 @@ export default function MesocycleDashboard() {
     } catch (error) {
       console.error('Failed to abandon mesocycle:', error);
     }
+  };
+
+  const handleEditMesocycle = (id: string) => {
+    const mesocycle = allMesocycles?.find((m) => m.id === id);
+    if (mesocycle) {
+      setEditingMesocycle(mesocycle);
+      setShowForm(true);
+    }
+  };
+
+  const handleCancelForm = () => {
+    setShowForm(false);
+    setEditingMesocycle(null);
   };
 
   const handleCreateClick = () => {
@@ -178,6 +201,7 @@ export default function MesocycleDashboard() {
               mesocycle={mesocycle}
               onComplete={handleCompleteMesocycle}
               onAbandon={handleAbandonMesocycle}
+              onEdit={handleEditMesocycle}
             />
           ))}
         </div>
@@ -186,8 +210,9 @@ export default function MesocycleDashboard() {
       {/* Create Form Dialog */}
       <MesocycleForm
         isOpen={showForm}
+        existingMesocycle={editingMesocycle || undefined}
         onSave={handleCreateMesocycle}
-        onCancel={() => setShowForm(false)}
+        onCancel={handleCancelForm}
       />
     </div>
   );

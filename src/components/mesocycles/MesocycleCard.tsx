@@ -9,6 +9,7 @@ interface MesocycleCardProps {
   mesocycle: Mesocycle;
   onComplete?: (id: string) => void;
   onAbandon?: (id: string) => void;
+  onEdit?: (id: string) => void;
 }
 
 const SPLIT_LABELS: Record<Mesocycle['trainingSplit'], string> = {
@@ -23,6 +24,7 @@ export default function MesocycleCard({
   mesocycle,
   onComplete,
   onAbandon,
+  onEdit,
 }: MesocycleCardProps) {
   const isActive = mesocycle.status === 'active';
   const isDeloadWeek = mesocycle.currentWeek === mesocycle.deloadWeek;
@@ -60,6 +62,16 @@ export default function MesocycleCard({
             </span>
           </div>
         </div>
+        {onEdit && (
+          <button
+            onClick={() => onEdit(mesocycle.id)}
+            className="btn btn-sm btn-secondary"
+            title="Edit mesocycle"
+            aria-label="Edit mesocycle"
+          >
+            ✏️ Edit
+          </button>
+        )}
       </div>
 
       <div className="mesocycle-card-body">

@@ -12,6 +12,7 @@ import './MesocycleForm.css';
 
 interface MesocycleFormProps {
   isOpen: boolean;
+  existingMesocycle?: Mesocycle; // If provided, form is in edit mode
   onSave: (
     mesocycle: Omit<Mesocycle, 'id' | 'createdAt' | 'updatedAt'>
   ) => Promise<void>;
@@ -31,9 +32,11 @@ const TRAINING_SPLITS: Array<{
 
 export default function MesocycleForm({
   isOpen,
+  existingMesocycle,
   onSave,
   onCancel,
 }: MesocycleFormProps) {
+  const isEditMode = !!existingMesocycle;
   const [step, setStep] = useState<'basic' | 'exercises'>('basic');
   const [name, setName] = useState('');
   const [durationWeeks, setDurationWeeks] = useState<number>(6);
@@ -53,18 +56,49 @@ export default function MesocycleForm({
 
   useEffect(() => {
     if (isOpen) {
-      // Reset form when opened
-      setStep('basic');
-      setName('');
-      setDurationWeeks(6);
-      setDeloadWeek(6);
-      setTrainingSplit('push_pull_legs');
-      setStartDate(new Date().toISOString().split('T')[0]);
-      setNotes('');
-      setSplitDays(generateDefaultSplitDays('push_pull_legs'));
-      setError(null);
+      if (isEditMode && existingMesocycle) {
+        // Populate form with existing mesocycle data
+        setStep('basic');
+        setName(existingMesocycle.name);
+        setDurationWeeks(existingMesocycle.durationWeeks);
+        setDeloadWeek(existingMesocycle.deloadWeek);
+        setTrainingSplit(existingMesocycle.trainingSplit);
+        setStartDate(
+          new Date(existingMesocycle.startDate).toISOString().split('T')[0]
+        );
+        setNotes(existingMesocycle.notes || '');
+        setSplitDays(existingMesocycle.splitDays || []);
+        setError(null);
+      } else {
+        // Reset form when opened for creation
+        setStep('basic');
+        setName('');
+        setDurationWeeks(6);
+        setDeloadWeek(6);
+        setTrainingSplit('push_pull_legs');
+        setStartDate(new Date().toISOString().split('T')[0]);
+        setNotes('');
+        setSplitDays(generateDefaultSplitDays('push_pull_legs'));
+        setError(null);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, isEditMode, existingMesocycle]);
+
+  // Handle training split change with warning in edit mode
+  const handleTrainingSplitChange = (newSplit: Mesocycle['trainingSplit']) => {
+    if (isEditMode && trainingSplit !== newSplit) {
+      if (
+        !confirm(
+          'Changing the training split will regenerate the split days structure. This may affect your configured exercises. Continue?'
+        )
+      ) {
+        return;
+      }
+      // Regenerate split days when split type changes in edit mode
+      setSplitDays(generateDefaultSplitDays(newSplit));
+    }
+    setTrainingSplit(newSplit);
+  };
 
   // Update deload week when duration changes
   useEffect(() => {
@@ -77,12 +111,12 @@ export default function MesocycleForm({
     }
   }, [durationWeeks]);
 
-  // Update split days when training split changes
+  // Update split days when training split changes (only in create mode)
   useEffect(() => {
-    if (step === 'basic') {
+    if (step === 'basic' && !isEditMode) {
       setSplitDays(generateDefaultSplitDays(trainingSplit));
     }
-  }, [trainingSplit, step]);
+  }, [trainingSplit, step, isEditMode]);
 
   const calculateEndDate = (start: Date, weeks: number): Date => {
     const end = new Date(start);
@@ -132,23 +166,25 @@ export default function MesocycleForm({
         startDate: start,
         endDate: end,
         durationWeeks,
-        currentWeek: 1,
+        currentWeek: isEditMode ? existingMesocycle!.currentWeek : 1,
         deloadWeek,
         trainingSplit,
         splitDays,
-        status: 'active',
+        status: isEditMode ? existingMesocycle!.status : 'active',
         notes: notes.trim() || undefined,
       });
 
-      // Reset form after successful save
-      setStep('basic');
-      setName('');
-      setDurationWeeks(6);
-      setDeloadWeek(6);
-      setTrainingSplit('push_pull_legs');
-      setStartDate(new Date().toISOString().split('T')[0]);
-      setNotes('');
-      setSplitDays(generateDefaultSplitDays('push_pull_legs'));
+      // Reset form after successful save (only for create mode)
+      if (!isEditMode) {
+        setStep('basic');
+        setName('');
+        setDurationWeeks(6);
+        setDeloadWeek(6);
+        setTrainingSplit('push_pull_legs');
+        setStartDate(new Date().toISOString().split('T')[0]);
+        setNotes('');
+        setSplitDays(generateDefaultSplitDays('push_pull_legs'));
+      }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Failed to create mesocycle'
@@ -171,7 +207,13 @@ export default function MesocycleForm({
       >
         <div className="dialog-header">
           <h2>
-            {step === 'basic' ? 'Create New Mesocycle' : 'Configure Exercises'}
+            {isEditMode
+              ? step === 'basic'
+                ? 'Edit Mesocycle'
+                : 'Edit Exercises'
+              : step === 'basic'
+                ? 'Create New Mesocycle'
+                : 'Configure Exercises'}
           </h2>
           <button
             type="button"
@@ -260,7 +302,7 @@ export default function MesocycleForm({
                     className="form-select"
                     value={trainingSplit}
                     onChange={(e) =>
-                      setTrainingSplit(
+                      handleTrainingSplitChange(
                         e.target.value as Mesocycle['trainingSplit']
                       )
                     }
@@ -314,6 +356,7 @@ export default function MesocycleForm({
                   splitDays={splitDays}
                   exercises={exercises}
                   onChange={setSplitDays}
+                  mesocycleId={existingMesocycle?.id}
                 />
               ) : (
                 <div className="mesocycle-form-loading">
@@ -339,7 +382,7 @@ export default function MesocycleForm({
                   className="btn btn-primary"
                   disabled={isSubmitting}
                 >
-                  Next: Configure Exercises
+                  Next: {isEditMode ? 'Edit' : 'Configure'} Exercises
                 </button>
               </>
             ) : (
@@ -357,7 +400,13 @@ export default function MesocycleForm({
                   className="btn btn-primary"
                   disabled={isSubmitting || !exercises}
                 >
-                  {isSubmitting ? 'Creating...' : 'Create Mesocycle'}
+                  {isSubmitting
+                    ? isEditMode
+                      ? 'Saving...'
+                      : 'Creating...'
+                    : isEditMode
+                      ? 'Save Changes'
+                      : 'Create Mesocycle'}
                 </button>
               </>
             )}

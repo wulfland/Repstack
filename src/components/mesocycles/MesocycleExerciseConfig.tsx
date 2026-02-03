@@ -11,12 +11,14 @@ interface MesocycleExerciseConfigProps {
   splitDays: MesocycleSplitDay[];
   exercises: Exercise[];
   onChange: (updatedSplitDays: MesocycleSplitDay[]) => void;
+  mesocycleId?: string; // Optional: if provided, check for exercise history in this mesocycle
 }
 
 export default function MesocycleExerciseConfig({
   splitDays,
   exercises,
   onChange,
+  mesocycleId,
 }: MesocycleExerciseConfigProps) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
@@ -78,6 +80,7 @@ export default function MesocycleExerciseConfig({
                 onChange={(updatedSplitDay) =>
                   handleSplitDayChange(index, updatedSplitDay)
                 }
+                mesocycleId={mesocycleId}
               />
             )}
           </div>

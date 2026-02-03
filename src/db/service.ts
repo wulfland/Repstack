@@ -502,6 +502,25 @@ export async function clearAllData(): Promise<void> {
 // ===== Workout Logging Helpers =====
 
 /**
+ * Check if an exercise has logged workout data in a specific mesocycle
+ * Returns the count of workouts that include this exercise
+ */
+export async function getExerciseWorkoutCount(
+  exerciseId: string,
+  mesocycleId?: string
+): Promise<number> {
+  const workouts = await db.workouts
+    .filter(
+      (workout) =>
+        workout.exercises.some((ex) => ex.exerciseId === exerciseId) &&
+        (!mesocycleId || workout.mesocycleId === mesocycleId)
+    )
+    .toArray();
+
+  return workouts.length;
+}
+
+/**
  * Get the previous performance for a specific exercise
  * Returns the most recent completed workout that includes this exercise
  */

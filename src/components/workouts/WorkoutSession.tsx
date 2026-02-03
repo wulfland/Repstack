@@ -33,7 +33,9 @@ import TemplateGuide from '../templates/TemplateGuide';
 import './WorkoutSession.css';
 
 interface WorkoutSessionProps {
-  onNavigate?: (page: 'mesocycles' | 'workout' | 'exercises' | 'progress' | 'settings') => void;
+  onNavigate?: (
+    page: 'mesocycles' | 'workout' | 'exercises' | 'progress' | 'settings'
+  ) => void;
 }
 
 export default function WorkoutSession({ onNavigate }: WorkoutSessionProps) {
@@ -250,14 +252,15 @@ export default function WorkoutSession({ onNavigate }: WorkoutSessionProps) {
       <div className="workout-session-container">
         <div className="workout-start-screen">
           <h1>Ready to Train?</h1>
-          
+
           {!activeMesocycle ? (
             <div className="no-mesocycle-prompt">
               <div className="info-box info-box-warning">
                 <h3>⚠️ No Active Mesocycle</h3>
                 <p>
-                  For best results, you should create a mesocycle before starting your workouts. 
-                  Mesocycles provide structured progression, planned deloads, and volume management.
+                  For best results, you should create a mesocycle before
+                  starting your workouts. Mesocycles provide structured
+                  progression, planned deloads, and volume management.
                 </p>
                 <p>
                   <strong>Benefits of mesocycle-based training:</strong>
@@ -282,7 +285,8 @@ export default function WorkoutSession({ onNavigate }: WorkoutSessionProps) {
               </div>
               <div style={{ marginTop: '1.5rem' }}>
                 <p className="text-muted">
-                  Or continue without a mesocycle (not recommended for optimal progress):
+                  Or continue without a mesocycle (not recommended for optimal
+                  progress):
                 </p>
                 <button
                   onClick={handleStartWorkout}

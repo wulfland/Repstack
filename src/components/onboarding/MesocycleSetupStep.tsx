@@ -112,7 +112,11 @@ export default function MesocycleSetupStep({
           </div>
 
           <div className="step-actions">
-            <button type="button" onClick={onBack} className="btn btn-secondary">
+            <button
+              type="button"
+              onClick={onBack}
+              className="btn btn-secondary"
+            >
               Back
             </button>
             <button type="submit" className="btn btn-primary">

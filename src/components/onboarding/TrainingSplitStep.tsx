@@ -70,7 +70,8 @@ export default function TrainingSplitStep({
   onBack,
 }: TrainingSplitStepProps) {
   // Default to full_body for beginners, upper_lower for intermediate/advanced
-  const defaultSplit = experienceLevel === 'beginner' ? 'full_body' : 'upper_lower';
+  const defaultSplit =
+    experienceLevel === 'beginner' ? 'full_body' : 'upper_lower';
   const [selectedSplit, setSelectedSplit] = useState<TrainingSplit>(
     initialSplit || defaultSplit
   );

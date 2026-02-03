@@ -67,6 +67,7 @@ export default function MesocycleCard({
             onClick={() => onEdit(mesocycle.id)}
             className="btn btn-sm btn-secondary"
             title="Edit mesocycle"
+            aria-label="Edit mesocycle"
           >
             ✏️ Edit
           </button>

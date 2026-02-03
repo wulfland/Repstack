@@ -97,6 +97,11 @@ export default function ExerciseSelector({
     return icons[muscleGroup];
   };
 
+  const getMuscleGroupLabel = (muscleGroup: MuscleGroupFilter): string => {
+    if (muscleGroup === 'all') return 'All';
+    return muscleGroup.charAt(0).toUpperCase() + muscleGroup.slice(1);
+  };
+
   const getCategoryIcon = (category: Exercise['category']) => {
     const icons: Record<Exercise['category'], string> = {
       barbell: '🏋️',
@@ -158,14 +163,13 @@ export default function ExerciseSelector({
                   className={`muscle-group-filter-btn ${
                     filterMuscleGroup === muscleGroup ? 'active' : ''
                   }`}
+                  aria-label={`Filter by ${getMuscleGroupLabel(muscleGroup)}`}
                 >
-                  <span className="filter-icon">
+                  <span className="filter-icon" aria-hidden="true">
                     {getMuscleGroupIcon(muscleGroup)}
                   </span>
                   <span className="filter-label">
-                    {muscleGroup === 'all'
-                      ? 'All'
-                      : muscleGroup.charAt(0).toUpperCase() + muscleGroup.slice(1)}
+                    {getMuscleGroupLabel(muscleGroup)}
                   </span>
                 </button>
               ))}

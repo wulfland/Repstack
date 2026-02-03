@@ -213,13 +213,13 @@ export const starterExercises: Omit<Exercise, 'id' | 'createdAt'>[] = [
     isCustom: false,
   },
   {
-    name: 'Cable Tricep Pushdown',
+    name: 'Tricep Pushdown (Rope)',
     category: 'cable',
     muscleGroups: ['triceps'],
     isCustom: false,
   },
   {
-    name: 'Tricep Pushdown',
+    name: 'Tricep Pushdown (Bar)',
     category: 'cable',
     muscleGroups: ['triceps'],
     isCustom: false,

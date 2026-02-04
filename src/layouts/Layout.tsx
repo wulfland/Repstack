@@ -1,7 +1,12 @@
 import type { ReactNode } from 'react';
 import './Layout.css';
 
-type Page = 'mesocycles' | 'workout' | 'exercises' | 'progress' | 'settings';
+export type Page =
+  | 'mesocycles'
+  | 'workout'
+  | 'exercises'
+  | 'progress'
+  | 'settings';
 
 interface LayoutProps {
   children: ReactNode;

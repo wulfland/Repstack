@@ -497,6 +497,10 @@ export async function clearAllData(): Promise<void> {
     db.trainingSessions.clear(),
     db.mesocycles.clear(),
   ]);
+
+  // Reload default exercises after clearing data
+  const { seedStarterExercises } = await import('../lib/seedData');
+  await seedStarterExercises();
 }
 
 // ===== Workout Logging Helpers =====

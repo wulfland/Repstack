@@ -114,7 +114,7 @@ export default function Settings({
     try {
       await clearAllData();
       setShowClearConfirm(false);
-      showMessage('success', 'All data cleared');
+      showMessage('success', 'All data cleared and default exercises restored');
     } catch (error) {
       console.error('Failed to clear data:', error);
       showMessage('error', 'Failed to clear data');

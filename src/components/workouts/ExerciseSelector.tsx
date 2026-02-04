@@ -53,7 +53,9 @@ export default function ExerciseSelector({
           exercise.muscleGroups.includes('obliques' as MuscleGroup)
         : exercise.muscleGroups.includes(filterMuscleGroup as MuscleGroup));
     const notSelected = !selectedExerciseIds.includes(exercise.id);
-    return matchesSearch && matchesCategory && matchesMuscleGroup && notSelected;
+    return (
+      matchesSearch && matchesCategory && matchesMuscleGroup && notSelected
+    );
   });
 
   const categories: Array<Exercise['category'] | 'all'> = [
@@ -132,7 +134,11 @@ export default function ExerciseSelector({
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Add Exercise</h2>
-          <button onClick={handleClose} className="btn-close" aria-label="Close">
+          <button
+            onClick={handleClose}
+            className="btn-close"
+            aria-label="Close"
+          >
             ✕
           </button>
         </div>

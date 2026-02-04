@@ -43,6 +43,11 @@ When working on this project, always keep these principles in mind:
 - Keep components small and focused
 - Write tests for business logic
 
+### Code Formatting
+- Always run `npm run format:check` after making code changes
+- If formatting issues are found, run `npm run format` to fix them
+- Commit only properly formatted code
+
 ### Architecture Considerations
 - **Frontend**: Consider React, Vue, or Svelte with PWA plugins
 - **State Management**: Local-first with IndexedDB

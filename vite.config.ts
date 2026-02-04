@@ -13,7 +13,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['vite.svg', 'robots.txt', 'apple-touch-icon.png'],
+      includeAssets: ['icon.svg', 'robots.txt', 'apple-touch-icon.png'],
       manifest: {
         name: 'Repstack - Hypertrophy Training',
         short_name: 'Repstack',

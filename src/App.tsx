@@ -349,7 +349,9 @@ function App() {
           )}
         </div>
 
-        {currentPage === 'mesocycles' && <MesocycleDashboard />}
+        {currentPage === 'mesocycles' && (
+          <MesocycleDashboard onNavigate={setCurrentPage} />
+        )}
 
         {currentPage === 'workout' && (
           <WorkoutSession onNavigate={setCurrentPage} />

@@ -54,6 +54,17 @@ export default function MesocycleForm({
   // Load exercises for exercise selector
   const exercises = useLiveQuery(() => db.exercises.orderBy('name').toArray());
 
+  // Lock body scroll when dialog is open
+  useEffect(() => {
+    if (isOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     if (isOpen) {
       if (isEditMode && existingMesocycle) {

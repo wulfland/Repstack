@@ -2,7 +2,7 @@
  * Exercise selector modal for adding exercises to workout
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Exercise, MuscleGroup } from '../../types/models';
 import './ExerciseSelector.css';
 
@@ -128,6 +128,15 @@ export default function ExerciseSelector({
     setFilterMuscleGroup('all');
     onClose();
   };
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
 
   return (
     <div className="modal-overlay" onClick={handleOverlayClick}>

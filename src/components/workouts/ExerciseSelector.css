@@ -10,8 +10,11 @@
   justify-content: center;
   z-index: 1100;
   padding: 1rem;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  /* Prevent scroll on overlay itself */
+  overflow: hidden;
+  /* Prevent scroll events from reaching the body */
+  overscroll-behavior: contain;
+  touch-action: none;
 }
 
 .modal-content {
@@ -19,13 +22,16 @@
   border-radius: 12px;
   width: 100%;
   max-width: 600px;
-  max-height: 90vh;
+  height: min(90vh, 800px);
+  height: min(90dvh, 800px); /* Use dynamic viewport height for mobile */
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Ensure content doesn't overflow the rounded corners */
 }
 
 .modal-header {
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -54,12 +60,16 @@
 }
 
 .modal-body {
-  flex: 1;
-  overflow-y: auto;
+  flex: 1 1 auto;
+  overflow-y: scroll;
+  overflow-x: hidden;
   padding: 1.5rem;
   -webkit-overflow-scrolling: touch;
   /* Ensure proper scrolling on iOS */
   overscroll-behavior: contain;
+  /* Critical for flexbox scrolling */
+  min-height: 0;
+  touch-action: pan-y;
 }
 
 /* Search */
@@ -244,8 +254,9 @@
   }
 
   .modal-content {
-    max-height: 100vh;
     height: 100vh;
+    height: 100dvh;
+    max-height: none;
     border-radius: 0;
   }
 
@@ -260,9 +271,13 @@
 
   .modal-body {
     padding: 1rem;
-    overflow-y: auto;
+    overflow-y: scroll;
     /* Ensure the modal body can scroll on iOS */
     -webkit-overflow-scrolling: touch;
+    /* Critical for iOS flexbox scroll */
+    min-height: 0;
+    flex: 1 1 auto;
+    touch-action: pan-y;
   }
 
   .filter-section {

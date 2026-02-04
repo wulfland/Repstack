@@ -10,9 +10,56 @@
   color: #6b7280;
 }
 
+/* Dialog overlay for mesocycle form - prevent background scroll */
+.dialog-overlay:has(.mesocycle-form-dialog) {
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+/* Mesocycle Form Dialog - need to override generic dialog styles */
 .mesocycle-form-dialog {
   max-width: 56rem;
   width: 90vw;
+  max-height: 90vh;
+  max-height: 90dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 0; /* Override the padding from .dialog */
+  overflow: hidden;
+}
+
+.mesocycle-form-dialog .dialog-header {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mesocycle-form-dialog .dialog-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.mesocycle-form-dialog .dialog-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.5rem;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.mesocycle-form-dialog .dialog-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  background: #f9fafb;
 }
 
 @media (max-width: 640px) {
@@ -21,7 +68,19 @@
   }
 
   .mesocycle-form-dialog {
-    width: 95vw;
+    width: 100%;
     max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  .mesocycle-form-dialog .dialog-body {
+    padding: 1rem;
+  }
+
+  .mesocycle-form-dialog .dialog-footer {
+    padding: 1rem;
   }
 }

@@ -3,7 +3,7 @@
  */
 
 import { useState } from 'react';
-import type { Exercise } from '../../types/models';
+import type { Exercise, MuscleGroup } from '../../types/models';
 import './ExerciseSelector.css';
 
 interface ExerciseSelectorProps {
@@ -12,6 +12,20 @@ interface ExerciseSelectorProps {
   onSelect: (exerciseId: string) => void;
   onClose: () => void;
 }
+
+// Define muscle group categories for filtering
+type MuscleGroupFilter =
+  | 'all'
+  | 'chest'
+  | 'back'
+  | 'shoulders'
+  | 'biceps'
+  | 'triceps'
+  | 'quads'
+  | 'hamstrings'
+  | 'glutes'
+  | 'calves'
+  | 'core';
 
 export default function ExerciseSelector({
   exercises,
@@ -23,6 +37,8 @@ export default function ExerciseSelector({
   const [filterCategory, setFilterCategory] = useState<
     Exercise['category'] | 'all'
   >('all');
+  const [filterMuscleGroup, setFilterMuscleGroup] =
+    useState<MuscleGroupFilter>('all');
 
   const filteredExercises = exercises.filter((exercise) => {
     const matchesSearch = exercise.name
@@ -30,8 +46,16 @@ export default function ExerciseSelector({
       .includes(searchQuery.toLowerCase());
     const matchesCategory =
       filterCategory === 'all' || exercise.category === filterCategory;
+    const matchesMuscleGroup =
+      filterMuscleGroup === 'all' ||
+      (filterMuscleGroup === 'core'
+        ? exercise.muscleGroups.includes('abs' as MuscleGroup) ||
+          exercise.muscleGroups.includes('obliques' as MuscleGroup)
+        : exercise.muscleGroups.includes(filterMuscleGroup as MuscleGroup));
     const notSelected = !selectedExerciseIds.includes(exercise.id);
-    return matchesSearch && matchesCategory && notSelected;
+    return (
+      matchesSearch && matchesCategory && matchesMuscleGroup && notSelected
+    );
   });
 
   const categories: Array<Exercise['category'] | 'all'> = [
@@ -43,6 +67,42 @@ export default function ExerciseSelector({
     'cable',
     'other',
   ];
+
+  const muscleGroups: MuscleGroupFilter[] = [
+    'all',
+    'chest',
+    'back',
+    'shoulders',
+    'biceps',
+    'triceps',
+    'quads',
+    'hamstrings',
+    'glutes',
+    'calves',
+    'core',
+  ];
+
+  const getMuscleGroupIcon = (muscleGroup: MuscleGroupFilter): string => {
+    const icons: Record<MuscleGroupFilter, string> = {
+      all: '🔍',
+      chest: '💪',
+      back: '🔙',
+      shoulders: '🫱',
+      biceps: '💪',
+      triceps: '🦾',
+      quads: '🦵',
+      hamstrings: '🦵',
+      glutes: '🍑',
+      calves: '🦿',
+      core: '🔥',
+    };
+    return icons[muscleGroup];
+  };
+
+  const getMuscleGroupLabel = (muscleGroup: MuscleGroupFilter): string => {
+    if (muscleGroup === 'all') return 'All';
+    return muscleGroup.charAt(0).toUpperCase() + muscleGroup.slice(1);
+  };
 
   const getCategoryIcon = (category: Exercise['category']) => {
     const icons: Record<Exercise['category'], string> = {
@@ -61,12 +121,24 @@ export default function ExerciseSelector({
     onClose();
   };
 
+  const handleClose = () => {
+    // Reset filters when closing
+    setSearchQuery('');
+    setFilterCategory('all');
+    setFilterMuscleGroup('all');
+    onClose();
+  };
+
   return (
     <div className="modal-overlay" onClick={handleOverlayClick}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Add Exercise</h2>
-          <button onClick={onClose} className="btn-close" aria-label="Close">
+          <button
+            onClick={handleClose}
+            className="btn-close"
+            aria-label="Close"
+          >
             ✕
           </button>
         </div>
@@ -83,26 +155,56 @@ export default function ExerciseSelector({
             />
           </div>
 
-          <div className="category-filters">
-            {categories.map((category) => (
-              <button
-                key={category}
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setFilterCategory(category);
-                }}
-                className={`category-filter-btn ${
-                  filterCategory === category ? 'active' : ''
-                }`}
-              >
-                {category === 'all'
-                  ? '📋 All'
-                  : `${getCategoryIcon(category as Exercise['category'])} ${
-                      category.charAt(0).toUpperCase() + category.slice(1)
-                    }`}
-              </button>
-            ))}
+          <div className="filter-section">
+            <h3 className="filter-title">Body Part</h3>
+            <div className="muscle-group-filters">
+              {muscleGroups.map((muscleGroup) => (
+                <button
+                  key={muscleGroup}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFilterMuscleGroup(muscleGroup);
+                  }}
+                  className={`muscle-group-filter-btn ${
+                    filterMuscleGroup === muscleGroup ? 'active' : ''
+                  }`}
+                  aria-label={`Filter by ${getMuscleGroupLabel(muscleGroup)}`}
+                >
+                  <span className="filter-icon" aria-hidden="true">
+                    {getMuscleGroupIcon(muscleGroup)}
+                  </span>
+                  <span className="filter-label">
+                    {getMuscleGroupLabel(muscleGroup)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="filter-section">
+            <h3 className="filter-title">Equipment</h3>
+            <div className="category-filters">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setFilterCategory(category);
+                  }}
+                  className={`category-filter-btn ${
+                    filterCategory === category ? 'active' : ''
+                  }`}
+                >
+                  {category === 'all'
+                    ? '📋 All'
+                    : `${getCategoryIcon(category as Exercise['category'])} ${
+                        category.charAt(0).toUpperCase() + category.slice(1)
+                      }`}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="exercise-list">

@@ -38,6 +38,38 @@ export const starterExercises: Omit<Exercise, 'id' | 'createdAt'>[] = [
     muscleGroups: ['chest', 'triceps', 'shoulders'],
     isCustom: false,
   },
+  {
+    name: 'Dumbbell Fly',
+    category: 'dumbbell',
+    muscleGroups: ['chest'],
+    isCustom: false,
+  },
+  {
+    name: 'Machine Fly (Pec Deck)',
+    category: 'machine',
+    muscleGroups: ['chest'],
+    isCustom: false,
+  },
+  {
+    name: 'Cable Fly (Low)',
+    category: 'cable',
+    muscleGroups: ['chest'],
+    isCustom: false,
+    notes: 'Targets upper chest',
+  },
+  {
+    name: 'Cable Fly (Mid)',
+    category: 'cable',
+    muscleGroups: ['chest'],
+    isCustom: false,
+  },
+  {
+    name: 'Cable Fly (High)',
+    category: 'cable',
+    muscleGroups: ['chest'],
+    isCustom: false,
+    notes: 'Targets lower chest',
+  },
 
   // Back exercises
   {
@@ -71,6 +103,24 @@ export const starterExercises: Omit<Exercise, 'id' | 'createdAt'>[] = [
     muscleGroups: ['back', 'biceps'],
     isCustom: false,
   },
+  {
+    name: 'Machine Row',
+    category: 'machine',
+    muscleGroups: ['back', 'biceps'],
+    isCustom: false,
+  },
+  {
+    name: 'T-Bar Row',
+    category: 'barbell',
+    muscleGroups: ['back', 'biceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Single Arm Dumbbell Row',
+    category: 'dumbbell',
+    muscleGroups: ['back', 'biceps'],
+    isCustom: false,
+  },
 
   // Shoulder exercises
   {
@@ -98,6 +148,19 @@ export const starterExercises: Omit<Exercise, 'id' | 'createdAt'>[] = [
     muscleGroups: ['shoulders', 'triceps'],
     isCustom: false,
   },
+  {
+    name: 'Cable Lateral Raise',
+    category: 'cable',
+    muscleGroups: ['shoulders'],
+    isCustom: false,
+  },
+  {
+    name: 'Reverse Pec Deck (Rear Delts)',
+    category: 'machine',
+    muscleGroups: ['shoulders', 'back'],
+    isCustom: false,
+    notes: 'Targets rear delts',
+  },
 
   // Arm exercises
   {
@@ -113,7 +176,56 @@ export const starterExercises: Omit<Exercise, 'id' | 'createdAt'>[] = [
     isCustom: false,
   },
   {
-    name: 'Cable Tricep Pushdown',
+    name: 'Dumbbell Curl (Standing)',
+    category: 'dumbbell',
+    muscleGroups: ['biceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Dumbbell Curl (Seated)',
+    category: 'dumbbell',
+    muscleGroups: ['biceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Dumbbell Curl (Incline)',
+    category: 'dumbbell',
+    muscleGroups: ['biceps'],
+    isCustom: false,
+    notes: 'Increased stretch on biceps',
+  },
+  {
+    name: 'Preacher Curl',
+    category: 'machine',
+    muscleGroups: ['biceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Cable Curl',
+    category: 'cable',
+    muscleGroups: ['biceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Concentration Curl',
+    category: 'dumbbell',
+    muscleGroups: ['biceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Tricep Pushdown (Rope)',
+    category: 'cable',
+    muscleGroups: ['triceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Tricep Pushdown (Bar)',
+    category: 'cable',
+    muscleGroups: ['triceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Overhead Tricep Extension',
     category: 'cable',
     muscleGroups: ['triceps'],
     isCustom: false,
@@ -121,6 +233,18 @@ export const starterExercises: Omit<Exercise, 'id' | 'createdAt'>[] = [
   {
     name: 'Dumbbell Overhead Tricep Extension',
     category: 'dumbbell',
+    muscleGroups: ['triceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Skull Crushers',
+    category: 'barbell',
+    muscleGroups: ['triceps'],
+    isCustom: false,
+  },
+  {
+    name: 'Cable Tricep Kickback',
+    category: 'cable',
     muscleGroups: ['triceps'],
     isCustom: false,
   },
@@ -158,9 +282,33 @@ export const starterExercises: Omit<Exercise, 'id' | 'createdAt'>[] = [
     isCustom: false,
   },
   {
+    name: 'Machine Leg Curl (Seated)',
+    category: 'machine',
+    muscleGroups: ['hamstrings'],
+    isCustom: false,
+  },
+  {
+    name: 'Machine Leg Curl (Lying)',
+    category: 'machine',
+    muscleGroups: ['hamstrings'],
+    isCustom: false,
+  },
+  {
     name: 'Bulgarian Split Squat',
     category: 'dumbbell',
     muscleGroups: ['quads', 'glutes'],
+    isCustom: false,
+  },
+  {
+    name: 'Sissy Squat',
+    category: 'bodyweight',
+    muscleGroups: ['quads'],
+    isCustom: false,
+  },
+  {
+    name: 'Dumbbell Lunges',
+    category: 'dumbbell',
+    muscleGroups: ['quads', 'glutes', 'hamstrings'],
     isCustom: false,
   },
   {

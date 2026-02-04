@@ -499,8 +499,13 @@ export async function clearAllData(): Promise<void> {
   ]);
 
   // Reload default exercises after clearing data
-  const { seedStarterExercises } = await import('../lib/seedData');
-  await seedStarterExercises();
+  try {
+    const { seedStarterExercises } = await import('../lib/seedData');
+    await seedStarterExercises();
+  } catch (error) {
+    console.error('Failed to seed starter exercises after clearing data:', error);
+    // Don't throw - clearing data succeeded, seeding is a bonus feature
+  }
 }
 
 // ===== Workout Logging Helpers =====

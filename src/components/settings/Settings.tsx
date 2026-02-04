@@ -11,6 +11,7 @@ import {
   importData,
   clearAllData,
 } from '../../hooks/useDatabase';
+import { seedStarterExercises } from '../../lib/seedData';
 import ConfirmDialog from '../common/ConfirmDialog';
 import type { UserProfile } from '../../types/models';
 import type { BeforeInstallPromptEvent } from '../../types/global';
@@ -113,6 +114,8 @@ export default function Settings({
   const handleClearAllData = async () => {
     try {
       await clearAllData();
+      // Reseed starter exercises so users have exercises to work with
+      await seedStarterExercises();
       setShowClearConfirm(false);
       showMessage('success', 'All data cleared');
     } catch (error) {

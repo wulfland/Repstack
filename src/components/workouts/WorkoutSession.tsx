@@ -102,6 +102,22 @@ export default function WorkoutSession({ onNavigate }: WorkoutSessionProps) {
     };
   }, [activeMesocycle, completedWorkouts]);
 
+  // Auto-start workout if coming from mesocycle dashboard with a selected split
+  useEffect(() => {
+    const selectedSplitDayId = localStorage.getItem('selectedSplitDayId');
+    if (selectedSplitDayId && activeMesocycle && !isActive) {
+      // Clear immediately to prevent re-triggering
+      localStorage.removeItem('selectedSplitDayId');
+      // Auto-start the workout with the selected split
+      startWorkoutFromSplit(activeMesocycle.id, selectedSplitDayId).catch(
+        (error) => {
+          console.error('Error auto-starting workout from split:', error);
+          showToast('Failed to start workout from split', 'error');
+        }
+      );
+    }
+  }, [activeMesocycle, isActive, startWorkoutFromSplit, showToast]);
+
   // Get all unique muscle groups from workout exercises
   const workoutMuscleGroups = useMemo(() => {
     if (!workout || !exercises) return [];
@@ -199,6 +215,10 @@ export default function WorkoutSession({ onNavigate }: WorkoutSessionProps) {
     // Clear active template after workout ends
     setActiveWorkoutTemplate(null);
     setTemplateDayIndex(0);
+    // Navigate back to mesocycles page
+    if (onNavigate) {
+      onNavigate('mesocycles');
+    }
   };
 
   const handleSkipFeedback = async () => {
@@ -208,6 +228,10 @@ export default function WorkoutSession({ onNavigate }: WorkoutSessionProps) {
     // Clear active template after workout ends
     setActiveWorkoutTemplate(null);
     setTemplateDayIndex(0);
+    // Navigate back to mesocycles page
+    if (onNavigate) {
+      onNavigate('mesocycles');
+    }
   };
 
   const handleCancelWorkout = () => {

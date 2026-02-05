@@ -159,45 +159,6 @@
   color: #dc2626;
 }
 
-.btn-sm {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-}
-
-.btn-secondary {
-  background-color: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
-}
-
-.btn-primary {
-  background-color: #3b82f6;
-  color: white;
-  border: 1px solid #3b82f6;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-primary:hover {
-  background-color: #2563eb;
-  border-color: #2563eb;
-}
-
 @media (max-width: 640px) {
   .split-day-editor {
     padding: 0.75rem;

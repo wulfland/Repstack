@@ -11,6 +11,7 @@ import type {
 import ExerciseSelector from '../workouts/ExerciseSelector';
 import { isExerciseValidForSplitDay } from '../../lib/splitUtils';
 import { getExerciseWorkoutCount } from '../../db/service';
+import '../common/shared-dialog.css';
 import './SplitDayEditor.css';
 
 const DEFAULT_REST_SECONDS = 90;

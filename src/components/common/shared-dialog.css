@@ -1,0 +1,139 @@
+/**
+ * Shared dialog and button styles
+ * Used across multiple components to maintain consistency
+ */
+
+/* Dialog Overlay */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+/* Common Button Styles */
+.btn {
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-min, 44px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  min-height: auto;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-danger {
+  background-color: #dc2626;
+  color: white;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+/* Dialog Header */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.dialog-close {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.dialog-close:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+/* Dialog Body */
+.dialog-body {
+  padding: 1.5rem;
+}
+
+/* Dialog Footer */
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .dialog-header,
+  .dialog-body,
+  .dialog-footer {
+    padding: 1rem;
+  }
+}

@@ -2,8 +2,9 @@
  * Dialog for copying exercises from one split day to another
  */
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { MesocycleSplitDay } from '../../types/models';
+import '../common/shared-dialog.css';
 import './CopySplitDialog.css';
 
 interface CopySplitDialogProps {
@@ -21,6 +22,47 @@ export default function CopySplitDialog({
 }: CopySplitDialogProps) {
   const [selectedTargetIds, setSelectedTargetIds] = useState<string[]>([]);
   const [copyMode, setCopyMode] = useState<'replace' | 'append'>('replace');
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const cancelButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    // Focus the cancel button when dialog opens
+    cancelButtonRef.current?.focus();
+
+    // Handle ESC key to close dialog
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onCancel();
+      }
+    };
+
+    // Trap focus within dialog
+    const handleTabKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+
+      const focusableElements = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+    document.addEventListener('keydown', handleTabKey);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+      document.removeEventListener('keydown', handleTabKey);
+    };
+  }, [onCancel]);
 
   const handleToggleTarget = (targetId: string) => {
     setSelectedTargetIds((prev) =>
@@ -57,7 +99,11 @@ export default function CopySplitDialog({
       aria-modal="true"
       aria-labelledby="copy-dialog-title"
     >
-      <div className="copy-split-dialog" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="copy-split-dialog"
+        onClick={(e) => e.stopPropagation()}
+        ref={dialogRef}
+      >
         <div className="dialog-header">
           <h2 id="copy-dialog-title">Copy Exercises</h2>
           <button
@@ -155,7 +201,11 @@ export default function CopySplitDialog({
         </div>
 
         <div className="dialog-footer">
-          <button className="btn btn-secondary" onClick={onCancel}>
+          <button
+            className="btn btn-secondary"
+            onClick={onCancel}
+            ref={cancelButtonRef}
+          >
             Cancel
           </button>
           <button

@@ -64,10 +64,8 @@ export default function MesocycleExerciseConfig({
     const updatedSplitDays = splitDays.map((splitDay) => {
       // If this is a target split day, apply the copy
       if (targetSplitDayIds.includes(splitDay.id)) {
-        let newExercises = [...sourceSplitDayForCopy.exercises];
-
-        // Deep copy the exercises to avoid reference sharing
-        newExercises = newExercises.map((exercise) => ({
+        // Deep copy exercises (MesocycleExercise has only primitive types, so spread is sufficient)
+        let newExercises = sourceSplitDayForCopy.exercises.map((exercise) => ({
           ...exercise,
         }));
 

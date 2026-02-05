@@ -266,7 +266,7 @@
 /* Mobile Responsive */
 @media (max-width: 640px) {
   .set-logger {
-    grid-template-columns: 28px minmax(100px, 1fr) 52px 44px 70px;
+    grid-template-columns: 28px minmax(95px, 1fr) 52px 44px 80px;
     gap: 0.25rem;
     padding: 0.5rem 0.25rem;
   }
@@ -318,7 +318,7 @@
   .btn-complete-set,
   .btn-remove-set,
   .btn-uncomplete-set {
-    min-width: 36px;
+    min-width: 44px;
     min-height: 44px;
     font-size: 0.75rem;
   }

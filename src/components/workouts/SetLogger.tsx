@@ -31,10 +31,6 @@ export default function SetLogger({
     onUpdate({ weight });
   };
 
-  const handleWeightIncrement = (amount: number) => {
-    onUpdate({ weight: Math.max(0, set.weight + amount) });
-  };
-
   const handleRepsChange = (value: string) => {
     const reps = parseInt(value) || 0;
     onUpdate({ actualReps: reps });
@@ -82,35 +78,17 @@ export default function SetLogger({
       </div>
 
       <div className="set-weight">
-        <div className="weight-input-group">
-          <button
-            onClick={() => handleWeightIncrement(-2.5)}
-            className="weight-btn weight-btn-decrement"
-            disabled={set.completed}
-            aria-label="Decrease weight by 2.5"
-          >
-            -2.5
-          </button>
-          <input
-            type="number"
-            value={set.weight || ''}
-            onChange={(e) => handleWeightChange(e.target.value)}
-            placeholder="0"
-            className="set-input weight-input"
-            disabled={set.completed}
-            inputMode="decimal"
-            step="0.5"
-            aria-label={`Weight for set ${setNumber}`}
-          />
-          <button
-            onClick={() => handleWeightIncrement(2.5)}
-            className="weight-btn weight-btn-increment"
-            disabled={set.completed}
-            aria-label="Increase weight by 2.5"
-          >
-            +2.5
-          </button>
-        </div>
+        <input
+          type="number"
+          value={set.weight || ''}
+          onChange={(e) => handleWeightChange(e.target.value)}
+          placeholder="0"
+          className="set-input weight-input"
+          disabled={set.completed}
+          inputMode="decimal"
+          step="2.5"
+          aria-label={`Weight for set ${setNumber}`}
+        />
       </div>
 
       <div className="set-reps">

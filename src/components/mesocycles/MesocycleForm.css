@@ -28,6 +28,15 @@
   overflow: hidden;
 }
 
+/* Form needs to be a flex container to allow body scrolling */
+.mesocycle-form-dialog form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .mesocycle-form-dialog .dialog-header {
   flex-shrink: 0;
   display: flex;
@@ -50,6 +59,11 @@
   min-height: 0;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+}
+
+/* Ensure the exercise config inside dialog-body doesn't overflow */
+.mesocycle-form-dialog .mesocycle-exercise-config {
+  min-height: 0;
 }
 
 .mesocycle-form-dialog .dialog-footer {

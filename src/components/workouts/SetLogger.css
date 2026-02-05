@@ -6,6 +6,9 @@
   padding: 0.5rem;
   border-radius: 6px;
   transition: all 0.2s ease;
+  /* Prevent horizontal overflow on mobile */
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .set-logger:hover {
@@ -239,7 +242,7 @@
 /* Mobile Responsive */
 @media (max-width: 640px) {
   .set-logger {
-    grid-template-columns: 28px 1fr 60px 44px 80px;
+    grid-template-columns: 28px 1fr 52px 44px 92px;
     gap: 0.25rem;
     padding: 0.5rem 0.25rem;
   }
@@ -256,22 +259,28 @@
 
   .weight-input {
     width: 100%;
+    max-width: 100%;
     font-size: 0.875rem;
     min-height: 44px;
+    box-sizing: border-box;
   }
 
   .reps-input {
-    width: 56px;
+    width: 100%;
+    max-width: 52px;
     font-size: 0.875rem;
     padding: 0.3rem;
     min-height: 44px;
+    box-sizing: border-box;
   }
 
   .rir-input {
-    width: 40px;
+    width: 100%;
+    max-width: 44px;
     font-size: 0.875rem;
     padding: 0.3rem;
     min-height: 44px;
+    box-sizing: border-box;
   }
 
   .btn-add-rir {
@@ -289,7 +298,8 @@
   }
 
   .set-actions {
-    gap: 0.25rem;
+    gap: 0.125rem;
+    flex-wrap: nowrap;
   }
 }
 

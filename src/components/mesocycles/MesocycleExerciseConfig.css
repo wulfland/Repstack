@@ -84,7 +84,7 @@
 
 .split-content {
   position: relative;
-  min-height: 20rem;
+  min-height: 0; /* Allow shrinking for scroll to work */
 }
 
 .split-panel {

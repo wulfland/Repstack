@@ -1,0 +1,237 @@
+.copy-split-dialog {
+  background: white;
+  border-radius: 8px;
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.copy-split-dialog .dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.copy-split-dialog .dialog-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.copy-split-dialog .dialog-close {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.copy-split-dialog .dialog-close:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+.copy-split-dialog .dialog-body {
+  padding: 1.5rem;
+}
+
+.dialog-description {
+  margin: 0 0 1rem 0;
+  color: #4b5563;
+  line-height: 1.5;
+  font-size: 0.875rem;
+}
+
+.target-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.target-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.target-option:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.target-option.selected {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.target-option input[type='checkbox'] {
+  cursor: pointer;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #3b82f6;
+}
+
+.target-name {
+  flex: 1;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.target-badge {
+  font-size: 0.75rem;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.empty-targets {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.copy-mode-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.copy-mode-label {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.copy-mode-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mode-option {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-option:hover {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+.mode-option.selected {
+  border-color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+.mode-option input[type='radio'] {
+  cursor: pointer;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.125rem;
+  accent-color: #3b82f6;
+}
+
+.mode-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.mode-content strong {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.mode-hint {
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.copy-split-dialog .dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background-color: white;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+@media (max-width: 640px) {
+  .copy-split-dialog {
+    max-width: 100%;
+    margin: 0 1rem;
+  }
+
+  .copy-split-dialog .dialog-header,
+  .copy-split-dialog .dialog-body,
+  .copy-split-dialog .dialog-footer {
+    padding: 1rem;
+  }
+}

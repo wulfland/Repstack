@@ -5,6 +5,9 @@
 import { useState } from 'react';
 import type { Exercise, MesocycleSplitDay } from '../../types/models';
 import SplitDayEditor from './SplitDayEditor';
+import CopySplitDialog from './CopySplitDialog';
+import ToastContainer from '../common/ToastContainer';
+import { useToast } from '../../hooks/useToast';
 import './MesocycleExerciseConfig.css';
 
 interface MesocycleExerciseConfigProps {
@@ -21,6 +24,10 @@ export default function MesocycleExerciseConfig({
   mesocycleId,
 }: MesocycleExerciseConfigProps) {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [showCopyDialog, setShowCopyDialog] = useState(false);
+  const [sourceSplitDayForCopy, setSourceSplitDayForCopy] =
+    useState<MesocycleSplitDay | null>(null);
+  const { toasts, showToast, removeToast } = useToast();
 
   const handleSplitDayChange = (
     index: number,
@@ -37,6 +44,70 @@ export default function MesocycleExerciseConfig({
 
   const getTotalExercisesAcrossAllDays = (): number => {
     return splitDays.reduce((total, day) => total + day.exercises.length, 0);
+  };
+
+  const handleInitiateCopy = (splitDay: MesocycleSplitDay) => {
+    if (splitDay.exercises.length === 0) {
+      showToast('No exercises to copy from this split day', 'error');
+      return;
+    }
+    setSourceSplitDayForCopy(splitDay);
+    setShowCopyDialog(true);
+  };
+
+  const handleConfirmCopy = (
+    targetSplitDayIds: string[],
+    mode: 'replace' | 'append'
+  ) => {
+    if (!sourceSplitDayForCopy) return;
+
+    const updatedSplitDays = splitDays.map((splitDay) => {
+      // If this is a target split day, apply the copy
+      if (targetSplitDayIds.includes(splitDay.id)) {
+        let newExercises = [...sourceSplitDayForCopy.exercises];
+
+        // Deep copy the exercises to avoid reference sharing
+        newExercises = newExercises.map((exercise) => ({
+          ...exercise,
+        }));
+
+        if (mode === 'append' && splitDay.exercises.length > 0) {
+          // Append: Add copied exercises after existing ones
+          newExercises = [...splitDay.exercises, ...newExercises];
+        }
+        // If mode is 'replace' or target is empty, newExercises already contains only copied exercises
+
+        // Update order values
+        newExercises.forEach((ex, i) => {
+          ex.order = i;
+        });
+
+        return {
+          ...splitDay,
+          exercises: newExercises,
+        };
+      }
+      return splitDay;
+    });
+
+    onChange(updatedSplitDays);
+
+    // Show success toast
+    const targetCount = targetSplitDayIds.length;
+    const exerciseCount = sourceSplitDayForCopy.exercises.length;
+    showToast(
+      `Copied ${exerciseCount} exercise${exerciseCount !== 1 ? 's' : ''} to ${targetCount} split${targetCount !== 1 ? 's' : ''}`,
+      'success'
+    );
+
+    // Close dialog and reset state
+    setShowCopyDialog(false);
+    setSourceSplitDayForCopy(null);
+  };
+
+  const handleCancelCopy = () => {
+    setShowCopyDialog(false);
+    setSourceSplitDayForCopy(null);
   };
 
   return (
@@ -81,6 +152,8 @@ export default function MesocycleExerciseConfig({
                   handleSplitDayChange(index, updatedSplitDay)
                 }
                 mesocycleId={mesocycleId}
+                onCopy={() => handleInitiateCopy(splitDay)}
+                canCopy={splitDays.length > 1}
               />
             )}
           </div>
@@ -99,6 +172,17 @@ export default function MesocycleExerciseConfig({
           </p>
         </div>
       )}
+
+      {showCopyDialog && sourceSplitDayForCopy && (
+        <CopySplitDialog
+          sourceSplitDay={sourceSplitDayForCopy}
+          availableSplitDays={splitDays}
+          onConfirm={handleConfirmCopy}
+          onCancel={handleCancelCopy}
+        />
+      )}
+
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
 }

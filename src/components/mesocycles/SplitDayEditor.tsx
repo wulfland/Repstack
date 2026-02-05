@@ -20,6 +20,8 @@ interface SplitDayEditorProps {
   exercises: Exercise[];
   onChange: (updatedSplitDay: MesocycleSplitDay) => void;
   mesocycleId?: string; // Optional: if provided, check for exercise history in this mesocycle
+  onCopy?: () => void; // Optional: callback to initiate copy operation
+  canCopy?: boolean; // Optional: whether copy is available (need multiple splits)
 }
 
 export default function SplitDayEditor({
@@ -27,6 +29,8 @@ export default function SplitDayEditor({
   exercises,
   onChange,
   mesocycleId,
+  onCopy,
+  canCopy = false,
 }: SplitDayEditorProps) {
   const [showExerciseSelector, setShowExerciseSelector] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -148,13 +152,25 @@ export default function SplitDayEditor({
     <div className="split-day-editor">
       <div className="split-day-header">
         <h3>{splitDay.name}</h3>
-        <button
-          type="button"
-          className="btn btn-primary btn-sm"
-          onClick={() => setShowExerciseSelector(true)}
-        >
-          + Add Exercise
-        </button>
+        <div className="header-actions">
+          {canCopy && onCopy && splitDay.exercises.length > 0 && (
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={onCopy}
+              title="Copy exercises to other split days"
+            >
+              Copy to...
+            </button>
+          )}
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => setShowExerciseSelector(true)}
+          >
+            + Add Exercise
+          </button>
+        </div>
       </div>
 
       {splitDay.exercises.length === 0 ? (

@@ -57,55 +57,28 @@
   justify-content: center;
 }
 
-.weight-input-group {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  background: white;
+.weight-input {
+  width: 80px;
+  text-align: center;
+  padding: 0.5rem;
   border: 2px solid #e5e7eb;
   border-radius: 6px;
-  padding: 0.25rem;
-}
-
-.set-logger.completed .weight-input-group {
-  border-color: #d1fae5;
-  background: #f0fdf4;
-}
-
-.weight-btn {
-  padding: 0.25rem 0.5rem;
-  background: #f3f4f6;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  min-width: 44px;
-  /* Ensure touch target for mobile gym use */
-  min-height: 44px;
-}
-
-.weight-btn:hover:not(:disabled) {
-  background: #e5e7eb;
-  color: #374151;
-}
-
-.weight-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.weight-input {
-  width: 70px;
-  text-align: center;
-  border: none;
-  background: transparent;
   font-weight: 600;
   font-size: 1rem;
+  background: white;
+  transition: all 0.2s ease;
   /* Ensure touch target */
   min-height: 44px;
+}
+
+.weight-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.set-logger.completed .weight-input {
+  border-color: #d1fae5;
+  background: #f0fdf4;
 }
 
 /* Reps Input */
@@ -266,7 +239,7 @@
 /* Mobile Responsive */
 @media (max-width: 640px) {
   .set-logger {
-    grid-template-columns: 28px minmax(95px, 1fr) 52px 44px 80px;
+    grid-template-columns: 28px 1fr 60px 44px 80px;
     gap: 0.25rem;
     padding: 0.5rem 0.25rem;
   }
@@ -281,30 +254,22 @@
     display: none; /* Hide on small screens to save space */
   }
 
-  .weight-btn {
-    /* Keep 44px minimum for proper touch targets */
-    min-width: 44px;
-    min-height: 44px;
-    font-size: 0.5625rem;
-    padding: 0.2rem 0.15rem;
-  }
-
   .weight-input {
-    width: 46px;
-    font-size: 0.8125rem;
+    width: 100%;
+    font-size: 0.875rem;
     min-height: 44px;
   }
 
   .reps-input {
-    width: 48px;
-    font-size: 0.8125rem;
+    width: 56px;
+    font-size: 0.875rem;
     padding: 0.3rem;
     min-height: 44px;
   }
 
   .rir-input {
     width: 40px;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     padding: 0.3rem;
     min-height: 44px;
   }
@@ -320,7 +285,7 @@
   .btn-uncomplete-set {
     min-width: 44px;
     min-height: 44px;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
   }
 
   .set-actions {
@@ -336,7 +301,7 @@
   }
 
   .weight-input {
-    width: 80px;
+    width: 100px;
   }
 
   .reps-input {
@@ -345,10 +310,5 @@
 
   .rir-input {
     width: 60px;
-  }
-
-  .weight-btn {
-    min-width: 44px;
-    min-height: 44px;
   }
 }

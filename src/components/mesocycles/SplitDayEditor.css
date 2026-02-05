@@ -15,6 +15,12 @@
   font-weight: 600;
 }
 
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
 .empty-state {
   text-align: center;
   padding: 2rem;
@@ -151,11 +157,6 @@
 .btn-remove:hover {
   background: #fee2e2;
   color: #dc2626;
-}
-
-.btn-sm {
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
 }
 
 @media (max-width: 640px) {

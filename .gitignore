@@ -31,3 +31,9 @@ test-results/
 coverage/
 .vitest/
 
+
+# Throwaway specs written by /verify
+e2e/*.tmp.spec.ts
+
+# Per-machine Claude Code settings (permission allowlist for the demo)
+.claude/settings.local.json

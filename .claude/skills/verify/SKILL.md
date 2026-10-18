@@ -55,14 +55,18 @@ Rules for the spec:
   change copies: `test.use({ permissions: ['clipboard-read', 'clipboard-write'] })`
   and assert with `page.evaluate(() => navigator.clipboard.readText())`.
 - Also assert the flag-**off** case once: without `?ff=`, the control is absent.
-- One screenshot per step into `test-results/verify/NN-<step>.png`.
+- One screenshot per step into `test-results/verify/NN-<step>.png`. After an
+  action that shows a toast, `await page.waitForTimeout(400)` first; the
+  slide-in animation takes 0.3 s and an early screenshot shows no toast.
 
 ## 4. Build and drive it
 
-`npx playwright test e2e/verify.tmp.spec.ts --headed --project=chromium`
-Playwright builds and serves the app itself (`npm run preview` on :4173 via
-`playwright.config.ts`). `--headed` shows the browser; drop it when running
-unattended. Run the suite with `npx playwright test` only when asked (`full`).
+```bash
+npm run build && npx playwright test e2e/verify.tmp.spec.ts --headed --project=chromium
+```
+`npm run build` is required: Playwright's `webServer` runs `npm run preview`,
+which serves whatever is in `dist/`, so without the build you verify the
+previous version. `--headed` shows the browser; drop it when unattended. Run the suite with `npx playwright test` only when asked (`full`).
 
 ## 5. Clean up
 
@@ -76,7 +80,7 @@ Delete `e2e/verify.tmp.spec.ts`. Leave `test-results/verify/` for the report.
 | Step                    | Result | Note                       |
 |-------------------------|--------|----------------------------|
 | type-check, lint, format| PASS   |                            |
-| unit tests              | PASS   | 184 tests                  |
+| unit tests              | PASS   | 200 tests                  |
 | build + preview         | PASS   |                            |
 | flag off: control absent| PASS   |                            |
 | flag on: <journey>      | PASS   | test-results/verify/03.png |

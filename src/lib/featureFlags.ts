@@ -13,7 +13,8 @@
  */
 
 export const FEATURE_FLAG_DEFAULTS = {
-  // flag_name: false,
+  /** "Copy as Markdown" button in the workout detail view. */
+  copy_markdown: false,
 } as const satisfies Record<string, boolean>;
 
 export type FeatureFlag = keyof typeof FEATURE_FLAG_DEFAULTS;

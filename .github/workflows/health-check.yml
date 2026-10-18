@@ -1,0 +1,179 @@
+name: Health Check
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+concurrency:
+  group: health-check
+  cancel-in-progress: false
+
+env:
+  PAGES_URL: https://wulfland.github.io/Repstack/
+
+jobs:
+  probe:
+    name: Probe production
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: HTTP probe
+        run: |
+          echo "Probing $PAGES_URL"
+          curl -sf --max-time 20 "$PAGES_URL" -o /dev/null
+          echo "HTTP probe OK"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Smoke test (app renders)
+        run: npx playwright test e2e/smoke.spec.ts
+        env:
+          BASE_URL: ${{ env.PAGES_URL }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: health-check-report
+          path: playwright-report/
+          retention-days: 7
+
+  alert:
+    name: Open incident
+    runs-on: ubuntu-latest
+    needs: probe
+    if: failure()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: .github
+
+      - name: Collect context from the deploy workflow
+        id: ctx
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          latest=$(gh run list --workflow deploy.yml --branch main --limit 1 \
+            --json url,headSha,conclusion --jq '.[0] // {}')
+          green=$(gh run list --workflow deploy.yml --branch main --status success --limit 1 \
+            --json url,headSha --jq '.[0] // {}')
+          {
+            echo "deploy_url=$(jq -r '.url // "n/a"' <<<"$latest")"
+            echo "deploy_sha=$(jq -r '.headSha // "n/a"' <<<"$latest")"
+            echo "green_url=$(jq -r '.url // "n/a"' <<<"$green")"
+            echo "green_sha=$(jq -r '.headSha // "n/a"' <<<"$green")"
+            echo "date=$(date -u +%Y-%m-%d)"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the incident issue
+        id: issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          HEALTH_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          DEPLOY_RUN_URL: ${{ steps.ctx.outputs.deploy_url }}
+          DEPLOY_SHA: ${{ steps.ctx.outputs.deploy_sha }}
+          LAST_GREEN_RUN_URL: ${{ steps.ctx.outputs.green_url }}
+          LAST_GREEN_SHA: ${{ steps.ctx.outputs.green_sha }}
+          DATE: ${{ steps.ctx.outputs.date }}
+        run: |
+          gh label create incident --color B60205 --force \
+            --description "Production health check failed; agent task open"
+
+          existing=$(gh issue list --label incident --state open --limit 1 \
+            --json number --jq '.[0].number // empty')
+
+          if [ -n "$existing" ]; then
+            echo "Incident issue #$existing is already open; adding this run."
+            gh issue comment "$existing" --body \
+              "Health check failed again: $HEALTH_RUN_URL (deployed commit \`$DEPLOY_SHA\`)."
+            echo "number=$existing" >> "$GITHUB_OUTPUT"
+            echo "created=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          sed -e "s|{{HEALTH_RUN_URL}}|$HEALTH_RUN_URL|g" \
+              -e "s|{{DEPLOY_RUN_URL}}|$DEPLOY_RUN_URL|g" \
+              -e "s|{{DEPLOY_SHA}}|$DEPLOY_SHA|g" \
+              -e "s|{{LAST_GREEN_RUN_URL}}|$LAST_GREEN_RUN_URL|g" \
+              -e "s|{{LAST_GREEN_SHA}}|$LAST_GREEN_SHA|g" \
+              -e "s|{{DATE}}|$DATE|g" \
+              .github/INCIDENT_TASK.md > /tmp/incident-body.md
+
+          url=$(gh issue create \
+            --title "Incident $DATE: production health check failed" \
+            --label incident \
+            --body-file /tmp/incident-body.md)
+          echo "Opened $url"
+          echo "number=${url##*/}" >> "$GITHUB_OUTPUT"
+          echo "created=true" >> "$GITHUB_OUTPUT"
+
+      # Assigning Copilot starts the coding agent on the task above. The
+      # GITHUB_TOKEN cannot assign Copilot on its own, so a fine-grained PAT
+      # (Issues: read/write) of a user with a Copilot seat is used when the
+      # COPILOT_ASSIGN_TOKEN secret exists. Everything here fails soft: the
+      # issue is the alert, the assignment is the automation.
+      - name: Assign the issue to Copilot
+        if: steps.issue.outputs.created == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          OWNER: ${{ github.repository_owner }}
+          NAME: ${{ github.event.repository.name }}
+          NUMBER: ${{ steps.issue.outputs.number }}
+        run: |
+          # shellcheck disable=SC2016  # $owner etc. are GraphQL variables, not shell
+          copilot_id=$(gh api graphql \
+            -F owner="$OWNER" -F name="$NAME" \
+            -f query='query($owner: String!, $name: String!) {
+              repository(owner: $owner, name: $name) {
+                suggestedActors(capabilities: [CAN_BE_ASSIGNED], first: 100) {
+                  nodes { login __typename ... on Bot { id } ... on User { id } }
+                }
+              }
+            }' \
+            --jq '.data.repository.suggestedActors.nodes[] | select(.login == "copilot-swe-agent") | .id' \
+            2>/dev/null || true)
+
+          if [ -z "$copilot_id" ]; then
+            echo "::warning::Copilot is not assignable in this repository (coding agent off, or token lacks a Copilot seat). Issue #$NUMBER stays unassigned."
+            exit 0
+          fi
+
+          issue_id=$(gh issue view "$NUMBER" --json id --jq .id)
+
+          # shellcheck disable=SC2016  # GraphQL variables again
+          if gh api graphql \
+            -F assignableId="$issue_id" -F actorIds="[\"$copilot_id\"]" \
+            -f query='mutation($assignableId: ID!, $actorIds: [ID!]!) {
+              replaceActorsForAssignable(input: { assignableId: $assignableId, actorIds: $actorIds }) {
+                assignable { ... on Issue { number assignees(first: 5) { nodes { login } } } }
+              }
+            }'; then
+            echo "Issue #$NUMBER assigned to Copilot."
+          else
+            echo "::warning::Could not assign issue #$NUMBER to Copilot. Assign it by hand to start the agent."
+          fi

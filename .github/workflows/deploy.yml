@@ -57,7 +57,7 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          BASE_URL: /${{ github.event.repository.name }}/
+          PUBLIC_BASE_URL: /${{ github.event.repository.name }}/
 
       - name: Setup Pages
         uses: actions/configure-pages@v6

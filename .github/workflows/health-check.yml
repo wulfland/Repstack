@@ -153,9 +153,11 @@ jobs:
 
       # Assigning Copilot starts the coding agent on the task above. The
       # GITHUB_TOKEN cannot assign Copilot on its own, so a fine-grained PAT
-      # (Issues: read/write) of a user with a Copilot seat is used when the
-      # COPILOT_ASSIGN_TOKEN secret exists. Retry on existing issues, adding
-      # Copilot without replacing any human assignees.
+      # (Actions, Contents, Issues, Pull requests: read/write) of a user with
+      # a Copilot seat is used when the COPILOT_ASSIGN_TOKEN secret exists.
+      # Retry on existing issues, adding Copilot without replacing any human
+      # assignees. GitHub requires the GraphQL-Features header for Copilot
+      # assignment calls.
       - name: Ensure Copilot is assigned
         if: steps.issue.outputs.number != ''
         continue-on-error: true
@@ -165,9 +167,10 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           NAME: ${{ github.event.repository.name }}
           NUMBER: ${{ steps.issue.outputs.number }}
+          FEATURES: 'GraphQL-Features: issues_copilot_assignment_api_support,coding_agent_model_selection'
         run: |
           # shellcheck disable=SC2016  # $owner etc. are GraphQL variables, not shell
-          copilot_id=$(gh api graphql \
+          copilot_id=$(gh api graphql -H "$FEATURES" \
             -F owner="$OWNER" -F name="$NAME" \
             -f query='query($owner: String!, $name: String!) {
               repository(owner: $owner, name: $name) {
@@ -187,8 +190,10 @@ jobs:
           issue_id=$(gh issue view "$NUMBER" --json id --jq .id)
 
           # shellcheck disable=SC2016  # GraphQL variables again
-          if gh api graphql \
-            -F assignableId="$issue_id" -F actorIds="[\"$copilot_id\"]" \
+          # `actorIds[]=` makes gh send a JSON array; a quoted "[...]" would
+          # arrive as one string and fail with NOT_FOUND.
+          if gh api graphql -H "$FEATURES" \
+            -F assignableId="$issue_id" -f "actorIds[]=$copilot_id" \
             -f query='mutation($assignableId: ID!, $actorIds: [ID!]!) {
               addAssigneesToAssignable(input: { assignableId: $assignableId, assigneeIds: $actorIds }) {
                 assignable { ... on Issue { number assignees(first: 5) { nodes { login } } } }

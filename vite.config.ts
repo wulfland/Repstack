@@ -7,7 +7,7 @@ const base = process.env.PUBLIC_BASE_URL || '/';
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Use BASE_URL env var for GitHub Pages deployment, otherwise use root
+  // Use PUBLIC_BASE_URL env var for GitHub Pages deployment, otherwise use root
   base,
   plugins: [
     react(),

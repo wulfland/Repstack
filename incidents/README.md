@@ -10,20 +10,21 @@ remediation is the "Incident policy" section in `AGENTS.md`.
 ```markdown
 # Incident YYYY-MM-DD: <one-line title>
 
-| | |
-|---|---|
+|          |                                                 |
+| -------- | ----------------------------------------------- |
 | Detected | YYYY-MM-DD HH:MM UTC by health-check run <link> |
-| Resolved | YYYY-MM-DD HH:MM UTC |
-| Duration | N min |
-| Issue | #NNN |
-| Fix PR | #NNN |
+| Resolved | YYYY-MM-DD HH:MM UTC                            |
+| Duration | N min                                           |
+| Issue    | #NNN                                            |
+| Fix PR   | #NNN                                            |
 
 ## Timeline (UTC)
 
 - HH:MM PR #NNN merged; deploy run <link> green, e2e stage red.
 - HH:MM health-check run <link> fails; incident issue #NNN opened.
 - HH:MM diagnosis: <one sentence>.
-- HH:MM remediation: redeploy of <sha> via deploy run <link>.
+- HH:MM rollback: `health-check.yml` redeployed <sha> via deploy run <link>
+  (or: skipped, and why).
 - HH:MM health-check run <link> green.
 
 ## Root cause
@@ -37,7 +38,8 @@ in IndexedDB is unaffected by a broken deploy; only loading the app failed.)
 
 ## Remediation
 
-Which allowed action from the incident policy was taken, by whom, with links.
+The automatic rollback and any other action from the incident policy: what
+was done, by whom (pipeline, human, agent), with links.
 
 ## Permanent fix
 

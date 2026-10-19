@@ -35,13 +35,13 @@ cleanly.
 
 What the pipeline does with it:
 
-| Stage | Result | Why |
-|---|---|---|
-| CI on the PR (`ci.yml`) | green | builds without `BASE_URL`, so `/` was already the base |
-| `deploy.yml` build + deploy | green | Vite builds fine with base `/` |
-| `deploy.yml` e2e stage | red | assets 404, app never renders |
-| `health-check.yml` HTTP probe | green | `index.html` is still served |
-| `health-check.yml` smoke test | red | `.status-bar` never appears, JS/CSS 404 |
+| Stage                         | Result | Why                                                    |
+| ----------------------------- | ------ | ------------------------------------------------------ |
+| CI on the PR (`ci.yml`)       | green  | builds without `BASE_URL`, so `/` was already the base |
+| `deploy.yml` build + deploy   | green  | Vite builds fine with base `/`                         |
+| `deploy.yml` e2e stage        | red    | assets 404, app never renders                          |
+| `health-check.yml` HTTP probe | green  | `index.html` is still served                           |
+| `health-check.yml` smoke test | red    | `.status-bar` never appears, JS/CSS 404                |
 
 The deploy log shows `BASE_URL=/Repstack/` being set and the Vite output
 listing `dist/assets/...`; `curl https://wulfland.github.io/Repstack/`
@@ -62,9 +62,11 @@ gh pr create --title "chore(build): read base path from PUBLIC_BASE_URL" \
 
 Wait for CI (green), approve and merge. The merge triggers `deploy.yml`;
 its e2e stage fails, and within five minutes `health-check.yml` fails and
-opens the `incident` issue (assigned to Copilot if the token is set up; see
-the runbook). Open the Pages URL in a **private window** to see the blank
-page: your normal browser may still show the cached PWA.
+opens the `incident` issue. The same run redeploys the last green commit
+and records that in the issue, then assigns Copilot (if
+`COPILOT_ASSIGN_TOKEN` is set) to diagnose and fix. Open the Pages URL in a
+**private window** to see the blank page: your normal browser may still
+show the cached PWA.
 
 Before planting, note the last green commit so the rollback is instant:
 
@@ -73,7 +75,19 @@ gh run list --workflow deploy.yml --branch main --status success --limit 3 \
   --json headSha,url,createdAt
 ```
 
-## Roll back (what the agent does, or you if it stalls)
+## Roll back
+
+`health-check.yml` rolls back on its own when it opens a new incident. It
+runs `gh workflow run deploy.yml -f ref=<last-green-sha>` with the
+workflow's token. The agent does not redeploy; it could not dispatch a
+workflow from its sandbox anyway. To show a manual rollback instead, set
+the repository variable `AUTO_ROLLBACK` to `false` before planting:
+
+```bash
+gh variable set AUTO_ROLLBACK --body false
+```
+
+By hand (rollback skipped, or after `AUTO_ROLLBACK=false`):
 
 ```bash
 gh workflow run deploy.yml -f ref=<last-green-sha>
@@ -93,7 +107,8 @@ as well, plus `incidents/<date>.md`. Merging it redeploys `main`, green.
 ## Reset between pre-run and take
 
 1. Merge (or close) the fix PR so `main` is healthy and deploys green.
-2. Close the pre-run `incident` issue; keep its link for the runbook.
+2. Close the pre-run `incident` issue; keep its link for the runbook. The
+   automatic rollback only runs when a new incident is opened.
 3. Re-plant the break with a fresh branch name
    (`chore/vite-public-base-url-2`).
 4. After the recording: `gh workflow disable health-check.yml` to stop the

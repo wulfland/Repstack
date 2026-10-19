@@ -3,11 +3,11 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // Get base URL for GitHub Pages deployment
-const base = process.env.PUBLIC_BASE_URL || '/';
+const base = process.env.BASE_URL || '/';
 
 // https://vite.dev/config/
 export default defineConfig({
-  // Use PUBLIC_BASE_URL env var for GitHub Pages deployment, otherwise use root
+  // Use BASE_URL env var for GitHub Pages deployment, otherwise use root
   base,
   plugins: [
     react(),

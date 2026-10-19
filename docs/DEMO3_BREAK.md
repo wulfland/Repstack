@@ -53,7 +53,7 @@ Make it look like housekeeping, not sabotage. From a clean `main`:
 
 ```bash
 git switch -c chore/vite-public-base-url main
-sed -i '' 's/process.env.BASE_URL || /process.env.PUBLIC_BASE_URL || /' vite.config.ts
+sed -i.bak 's/process.env.BASE_URL || /process.env.PUBLIC_BASE_URL || /' vite.config.ts && rm vite.config.ts.bak
 git commit -am "chore(build): read base path from PUBLIC_BASE_URL"
 git push -u origin chore/vite-public-base-url
 gh pr create --title "chore(build): read base path from PUBLIC_BASE_URL" \

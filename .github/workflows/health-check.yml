@@ -66,6 +66,13 @@ jobs:
     needs: probe
     if: always() && needs.probe.outputs.production_check == 'failure'
 
+    # actions: write lets the rollback step dispatch deploy.yml. Unlike most
+    # events raised with the GITHUB_TOKEN, workflow_dispatch does start a run.
+    permissions:
+      contents: read
+      issues: write
+      actions: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -108,6 +115,55 @@ jobs:
             echo "date=$(date -u +%Y-%m-%d)"
           } >> "$GITHUB_OUTPUT"
 
+      - name: Find the open incident
+        id: open
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh label create incident --color B60205 --force \
+            --description "Production health check failed; agent task open"
+
+          existing=$(gh issue list --label incident --state open --limit 1 \
+            --json number --jq '.[0].number // empty')
+          echo "number=$existing" >> "$GITHUB_OUTPUT"
+
+      # Restore service before anyone, human or agent, picks up the issue.
+      # Only for a new incident: while one is open, a failing check means the
+      # rollback is still deploying or did not help, and redeploying again
+      # would not change that. Set the repository variable AUTO_ROLLBACK to
+      # `false` to leave the rollback to a human.
+      - name: Roll back to the last green commit
+        id: rollback
+        if: steps.open.outputs.number == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          AUTO_ROLLBACK: ${{ vars.AUTO_ROLLBACK }}
+          DEPLOY_SHA: ${{ steps.ctx.outputs.deploy_sha }}
+          LAST_GREEN_SHA: ${{ steps.ctx.outputs.green_sha }}
+          DISPATCH_RUNS_URL: ${{ github.server_url }}/${{ github.repository }}/actions/workflows/deploy.yml?query=event%3Aworkflow_dispatch
+        run: |
+          # The status ends up in the issue table via sed, so it must not
+          # contain "|" or "&".
+          report() {
+            echo "status=$1" >> "$GITHUB_OUTPUT"
+            echo "::notice::Rollback: $1"
+          }
+
+          if [ "$AUTO_ROLLBACK" = "false" ]; then
+            report "Not rolled back: automatic rollback is off (repository variable AUTO_ROLLBACK=false)."
+          elif [ -z "$LAST_GREEN_SHA" ] || [ "$LAST_GREEN_SHA" = "n/a" ]; then
+            report "Not rolled back: no green deploy of main was found."
+          elif [ "$DEPLOY_SHA" = "$LAST_GREEN_SHA" ]; then
+            report "Not rolled back: the deployed commit is already the last green one, so a redeploy would not help."
+          elif gh workflow run deploy.yml --ref main -f ref="$LAST_GREEN_SHA"; then
+            report "Started a redeploy of the last green commit \`$LAST_GREEN_SHA\` (deploy run: $DISPATCH_RUNS_URL). The next health checks show whether that restored service."
+          else
+            echo "::warning::Could not dispatch deploy.yml for $LAST_GREEN_SHA."
+            report "Rollback failed: dispatching deploy.yml for \`$LAST_GREEN_SHA\` returned an error. A human must redeploy it."
+          fi
+
       - name: Open or update the incident issue
         id: issue
         env:
@@ -118,19 +174,15 @@ jobs:
           DEPLOY_SHA: ${{ steps.ctx.outputs.deploy_sha }}
           LAST_GREEN_RUN_URL: ${{ steps.ctx.outputs.green_url }}
           LAST_GREEN_SHA: ${{ steps.ctx.outputs.green_sha }}
+          ROLLBACK: ${{ steps.rollback.outputs.status }}
           DATE: ${{ steps.ctx.outputs.date }}
+          EXISTING: ${{ steps.open.outputs.number }}
         run: |
-          gh label create incident --color B60205 --force \
-            --description "Production health check failed; agent task open"
-
-          existing=$(gh issue list --label incident --state open --limit 1 \
-            --json number --jq '.[0].number // empty')
-
-          if [ -n "$existing" ]; then
-            echo "Incident issue #$existing is already open; adding this run."
-            gh issue comment "$existing" --body \
+          if [ -n "$EXISTING" ]; then
+            echo "Incident issue #$EXISTING is already open; adding this run."
+            gh issue comment "$EXISTING" --body \
               "Health check failed again: $HEALTH_RUN_URL (deployed commit \`$DEPLOY_SHA\`)."
-            echo "number=$existing" >> "$GITHUB_OUTPUT"
+            echo "number=$EXISTING" >> "$GITHUB_OUTPUT"
             echo "created=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -140,6 +192,7 @@ jobs:
               -e "s|{{DEPLOY_SHA}}|$DEPLOY_SHA|g" \
               -e "s|{{LAST_GREEN_RUN_URL}}|$LAST_GREEN_RUN_URL|g" \
               -e "s|{{LAST_GREEN_SHA}}|$LAST_GREEN_SHA|g" \
+              -e "s|{{ROLLBACK}}|$ROLLBACK|g" \
               -e "s|{{DATE}}|$DATE|g" \
               .github/INCIDENT_TASK.md > /tmp/incident-body.md
 

@@ -103,14 +103,26 @@ When the health check fails, an issue labeled `incident` is opened from
 `.github/INCIDENT_TASK.md`. Whoever picks it up, human or agent, works
 within this policy. It was decided once, here, not during the incident.
 
+**AUTOMATIC** (the pipeline, once per incident)
+
+- When it opens a new incident, `health-check.yml` redeploys the last green
+  commit and records the result in the issue. It skips this if the deployed
+  commit already is the last green one, or if the repository variable
+  `AUTO_ROLLBACK` is `false`.
+
 **MAY**
 
-- Redeploy the last green release: `gh workflow run deploy.yml -f ref=<sha>`.
-- Disable a feature flag in `src/lib/featureFlags.ts` (default to `false`).
+- Disable a feature flag in `src/lib/featureFlags.ts` (default to `false`)
+  in the fix PR.
 - Re-run the health check: `gh workflow run health-check.yml`.
+- Humans only, when the automatic rollback was skipped or did not restore
+  service: redeploy a known-good commit with
+  `gh workflow run deploy.yml -f ref=<sha>`.
 
 **MAY NOT** (as remediation, without a reviewed PR)
 
+- Redeploy or dispatch workflows as an agent. Rolling back is the
+  pipeline's job; the agent diagnoses and fixes.
 - Change the Dexie schema in `src/db/`.
 - Change secrets, tokens or repository settings.
 - Change anything outside `.github/workflows/` and

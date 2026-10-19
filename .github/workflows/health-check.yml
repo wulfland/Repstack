@@ -22,15 +22,12 @@ jobs:
     name: Probe production
     runs-on: ubuntu-latest
 
+    outputs:
+      production_check: ${{ steps.production-check.outcome }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
-      - name: HTTP probe
-        run: |
-          echo "Probing $PAGES_URL"
-          curl -sf --max-time 20 "$PAGES_URL" -o /dev/null
-          echo "HTTP probe OK"
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -44,14 +41,20 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
-      - name: Smoke test (app renders)
-        run: npx playwright test e2e/smoke.spec.ts
+      - name: Check production
+        id: production-check
+        continue-on-error: true
+        run: |
+          echo "Probing $PAGES_URL"
+          curl -sf --max-time 20 "$PAGES_URL" -o /dev/null
+          echo "HTTP probe OK"
+          npx playwright test e2e/smoke.spec.ts
         env:
           BASE_URL: ${{ env.PAGES_URL }}
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v7
-        if: failure()
+        if: steps.production-check.outcome == 'failure'
         with:
           name: health-check-report
           path: playwright-report/
@@ -61,7 +64,7 @@ jobs:
     name: Open incident
     runs-on: ubuntu-latest
     needs: probe
-    if: failure()
+    if: always() && needs.probe.outputs.production_check == 'failure'
 
     steps:
       - name: Checkout repository
@@ -76,14 +79,32 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           latest=$(gh run list --workflow deploy.yml --branch main --limit 1 \
-            --json url,headSha,conclusion --jq '.[0] // {}')
+            --json databaseId,url,headSha,conclusion --jq '.[0] // {}')
           green=$(gh run list --workflow deploy.yml --branch main --status success --limit 1 \
-            --json url,headSha --jq '.[0] // {}')
+            --json databaseId,url,headSha --jq '.[0] // {}')
+
+          source_sha() {
+            local run_id=$1 fallback=$2 dir
+            dir=$(mktemp -d)
+            if [ -n "$run_id" ] && gh run download "$run_id" \
+              --name deployment-source-sha --dir "$dir" >/dev/null 2>&1 \
+              && [ -s "$dir/source-sha" ]; then
+              tr -d '\r\n' < "$dir/source-sha"
+            else
+              printf '%s' "$fallback"
+            fi
+            rm -rf "$dir"
+          }
+
+          latest_sha=$(source_sha "$(jq -r '.databaseId // empty' <<<"$latest")" \
+            "$(jq -r '.headSha // "n/a"' <<<"$latest")")
+          green_sha=$(source_sha "$(jq -r '.databaseId // empty' <<<"$green")" \
+            "$(jq -r '.headSha // "n/a"' <<<"$green")")
           {
             echo "deploy_url=$(jq -r '.url // "n/a"' <<<"$latest")"
-            echo "deploy_sha=$(jq -r '.headSha // "n/a"' <<<"$latest")"
+            echo "deploy_sha=$latest_sha"
             echo "green_url=$(jq -r '.url // "n/a"' <<<"$green")"
-            echo "green_sha=$(jq -r '.headSha // "n/a"' <<<"$green")"
+            echo "green_sha=$green_sha"
             echo "date=$(date -u +%Y-%m-%d)"
           } >> "$GITHUB_OUTPUT"
 
@@ -133,10 +154,10 @@ jobs:
       # Assigning Copilot starts the coding agent on the task above. The
       # GITHUB_TOKEN cannot assign Copilot on its own, so a fine-grained PAT
       # (Issues: read/write) of a user with a Copilot seat is used when the
-      # COPILOT_ASSIGN_TOKEN secret exists. Everything here fails soft: the
-      # issue is the alert, the assignment is the automation.
-      - name: Assign the issue to Copilot
-        if: steps.issue.outputs.created == 'true'
+      # COPILOT_ASSIGN_TOKEN secret exists. Retry on existing issues, adding
+      # Copilot without replacing any human assignees.
+      - name: Ensure Copilot is assigned
+        if: steps.issue.outputs.number != ''
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.COPILOT_ASSIGN_TOKEN || secrets.GITHUB_TOKEN }}
@@ -169,7 +190,7 @@ jobs:
           if gh api graphql \
             -F assignableId="$issue_id" -F actorIds="[\"$copilot_id\"]" \
             -f query='mutation($assignableId: ID!, $actorIds: [ID!]!) {
-              replaceActorsForAssignable(input: { assignableId: $assignableId, actorIds: $actorIds }) {
+              addAssigneesToAssignable(input: { assignableId: $assignableId, assigneeIds: $actorIds }) {
                 assignable { ... on Issue { number assignees(first: 5) { nodes { login } } } }
               }
             }'; then

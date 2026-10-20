@@ -234,6 +234,7 @@
   border-top: 1px solid var(--border-color, #e0e0e0);
   display: flex;
   justify-content: flex-end;
+  gap: 0.75rem;
 }
 
 .close-footer-btn {
@@ -295,4 +296,26 @@
   .exercise-detail {
     padding: 0.75rem;
   }
+}
+
+.copy-markdown-btn {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  color: var(--primary-color, #3b82f6);
+  border: 1px solid var(--primary-color, #3b82f6);
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copy-markdown-btn:hover {
+  background: var(--hover-background, #f3f4f6);
+}
+
+.copy-markdown-btn:focus-visible,
+.close-footer-btn:focus-visible {
+  outline: 2px solid var(--primary-color, #3b82f6);
+  outline-offset: 2px;
 }

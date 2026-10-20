@@ -1,9 +1,14 @@
 import { useExercises } from '../../hooks/useDatabase';
+import { useToast } from '../../hooks/useToast';
+import ToastContainer from '../common/ToastContainer';
 import type { Workout } from '../../types/models';
 import {
   calculateSetVolume,
   calculateExerciseVolume,
 } from '../../lib/progressTracking';
+import { isFeatureEnabled } from '../../lib/featureFlags';
+import { copyToClipboard } from '../../lib/clipboard';
+import { workoutToMarkdown } from '../../lib/workoutMarkdown';
 import './WorkoutDetail.css';
 
 interface WorkoutDetailProps {
@@ -16,6 +21,21 @@ export default function WorkoutDetail({
   onClose,
 }: WorkoutDetailProps) {
   const exercises = useExercises();
+  const { toasts, showToast, removeToast } = useToast();
+  const copyMarkdownEnabled = isFeatureEnabled('copy_markdown');
+
+  const handleCopyMarkdown = async () => {
+    const markdown = workoutToMarkdown(workout, {
+      getExerciseName: (id) => exercises?.find((e) => e.id === id)?.name,
+      formatDate,
+    });
+    const ok = await copyToClipboard(markdown);
+    if (ok) {
+      showToast('Workout copied as Markdown', 'success');
+    } else {
+      showToast('Could not copy to clipboard', 'error');
+    }
+  };
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -206,11 +226,21 @@ export default function WorkoutDetail({
         </div>
 
         <div className="modal-footer">
+          {copyMarkdownEnabled && (
+            <button
+              type="button"
+              className="copy-markdown-btn"
+              onClick={handleCopyMarkdown}
+            >
+              Copy as Markdown
+            </button>
+          )}
           <button className="close-footer-btn" onClick={onClose}>
             Close
           </button>
         </div>
       </div>
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   );
 }

@@ -86,7 +86,8 @@ jobs:
 
   e2e-test:
     name: E2E Tests
-    runs-on: ubuntu-latest
+    # Pinned for Playwright, like the probe in health-check.yml.
+    runs-on: ubuntu-24.04
     needs: deploy
 
     steps:

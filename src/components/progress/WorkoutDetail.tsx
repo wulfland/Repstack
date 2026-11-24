@@ -4,6 +4,11 @@ import {
   calculateSetVolume,
   calculateExerciseVolume,
 } from '../../lib/progressTracking';
+import { isFeatureEnabled } from '../../lib/featureFlags';
+import { copyToClipboard } from '../../lib/clipboard';
+import { workoutToMarkdown } from '../../lib/workoutMarkdown';
+import { useToast } from '../../hooks/useToast';
+import ToastContainer from '../common/ToastContainer';
 import './WorkoutDetail.css';
 
 interface WorkoutDetailProps {
@@ -16,6 +21,18 @@ export default function WorkoutDetail({
   onClose,
 }: WorkoutDetailProps) {
   const exercises = useExercises();
+  const { toasts, showToast, removeToast } = useToast();
+
+  const handleCopyMarkdown = async () => {
+    const ok = await copyToClipboard(
+      workoutToMarkdown(workout, exercises ?? [])
+    );
+    if (ok) {
+      showToast('Workout copied as Markdown', 'success');
+    } else {
+      showToast('Could not copy to the clipboard', 'error');
+    }
+  };
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -206,10 +223,16 @@ export default function WorkoutDetail({
         </div>
 
         <div className="modal-footer">
+          {isFeatureEnabled('copy_markdown') && (
+            <button className="copy-markdown-btn" onClick={handleCopyMarkdown}>
+              Copy as Markdown
+            </button>
+          )}
           <button className="close-footer-btn" onClick={onClose}>
             Close
           </button>
         </div>
+        <ToastContainer toasts={toasts} onRemove={removeToast} />
       </div>
     </div>
   );

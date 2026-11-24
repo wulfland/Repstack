@@ -20,7 +20,11 @@ env:
 jobs:
   probe:
     name: Probe production
-    runs-on: ubuntu-latest
+    # Pinned, not ubuntu-latest: the probe needs Playwright's Chromium, and
+    # Playwright 1.58 cannot install it on ubuntu-26.04, which ubuntu-latest
+    # became in Nov 2026 (incidents/2026-11-09.md). Move this forward together
+    # with a Playwright upgrade that supports the newer image.
+    runs-on: ubuntu-24.04
 
     outputs:
       production_check: ${{ steps.production-check.outcome }}
